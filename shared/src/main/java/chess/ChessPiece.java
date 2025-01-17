@@ -75,6 +75,10 @@ public class ChessPiece {
                 RookMovesCalculator rmc = new RookMovesCalculator(myPosition, board, pieceColor);
                 return rmc.getMoves();
             }
+            case QUEEN -> {
+                QueenMovesCalculator qmc = new QueenMovesCalculator(myPosition, board, pieceColor);
+                return qmc.getMoves();
+            }
         }
         return new ArrayList<>();
     }
