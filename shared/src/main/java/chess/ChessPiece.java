@@ -56,7 +56,7 @@ public class ChessPiece {
         //throw new RuntimeException("Not implemented");
         switch (type) {
             case BISHOP -> {
-                BishopMovesCalculator bmc = new BishopMovesCalculator(myPosition, board);
+                BishopMovesCalculator bmc = new BishopMovesCalculator(myPosition, board, pieceColor);
                 return bmc.getMoves();
             }
         }
@@ -65,5 +65,9 @@ public class ChessPiece {
 
     public String toString() {
         return pieceColor + " " + type;
+    }
+
+    public boolean equals(Object piece) {
+        return this.toString() == piece.toString();
     }
 }
