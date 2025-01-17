@@ -59,6 +59,10 @@ public class ChessPiece {
                 BishopMovesCalculator bmc = new BishopMovesCalculator(myPosition, board, pieceColor);
                 return bmc.getMoves();
             }
+            case KING -> {
+                KingMovesCalculator kmc = new KingMovesCalculator(myPosition, board, pieceColor);
+                return kmc.getMoves();
+            }
         }
         return new ArrayList<>();
     }
