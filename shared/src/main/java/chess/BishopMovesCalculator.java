@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import static chess.ChessPiece.PieceType;
 
-public class BishopMovesCalculator {
+public class BishopMovesCalculator implements PieceMovesCalculator {
 
     //private final ChessPiece bishop;
     private final ChessPosition startPosition;
@@ -31,15 +31,10 @@ public class BishopMovesCalculator {
                 case 2 -> direction.set(-1,-1);
                 case 3 -> direction.set(-1,1);
             }
+            /*
             pos = startPosition.copy();
             going = true;
 
-
-            /*do {
-                moves.add(new ChessMove(startPosition, pos.copy(), PieceType.BISHOP));//If it's empty, add it to the array of possible squares
-                pos.add(direction); //Advance to the next square
-            } while ((board.getPiece(pos)==null) && pos.inBounds()); //As long as it hits squares that are empty and in bounds
-            */
             while (going) {
                 pos.add(direction); //Advance to the next square
                 if ((board.getPiece(pos)==null) && pos.inBounds()) {
@@ -52,7 +47,10 @@ public class BishopMovesCalculator {
                     }
                     going=false;
                 }
-            }
+            }*/
+
+            moves.addAll(PieceMovesCalculator.sendRay(startPosition, board, color, direction));
+
         }
 
         return moves;
