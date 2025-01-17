@@ -41,6 +41,11 @@ public class ChessPosition {
     public void setCol(int c) {
         col = c;
     }
+    //In fact, to really make things easy, I'm gonna add a method to add an integer array to the position
+    public void add(int[] vals) {
+        row += vals[0];
+        col += vals[1];
+    }
 
     public boolean equals(ChessPosition p) {
         //return r==p.getRow() && c==p.getColumn();
