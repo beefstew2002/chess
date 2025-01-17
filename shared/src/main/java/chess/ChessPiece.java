@@ -71,6 +71,10 @@ public class ChessPiece {
                 PawnMovesCalculator pmc = new PawnMovesCalculator(myPosition, board, pieceColor);
                 return pmc.getMoves();
             }
+            case ROOK -> {
+                RookMovesCalculator rmc = new RookMovesCalculator(myPosition, board, pieceColor);
+                return rmc.getMoves();
+            }
         }
         return new ArrayList<>();
     }
