@@ -54,6 +54,12 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         //throw new RuntimeException("Not implemented");
+        switch (type) {
+            case BISHOP -> {
+                BishopMovesCalculator bmc = new BishopMovesCalculator(myPosition, board);
+                return bmc.getMoves();
+            }
+        }
         return new ArrayList<>();
     }
 
