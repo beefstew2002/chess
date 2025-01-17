@@ -11,6 +11,17 @@ public interface PieceMovesCalculator {
         return board.getPiece(position) == null;
     }
 
+    public static boolean isSquareAvailable(ChessPosition position, ChessBoard board, ChessGame.TeamColor color) {
+        if (position.inBounds()) {
+            if (isSquareEmpty(position, board)) {
+                return true;
+            }else{
+                return board.getPiece(position).getTeamColor() != color;
+            }
+        }
+        return false;
+    }
+
     public static ArrayList<ChessMove> sendRay(ChessPosition startPosition, ChessBoard board, ChessGame.TeamColor color, ChessPosition direction) { //Check the squares stepping in a particular direction
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
 
