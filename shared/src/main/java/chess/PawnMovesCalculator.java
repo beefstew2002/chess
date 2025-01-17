@@ -13,6 +13,23 @@ public class PawnMovesCalculator {
         this.color=color;
     }
 
+    private ArrayList<ChessMove> jumpsAndPromotions(ChessPosition position) {
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        boolean promote = false;
+        ChessPiece.PieceType[] promotables = {ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.ROOK};
+        if ((color == ChessGame.TeamColor.BLACK && position.getRow()==1)||(color == ChessGame.TeamColor.WHITE && position.getRow()==8)) {
+            promote = true;
+        }
+
+        if (promote) {
+            for (int i=0; i< promotables.length; i++) {
+                moves.add(new ChessMove(startPosition, position, promotables[i]));
+            }
+        }else{
+            moves.add(new ChessMove(startPosition, position, ChessPiece.PieceType.PAWN));
+        }
+        return moves;
+    }
 
     public ArrayList<ChessMove> getMoves() {
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>(); //The array to be returned
@@ -31,7 +48,8 @@ public class PawnMovesCalculator {
         dir = new ChessPosition(up,0);
         pos.add(dir);
         if (PieceMovesCalculator.isSquareEmpty(pos, board)) {
-            moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+            //moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+            moves.addAll(jumpsAndPromotions(pos));
         }
 
         //Initial big jump option
@@ -43,7 +61,8 @@ public class PawnMovesCalculator {
             if (PieceMovesCalculator.isSquareEmpty(pos, board)) {
                 pos.add(dir);
                 if (PieceMovesCalculator.isSquareEmpty(pos, board)) {
-                    moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+                    //moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+                    moves.addAll(jumpsAndPromotions(pos));
                 }
             }
         }/**/
@@ -53,13 +72,15 @@ public class PawnMovesCalculator {
         dir = new ChessPosition(up,-1);
         pos.add(dir);
         if (!PieceMovesCalculator.isSquareEmpty(pos, board)&&PieceMovesCalculator.isSquareAvailable(pos,board,color)) {
-            moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+            //moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+            moves.addAll(jumpsAndPromotions(pos));
         }
         pos = startPosition.copy();
         dir = new ChessPosition(up,1);
         pos.add(dir);
         if (!PieceMovesCalculator.isSquareEmpty(pos, board)&&PieceMovesCalculator.isSquareAvailable(pos,board,color)) {
-            moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+            //moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+            moves.addAll(jumpsAndPromotions(pos));
         }
 
         //No need to google En Passant
