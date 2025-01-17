@@ -55,4 +55,10 @@ public class ChessMove {
         }
         return startPosition.toString() + " " + endPosition.toString();
     }
+
+    public boolean equals(ChessMove otherMove) {
+        return startPosition.equals(otherMove.getStartPosition()) &&
+                endPosition.equals(otherMove.getEndPosition()) &&
+                promotionPiece == otherMove.getPromotionPiece();
+    }
 }

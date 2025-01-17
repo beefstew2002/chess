@@ -42,12 +42,18 @@ public class ChessPosition {
         col = c;
     }
     public void set(int r, int c) {
-        row = r; col = c;
+        this.row = r;
+        this.col = c;
     }
     //In fact, to really make things easy, I'm gonna add a method to add another position to the position
-    public void add(ChessPosition pos) {
-        row += pos.getRow();
-        col += pos.getColumn();
+    public void add(ChessPosition dir) {
+        this.row += dir.getRow();
+        this.col += dir.getColumn();
+
+    }
+    //...adding a copy method...
+    public ChessPosition copy() {
+        return new ChessPosition(row, col);
     }
     //Also adding an inBounds function to check whether the position exists on the 8x8 grid
     public boolean inBounds() {
@@ -55,8 +61,8 @@ public class ChessPosition {
     }
 
     public boolean equals(ChessPosition p) {
-        //return r==p.getRow() && c==p.getColumn();
-        return true;
+        return row==p.getRow() && col==p.getColumn();
+        //return true;
     }
 
     public int hashCode() {
