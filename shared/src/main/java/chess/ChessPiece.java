@@ -84,10 +84,23 @@ public class ChessPiece {
     }
 
     public String toString() {
-        return pieceColor + " " + type;
+        String c = switch(pieceColor) {
+            case WHITE -> "W";
+            case BLACK -> "B";
+        };
+        String t = switch(type) {
+            case PAWN -> "P";
+            case BISHOP -> "B";
+            case KNIGHT -> "N";
+            case ROOK -> "R";
+            case QUEEN -> "Q";
+            case KING -> "K";
+        };
+
+        return c + t;
     }
 
     public boolean equals(Object piece) {
-        return this.toString() == piece.toString();
+        return this.toString().equals(piece.toString());
     }
 }
