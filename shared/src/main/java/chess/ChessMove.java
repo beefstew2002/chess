@@ -47,17 +47,16 @@ public class ChessMove {
     }
 
     public String toString() {
-        return Integer.toString(this.hashCode());
-/*
+        //return Integer.toString(this.hashCode());
+
         String pp;
         if (promotionPiece == null) {
             pp = "";
         }else{
             pp = promotionPiece.toString();
         }
-        return startPosition.toString() + " " + endPosition.toString();
+        return startPosition.toString() + " " + endPosition.toString() + pp;
 
- */
     }
 
     public int hashCode() {
