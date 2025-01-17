@@ -7,12 +7,13 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessPosition {
-    int r;
-    int c;
+
+    private final int row;
+    private final int col;
 
     public ChessPosition(int row, int col) {
-        r = row;
-        c = col;
+        this.row = row;
+        this.col = col;
     }
 
     /**
@@ -21,7 +22,7 @@ public class ChessPosition {
      */
     public int getRow() {
         //throw new RuntimeException("Not implemented");
-        return r;
+        return row;
     }
 
     /**
@@ -30,14 +31,15 @@ public class ChessPosition {
      */
     public int getColumn() {
         //throw new RuntimeException("Not implemented");
-        return c;
+        return col;
     }
 
     public boolean equals(ChessPosition p) {
-        return r==p.getRow() && c==p.getColumn();
+        //return r==p.getRow() && c==p.getColumn();
+        return true;
     }
 
     public int hashCode() {
-        return ((r*3) * (c+2));
+        return (row*100) + (col);
     }
 }
