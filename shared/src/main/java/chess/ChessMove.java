@@ -47,6 +47,8 @@ public class ChessMove {
     }
 
     public String toString() {
+        return Integer.toString(this.hashCode());
+/*
         String pp;
         if (promotionPiece == null) {
             pp = "";
@@ -54,11 +56,16 @@ public class ChessMove {
             pp = promotionPiece.toString();
         }
         return startPosition.toString() + " " + endPosition.toString();
+
+ */
     }
 
-    public boolean equals(ChessMove otherMove) {
-        return startPosition.equals(otherMove.getStartPosition()) &&
-                endPosition.equals(otherMove.getEndPosition()) &&
-                promotionPiece == otherMove.getPromotionPiece();
+    public int hashCode() {
+        return startPosition.hashCode()*100+endPosition.hashCode();
     }
+
+    public boolean equals(Object otherMove) {
+        return this.hashCode() == otherMove.hashCode();
+    }
+
 }
