@@ -60,13 +60,13 @@ public class ChessPosition {
         return row > 0 && row <= 8 && col > 0 && col <= 8;
     }
 
-    public boolean equals(ChessPosition p) {
-        return row==p.getRow() && col==p.getColumn();
+    public boolean equals(Object p) {
+        return this.hashCode()==p.hashCode();
         //return true;
     }
 
     public int hashCode() {
-        return (row*100) + (col);
+        return (row*10) + (col);
     }
 
     public String toString() {
