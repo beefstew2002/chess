@@ -53,6 +53,6 @@ public class ChessMove {
         }else{
             pp = promotionPiece.toString();
         }
-        return startPosition.toString() + " " + endPosition.toString() + " " + pp;
+        return startPosition.toString() + " " + endPosition.toString();
     }
 }
