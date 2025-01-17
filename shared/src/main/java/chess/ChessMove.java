@@ -60,7 +60,13 @@ public class ChessMove {
     }
 
     public int hashCode() {
-        return startPosition.hashCode()*100+endPosition.hashCode();
+        int pp;
+        if (promotionPiece != null) {
+            pp = promotionPiece.ordinal() + 1;
+        }else{
+            pp = 0;
+        }
+        return (pp*10000)+startPosition.hashCode()*100+endPosition.hashCode();
     }
 
     public boolean equals(Object otherMove) {
