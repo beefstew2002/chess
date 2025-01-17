@@ -8,8 +8,8 @@ package chess;
  */
 public class ChessPosition {
 
-    private final int row;
-    private final int col;
+    private int row;
+    private int col;
 
     public ChessPosition(int row, int col) {
         this.row = row;
@@ -32,6 +32,14 @@ public class ChessPosition {
     public int getColumn() {
         //throw new RuntimeException("Not implemented");
         return col;
+    }
+
+    //Adding setters for Row and Column to make the move calculators easier
+    public void setRow(int r) {
+        row = r;
+    }
+    public void setCol(int c) {
+        col = c;
     }
 
     public boolean equals(ChessPosition p) {
