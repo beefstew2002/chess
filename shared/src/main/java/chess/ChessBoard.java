@@ -48,7 +48,91 @@ public class ChessBoard {
     public void resetBoard() {
         //throw new RuntimeException("Not implemented");
         squares = new ChessPiece[8][8];
+        ChessGame.TeamColor color;
+        ChessPiece.PieceType type;
+        int row = 1;
+        int left = 1;
+        int right = 8;
+        //addPiece(new ChessPosition(0,0), new ChessPiece(color, type));
 
+        //White pieces
+        color = ChessGame.TeamColor.WHITE;
+        //Rooks
+        type = ChessPiece.PieceType.ROOK;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Knights
+        type = ChessPiece.PieceType.KNIGHT;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Bishops
+        type = ChessPiece.PieceType.BISHOP;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Royalty
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, ChessPiece.PieceType.QUEEN));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, ChessPiece.PieceType.KING));
+        //Pawns
+        for (int i=1; i<=8; i++) {
+            addPiece(new ChessPosition(2, i), new ChessPiece(color, ChessPiece.PieceType.PAWN));
+        }
 
+        //Black pieces
+        row = 8;
+        left = 1;
+        right = 8;
+
+        color = ChessGame.TeamColor.BLACK;
+        //Rooks
+        type = ChessPiece.PieceType.ROOK;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Knights
+        type = ChessPiece.PieceType.KNIGHT;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Bishops
+        type = ChessPiece.PieceType.BISHOP;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Royalty
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, ChessPiece.PieceType.QUEEN));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, ChessPiece.PieceType.KING));
+        //Pawns
+        for (int i=1; i<=8; i++) {
+            addPiece(new ChessPosition(7, i), new ChessPiece(color, ChessPiece.PieceType.PAWN));
+        }
+
+    }
+
+    public ChessPiece[][] getSquares() {
+        return squares;
+    }
+
+    public String toString() {
+        String s = "";
+        String row;
+        for (int r=0; r<8; r++) {
+            row = "";
+            for (int c=0; c<8; c++) {
+                if (squares[r][c]!=null) {
+                    row += squares[r][c].toString()+" ";
+                }
+            }
+            s = row + "\n" + s;
+        }
+        s = "\n" + s;
+        return s;
+    }
+
+    public boolean equals(Object other) {
+        ChessBoard otherBoard = (ChessBoard) other;
+        return this.toString().equals(otherBoard.toString());
     }
 }
