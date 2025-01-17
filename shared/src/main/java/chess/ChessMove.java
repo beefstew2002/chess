@@ -47,6 +47,12 @@ public class ChessMove {
     }
 
     public String toString() {
-        return startPosition.toString() + " " + endPosition.toString() + " " + promotionPiece.toString();
+        String pp;
+        if (promotionPiece == null) {
+            pp = "";
+        }else{
+            pp = promotionPiece.toString();
+        }
+        return startPosition.toString() + " " + endPosition.toString() + " " + pp;
     }
 }
