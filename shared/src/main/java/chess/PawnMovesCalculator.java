@@ -14,7 +14,6 @@ public class PawnMovesCalculator {
     }
 
 
-
     public ArrayList<ChessMove> getMoves() {
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>(); //The array to be returned
 
@@ -36,10 +35,10 @@ public class PawnMovesCalculator {
         }
 
         //Initial big jump option
-        /*
+
         if ((up == 1 && startPosition.getRow() == 2)||(up == -1 && startPosition.getRow() == 7)) {
             pos = startPosition.copy();
-            dir = new ChessPosition(0,up);
+            dir = new ChessPosition(up,0);
             pos.add(dir);
             if (PieceMovesCalculator.isSquareEmpty(pos, board)) {
                 pos.add(dir);
@@ -47,7 +46,7 @@ public class PawnMovesCalculator {
                     moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
                 }
             }
-        }*/
+        }/**/
 
         //Diagonal capturing
 
