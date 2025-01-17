@@ -49,6 +49,10 @@ public class ChessPosition {
         row += pos.getRow();
         col += pos.getColumn();
     }
+    //Also adding an inBounds function to check whether the position exists on the 8x8 grid
+    public boolean inBounds() {
+        return row > 0 && row <= 8 && col > 0 && col <= 8;
+    }
 
     public boolean equals(ChessPosition p) {
         //return r==p.getRow() && c==p.getColumn();
