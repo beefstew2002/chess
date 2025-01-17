@@ -25,7 +25,7 @@ public class KingMovesCalculator {
                 pos = startPosition.copy();
                 pos.add(new ChessPosition(x,y));
                 if (PieceMovesCalculator.isSquareAvailable(pos, board, color)) {
-                    moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.KING));
+                    moves.add(new ChessMove(startPosition, pos, null));
                 }
             }
         }

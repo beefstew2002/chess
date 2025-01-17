@@ -32,7 +32,7 @@ public class KnightMovesCalculator {
             pos = startPosition.copy();
             pos.add(directions[i]);
             if (PieceMovesCalculator.isSquareAvailable(pos, board, color)) {
-                moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.KNIGHT));
+                moves.add(new ChessMove(startPosition, pos, null));
             }
         }
 

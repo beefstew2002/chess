@@ -26,7 +26,7 @@ public class PawnMovesCalculator {
                 moves.add(new ChessMove(startPosition, position, promotables[i]));
             }
         }else{
-            moves.add(new ChessMove(startPosition, position, ChessPiece.PieceType.PAWN));
+            moves.add(new ChessMove(startPosition, position, null));
         }
         return moves;
     }
