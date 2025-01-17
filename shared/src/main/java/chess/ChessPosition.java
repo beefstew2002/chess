@@ -42,4 +42,8 @@ public class ChessPosition {
     public int hashCode() {
         return (row*100) + (col);
     }
+
+    public String toString() {
+        return "["+row+", "+col+"]";
+    }
 }

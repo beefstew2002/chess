@@ -56,4 +56,8 @@ public class ChessPiece {
         //throw new RuntimeException("Not implemented");
         return new ArrayList<>();
     }
+
+    public String toString() {
+        return pieceColor + " " + type;
+    }
 }
