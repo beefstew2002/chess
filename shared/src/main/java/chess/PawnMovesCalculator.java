@@ -35,7 +35,7 @@ public class PawnMovesCalculator {
         }
 
         //Initial big jump option
-
+        //(I could optimize by combining this more elegantly with the default advance-by-one)
         if ((up == 1 && startPosition.getRow() == 2)||(up == -1 && startPosition.getRow() == 7)) {
             pos = startPosition.copy();
             dir = new ChessPosition(up,0);
@@ -49,6 +49,18 @@ public class PawnMovesCalculator {
         }/**/
 
         //Diagonal capturing
+        pos = startPosition.copy();
+        dir = new ChessPosition(up,-1);
+        pos.add(dir);
+        if (!PieceMovesCalculator.isSquareEmpty(pos, board)&&PieceMovesCalculator.isSquareAvailable(pos,board,color)) {
+            moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+        }
+        pos = startPosition.copy();
+        dir = new ChessPosition(up,1);
+        pos.add(dir);
+        if (!PieceMovesCalculator.isSquareEmpty(pos, board)&&PieceMovesCalculator.isSquareAvailable(pos,board,color)) {
+            moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
+        }
 
         //No need to google En Passant
         //Wait, what about promotion? Do we assume pawns are always promoted to be queens?
