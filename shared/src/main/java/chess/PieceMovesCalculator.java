@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 public interface PieceMovesCalculator {
 
+    public static boolean isSquareEmpty(ChessPosition position, ChessBoard board) {
+        if (!position.inBounds()) {
+            return false;
+        }
+        return board.getPiece(position) == null;
+    }
 
     public static ArrayList<ChessMove> sendRay(ChessPosition startPosition, ChessBoard board, ChessGame.TeamColor color, ChessPosition direction) { //Check the squares stepping in a particular direction
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
@@ -13,7 +19,7 @@ public interface PieceMovesCalculator {
 
         while (going) {
             pos.add(direction); //Advance to the next square
-            if ((board.getPiece(pos)==null) && pos.inBounds()) {
+            if (isSquareEmpty(pos, board)) {
                 moves.add(new ChessMove(startPosition, pos.copy(), null));//If it's empty, add it to the array of possible squares
             }else{
                 if (board.getPiece(pos)!=null) {
