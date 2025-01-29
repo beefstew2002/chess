@@ -106,6 +106,10 @@ public class ChessGame {
         if (!possible_moves.contains(move)) {
             throw new InvalidMoveException("Nice try, that piece can't do that!");
         }
+        //Check if the piece is on the team of whose turn it is
+        if (piece.getTeamColor() != whoseTurn) {
+            throw new InvalidMoveException("That's not your piece!");
+        }
 
         //Try the move!
         theBoard.addPiece(move.getEndPosition(), theBoard.getPiece(move.getStartPosition()));//Move/capture
