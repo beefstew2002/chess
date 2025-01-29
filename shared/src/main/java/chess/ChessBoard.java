@@ -114,6 +114,7 @@ public class ChessBoard {
     public ChessPiece[][] getSquares() {
         return squares;
     }
+    protected void setSquares(ChessPiece[][] sq) {squares = sq.clone();}
 
     public String toString() {
         String s = "";
@@ -134,5 +135,12 @@ public class ChessBoard {
     public boolean equals(Object other) {
         ChessBoard otherBoard = (ChessBoard) other;
         return this.toString().equals(otherBoard.toString());
+    }
+
+    @Override
+    public ChessBoard clone() {
+        ChessBoard newb = new ChessBoard();
+        newb.setSquares(squares);
+        return newb;
     }
 }
