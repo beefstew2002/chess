@@ -112,7 +112,11 @@ public class ChessGame {
         }
 
         //Try the move!
-        theBoard.addPiece(move.getEndPosition(), theBoard.getPiece(move.getStartPosition()));//Move/capture
+        if (move.getPromotionPiece() != null) {
+            theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn, move.getPromotionPiece()));//Move and promote
+        } else {
+            theBoard.addPiece(move.getEndPosition(), piece);//Move
+        }
         theBoard.addPiece(move.getStartPosition(), null);//Erase what was there before
 
         //If your king is now in check
