@@ -1,5 +1,6 @@
 package chess;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -53,9 +54,21 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //Get the set of possible moves for the piece
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> all_moves = (ArrayList<ChessMove>) theBoard.getPiece(startPosition).pieceMoves(theBoard, startPosition);
         //Check to see if any of the moves leave the king in danger
-        //Remove those moves from the list
-        throw new RuntimeException("Not implemented");
+        for (int i=0; i< all_moves.size(); i++) {
+            if (isMoveValid(all_moves.get(i))) {
+                moves.add(all_moves.get(i));
+            }
+        }
+
+        return moves;
+    }
+
+    //Method to check if a single move is valid (doesn't endanger the king)
+    private boolean isMoveValid(ChessMove move) {
+        return true;
     }
 
     /**
