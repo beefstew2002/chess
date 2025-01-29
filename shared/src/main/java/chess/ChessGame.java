@@ -115,6 +115,10 @@ public class ChessGame {
         if (isInCheck(whoseTurn)) {
             throw new InvalidMoveException("You left yourself in check!");
         }
+
+        //Update whose turn it is
+        if (whoseTurn == TeamColor.WHITE) whoseTurn = TeamColor.BLACK;
+        else whoseTurn = TeamColor.WHITE;
     }
 
     /**
