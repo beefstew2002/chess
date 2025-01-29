@@ -21,6 +21,14 @@ public class ChessGame {
         theBoard.resetBoard();
     }
 
+    @Override
+    public ChessGame clone() {
+        ChessGame noob = new ChessGame();
+        noob.setTeamTurn(whoseTurn);
+        noob.setBoard(theBoard);
+        return noob;
+    }
+
     /**
      * @return Which team's turn it is
      */
@@ -66,8 +74,18 @@ public class ChessGame {
         return moves;
     }
 
-    //Method to check if a single move is valid (doesn't endanger the king)
+    //Method to check if a single move is valid without modifying the actual game
     private boolean isMoveValid(ChessMove move) {
+        ChessGame testGame = this.clone();
+        //This is going to have to create a copy of the entire game for each move that it tests
+        //I honestly dk if there's a better way to do this, though
+        //This seems like the most efficient, at least for me to write it
+        try {
+            testGame.makeMove(move);
+        } catch (InvalidMoveException e) {
+            return false;
+        }
+
         return true;
     }
 
@@ -79,8 +97,14 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //throw new RuntimeException("Not implemented");
+        if (theBoard.getPiece(move.getStartPosition()) == null) {
+            throw new InvalidMoveException("What? There's nothing there to move!");
+        }
         theBoard.addPiece(move.getEndPosition(), theBoard.getPiece(move.getStartPosition()));//Move/capture
         theBoard.addPiece(move.getStartPosition(), null);//Erase what was there before
+        if (isInCheck(whoseTurn)) {
+            throw new InvalidMoveException("You left yourself in check!");
+        }
     }
 
     /**
