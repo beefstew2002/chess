@@ -96,12 +96,22 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        //throw new RuntimeException("Not implemented");
+        //Check if there's no piece at the start position
         if (theBoard.getPiece(move.getStartPosition()) == null) {
             throw new InvalidMoveException("What? There's nothing there to move!");
         }
+        //Shortcut: find out what piece is at that position, and make sure the move you're attempting is in the list
+        ChessPiece piece = theBoard.getPiece(move.getStartPosition());
+        ArrayList<ChessMove> possible_moves = (ArrayList<ChessMove>) piece.pieceMoves(theBoard, move.getStartPosition());
+        if (!possible_moves.contains(move)) {
+            throw new InvalidMoveException("Nice try, that piece can't do that!");
+        }
+
+        //Try the move!
         theBoard.addPiece(move.getEndPosition(), theBoard.getPiece(move.getStartPosition()));//Move/capture
         theBoard.addPiece(move.getStartPosition(), null);//Erase what was there before
+
+        //If your king is now in check
         if (isInCheck(whoseTurn)) {
             throw new InvalidMoveException("You left yourself in check!");
         }
