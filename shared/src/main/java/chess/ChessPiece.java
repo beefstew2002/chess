@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 /**
  * Represents a single chess piece
@@ -96,8 +97,11 @@ public class ChessPiece {
             case QUEEN -> "Q";
             case KING -> "K";
         };
+        if (pieceColor == ChessGame.TeamColor.BLACK) {
+            t = t.toLowerCase(Locale.ROOT);
+        }
 
-        return c + t;
+        return /*c +*/ t;
     }
 
     public boolean equals(Object piece) {

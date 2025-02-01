@@ -121,10 +121,12 @@ public class ChessBoard implements Iterable<ChessPosition>{
         String s = "";
         String row;
         for (int r=0; r<8; r++) {
-            row = "";
+            row = "|";
             for (int c=0; c<8; c++) {
                 if (squares[r][c]!=null) {
-                    row += squares[r][c].toString()+" ";
+                    row += squares[r][c].toString()+"|";
+                }else{
+                    row += " |";
                 }
             }
             s = row + "\n" + s;
