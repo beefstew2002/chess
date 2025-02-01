@@ -98,12 +98,12 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //Check if there's no piece at the start position
-        if (this.theBoard.getPiece(move.getStartPosition()) == null) {
+        if (theBoard.getPiece(move.getStartPosition()) == null) {
             throw new InvalidMoveException("What? There's nothing there to move!");
         }
         //Shortcut: find out what piece is at that position, and make sure the move you're attempting is in the list
-        ChessPiece piece = this.theBoard.getPiece(move.getStartPosition());
-        ArrayList<ChessMove> possible_moves = (ArrayList<ChessMove>) piece.pieceMoves(this.theBoard, move.getStartPosition());
+        ChessPiece piece = theBoard.getPiece(move.getStartPosition());
+        ArrayList<ChessMove> possible_moves = (ArrayList<ChessMove>) piece.pieceMoves(theBoard, move.getStartPosition());
         if (!possible_moves.contains(move)) {
             throw new InvalidMoveException("Nice try, that piece can't do that!");
         }
@@ -115,14 +115,15 @@ public class ChessGame {
         //ChessBoard oldBoard = theBoard.clone();
         //Try the move!
         if (move.getPromotionPiece() != null) {
-            this.theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn,move.getPromotionPiece()));//Move and promote
+            theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn,move.getPromotionPiece()));//Move and promote
         } else {
-            this.theBoard.addPiece(move.getEndPosition(), piece);//Move
+            theBoard.addPiece(move.getEndPosition(), piece);//Move
         }
-        this.theBoard.addPiece(move.getStartPosition(), null);//Erase what was there before
+        theBoard.addPiece(move.getStartPosition(), null);//Erase what was there before
 
         //If your king is now in check
-        if (isInCheck(whoseTurn)) {
+        if (isInCheck(theBoard.getPiece(move.getEndPosition()).getTeamColor())) {
+            //I need to replace whoseTurn here with the team of the original piece, not just whoever's turn it is
             //I really shouldn't have to do this, but here's some code to reset the board
 
             throw new InvalidMoveException("You left yourself in check!");

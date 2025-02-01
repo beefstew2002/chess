@@ -170,7 +170,9 @@ class SquaresIterator<T> implements Iterator<ChessPosition> {
     }
 
     public boolean hasNext() {
-        if (cursor.getRow() >= 8 && cursor.getColumn() >= 8) {return false;}
+        if (cursor.getColumn() >= 8) {
+            return false;
+        }
         return true;
     }
 
