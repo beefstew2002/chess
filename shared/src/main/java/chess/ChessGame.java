@@ -3,6 +3,7 @@ package chess;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -108,12 +109,12 @@ public class ChessGame {
         }
         //Check if the piece is on the team of whose turn it is
         if (piece.getTeamColor() != whoseTurn) {
-            throw new InvalidMoveException("That's not your piece!");
+            //throw new InvalidMoveException("That's not your piece!");
         }
 
         //Try the move!
         if (move.getPromotionPiece() != null) {
-            theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn, move.getPromotionPiece()));//Move and promote
+            theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn,move.getPromotionPiece()));//Move and promote
         } else {
             theBoard.addPiece(move.getEndPosition(), piece);//Move
         }
@@ -162,6 +163,23 @@ public class ChessGame {
         return isInDanger(kingPosition);
     }
 
+    //Helper function to determine whether there are no valid moves
+    public boolean noValidMoves(TeamColor teamColor) {
+        Iterator<ChessPosition> it = theBoard.iterator();
+        Collection<ChessMove> moves;
+        ChessPosition cursor;
+        while (it.hasNext()) {
+            cursor = it.next();
+            if (cursor != null && theBoard.getPiece(cursor).getTeamColor() == teamColor) {
+                moves = validMoves(cursor);
+                if (!moves.isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -171,7 +189,7 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
         //If the king is in check AND the team has no valid moves
         //A helper function to check if the team has no valid moves would be good
-        throw new RuntimeException("Not implemented");
+        return isInCheck(teamColor) && noValidMoves(teamColor);
     }
 
     /**
@@ -183,7 +201,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         //If the king is NOT in check AND the team has no valid moves
-        throw new RuntimeException("Not implemented");
+        return !isInCheck(teamColor) && noValidMoves(teamColor);
     }
 
     /**
