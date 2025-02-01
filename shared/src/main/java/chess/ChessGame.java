@@ -170,9 +170,10 @@ public class ChessGame {
         ChessPosition cursor;
         while (it.hasNext()) {
             cursor = it.next();
-            if (cursor != null && theBoard.getPiece(cursor).getTeamColor() == teamColor) {
+            if (theBoard.getPiece(cursor) != null && theBoard.getPiece(cursor).getTeamColor() == teamColor) {
                 moves = validMoves(cursor);
                 if (!moves.isEmpty()) {
+
                     return false;
                 }
             }
