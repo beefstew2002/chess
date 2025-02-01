@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -115,7 +116,6 @@ public class ChessBoard implements Iterable<ChessPosition>{
     public ChessPiece[][] getSquares() {
         return squares;
     }
-    protected void setSquares(ChessPiece[][] sq) {squares = sq.clone();}
 
     public String toString() {
         String s = "";
@@ -143,7 +143,15 @@ public class ChessBoard implements Iterable<ChessPosition>{
     @Override
     public ChessBoard clone() {
         ChessBoard newb = new ChessBoard();
-        newb.setSquares(squares);
+
+        Iterator<ChessPosition> it = new SquaresIterator<ChessPosition>(this);
+        ChessPosition pos;
+
+        while (it.hasNext()) {
+            pos = it.next();
+            newb.addPiece(pos, getPiece(pos));
+        }
+
         return newb;
     }
 

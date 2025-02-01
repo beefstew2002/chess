@@ -107,4 +107,10 @@ public class ChessPiece {
     public boolean equals(Object piece) {
         return this.toString().equals(piece.toString());
     }
+
+    @Override
+    public ChessPiece clone() {
+        return new ChessPiece(pieceColor, type);
+
+    }
 }

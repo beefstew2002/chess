@@ -26,7 +26,7 @@ public class ChessGame {
     public ChessGame clone() {
         ChessGame noob = new ChessGame();
         noob.setTeamTurn(whoseTurn);
-        noob.setBoard(theBoard);
+        noob.setBoard(theBoard.clone());
         return noob;
     }
 
@@ -82,7 +82,7 @@ public class ChessGame {
         //I honestly dk if there's a better way to do this, though
         //This seems like the most efficient, at least for me to write it
         try {
-            testGame.makeMove(move);
+            testGame.makeMove(move); //there's something wrong here. It makes the move on the main game board too. That shouldn't be possible, I even fixed the pointers.
         } catch (InvalidMoveException e) {
             return false;
         }
@@ -98,12 +98,12 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //Check if there's no piece at the start position
-        if (theBoard.getPiece(move.getStartPosition()) == null) {
+        if (this.theBoard.getPiece(move.getStartPosition()) == null) {
             throw new InvalidMoveException("What? There's nothing there to move!");
         }
         //Shortcut: find out what piece is at that position, and make sure the move you're attempting is in the list
-        ChessPiece piece = theBoard.getPiece(move.getStartPosition());
-        ArrayList<ChessMove> possible_moves = (ArrayList<ChessMove>) piece.pieceMoves(theBoard, move.getStartPosition());
+        ChessPiece piece = this.theBoard.getPiece(move.getStartPosition());
+        ArrayList<ChessMove> possible_moves = (ArrayList<ChessMove>) piece.pieceMoves(this.theBoard, move.getStartPosition());
         if (!possible_moves.contains(move)) {
             throw new InvalidMoveException("Nice try, that piece can't do that!");
         }
@@ -112,16 +112,19 @@ public class ChessGame {
             //throw new InvalidMoveException("That's not your piece!");
         }
 
+        //ChessBoard oldBoard = theBoard.clone();
         //Try the move!
         if (move.getPromotionPiece() != null) {
-            theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn,move.getPromotionPiece()));//Move and promote
+            this.theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn,move.getPromotionPiece()));//Move and promote
         } else {
-            theBoard.addPiece(move.getEndPosition(), piece);//Move
+            this.theBoard.addPiece(move.getEndPosition(), piece);//Move
         }
-        theBoard.addPiece(move.getStartPosition(), null);//Erase what was there before
+        this.theBoard.addPiece(move.getStartPosition(), null);//Erase what was there before
 
         //If your king is now in check
         if (isInCheck(whoseTurn)) {
+            //I really shouldn't have to do this, but here's some code to reset the board
+
             throw new InvalidMoveException("You left yourself in check!");
         }
 
@@ -145,6 +148,7 @@ public class ChessGame {
         ChessPosition kingPosition = new ChessPosition(0,0);
         //Scan through every square of the board (feel like I'm doing that a bunch) to get a king of the color
         //Maybe I'll add an Iterator to ChessBoard
+        //I did that, I should use it here now that I have. But eh, this is working fine
         ChessPosition targetPosition = new ChessPosition(0,0);
         ChessPiece targetPiece;
         for (int r=1; r<=8; r++) {
