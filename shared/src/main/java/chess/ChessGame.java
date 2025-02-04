@@ -15,6 +15,7 @@ public class ChessGame {
 
     private TeamColor whoseTurn;
     private ChessBoard theBoard;
+    protected boolean experimental;
 
     public ChessGame() {
         whoseTurn = TeamColor.WHITE;
@@ -78,6 +79,8 @@ public class ChessGame {
     //Method to check if a single move is valid without modifying the actual game
     private boolean isMoveValid(ChessMove move) {
         ChessGame testGame = this.clone();
+        testGame.experimental = true; //this is to make it so it can claim a move is valid even if it's not that team's turn
+
         //This is going to have to create a copy of the entire game for each move that it tests
         //I honestly dk if there's a better way to do this, though
         //This seems like the most efficient, at least for me to write it
@@ -108,8 +111,8 @@ public class ChessGame {
             throw new InvalidMoveException("Nice try, that piece can't do that!");
         }
         //Check if the piece is on the team of whose turn it is
-        if (piece.getTeamColor() != whoseTurn) {
-            //throw new InvalidMoveException("That's not your piece!");
+        if (piece.getTeamColor() != whoseTurn && !experimental) {
+            throw new InvalidMoveException("That's not your piece!");
         }
 
         //ChessBoard oldBoard = theBoard.clone();
