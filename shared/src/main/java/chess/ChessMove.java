@@ -11,17 +11,21 @@ public class ChessMove {
     private final ChessPosition startPosition;
     private final ChessPosition endPosition;
     private final ChessPiece.PieceType promotionPiece;
+    public static enum castleMoveType {none,kingside,queenside};
+    private castleMoveType castleMove;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.promotionPiece = promotionPiece;
+        this.castleMove = castleMoveType.none;
     }
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.promotionPiece = null;
+        this.castleMove = castleMoveType.none;
     }
 
     /**
@@ -49,6 +53,14 @@ public class ChessMove {
     public ChessPiece.PieceType getPromotionPiece() {
         //throw new RuntimeException("Not implemented");
         return promotionPiece;
+    }
+
+    //Getting and setting whether or not it's a castle move
+    public void setCastleMove(castleMoveType c) {
+        this.castleMove = c;
+    }
+    public castleMoveType getCastleMove() {
+        return castleMove;
     }
 
     public String toString() {
