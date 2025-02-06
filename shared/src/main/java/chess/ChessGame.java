@@ -120,7 +120,33 @@ public class ChessGame {
             throw new InvalidMoveException("That's not your piece!");
         }
 
-        //ChessBoard oldBoard = theBoard.clone();
+        //Checking for check with castle moves
+        int row = switch(piece.getTeamColor()) {case WHITE -> 1; case TeamColor.BLACK -> 8;};
+        if (move.getCastleMove() != ChessMove.castleMoveType.none) {
+            if (isInCheck(whoseTurn)) {
+                throw new InvalidMoveException("You can't castle when you're in check!");
+            }
+            ChessGame testGame = this.clone();
+            testGame.experimental = true;
+            //Kingside
+            if (move.getCastleMove() == ChessMove.castleMoveType.kingside) {
+                try {
+                    testGame.makeMove(new ChessMove(move.getStartPosition(), new ChessPosition(row,6)));
+                    testGame.makeMove(new ChessMove(new ChessPosition(row,6), new ChessPosition(row,7)));
+                } catch (InvalidMoveException e) {
+                    throw new InvalidMoveException("You can't castle through checked squares!");
+                }
+            }
+            //Queenside
+            else if (move.getCastleMove() == ChessMove.castleMoveType.queenside) {
+                try {
+                    testGame.makeMove(new ChessMove(move.getStartPosition(), new ChessPosition(row, 4)));
+                    testGame.makeMove(new ChessMove(new ChessPosition(row, 4), new ChessPosition(row, 3)));
+                } catch (InvalidMoveException e) {
+                    throw new InvalidMoveException("You can't castle through checked squares!");
+                }
+            }
+        }
         //Try the move!
         if (move.getPromotionPiece() != null) {
             theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn,move.getPromotionPiece()));//Move and promote
@@ -131,7 +157,6 @@ public class ChessGame {
         theBoard.getPiece(move.getEndPosition()).itMoved();//Set that that piece moved, important for castling
         //Other castling details: moving the rooks
         if (move.getCastleMove() != ChessMove.castleMoveType.none) {
-            int row = switch(piece.getTeamColor()) {case WHITE -> 1; case TeamColor.BLACK -> 8;};
             //Oh, maybe THIS is where it checks the validity of the move, yeah!
             if (move.getCastleMove() == ChessMove.castleMoveType.kingside) {
                 theBoard.addPiece(new ChessPosition(row, 6), theBoard.getPiece(new ChessPosition(row, 8))); //Add the rook to the side
