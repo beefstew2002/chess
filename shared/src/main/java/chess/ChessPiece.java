@@ -73,7 +73,7 @@ public class ChessPiece {
             case KING -> {
                 KingMovesCalculator kmc = new KingMovesCalculator(myPosition, board, pieceColor);
                 kmc.setHasMoved(hasMoved);
-                kmc.checkingForCheck = true;
+
                 return kmc.getMoves();
             }
             case KNIGHT -> {

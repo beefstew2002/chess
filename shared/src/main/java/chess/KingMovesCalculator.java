@@ -93,16 +93,18 @@ public class KingMovesCalculator {
         //Second attempt
         //Start with always making going to castle an option
         //Then narrow down when it's possible to do that
-        int row = switch (color) {
-            case WHITE -> 1;
-            case BLACK -> 8;
-        };
-        ChessMove ck = new ChessMove(startPosition, new ChessPosition(row, 7));
-        ck.setCastleMove(ChessMove.castleMoveType.kingside);
-        moves.add(ck); // Kingside
-        ChessMove cq = new ChessMove(startPosition, new ChessPosition(row, 3));
-        cq.setCastleMove(ChessMove.castleMoveType.queenside);
-        moves.add(cq); // Queenside
+        if (!hasMoved) {
+            int row = switch (color) {
+                case WHITE -> 1;
+                case BLACK -> 8;
+            };
+            ChessMove ck = new ChessMove(startPosition, new ChessPosition(row, 7));
+            ck.setCastleMove(ChessMove.castleMoveType.kingside);
+            moves.add(ck); // Kingside
+            ChessMove cq = new ChessMove(startPosition, new ChessPosition(row, 3));
+            cq.setCastleMove(ChessMove.castleMoveType.queenside);
+            moves.add(cq); // Queenside
+        }
 
         return moves;
     }
