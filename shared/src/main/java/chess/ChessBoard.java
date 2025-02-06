@@ -42,6 +42,10 @@ public class ChessBoard implements Iterable<ChessPosition>{
         }
         return squares[position.getRow()-1][position.getColumn()-1];
     }
+    //Overload so I don't have to write new ChessPosition every time I have to call this
+    public ChessPiece getPiece(int x, int y) {
+        return getPiece(new ChessPosition(x,y));
+    }
 
     /**
      * Sets the board to the default starting board
