@@ -98,12 +98,20 @@ public class KingMovesCalculator {
                 case WHITE -> 1;
                 case BLACK -> 8;
             };
-            ChessMove ck = new ChessMove(startPosition, new ChessPosition(row, 7));
-            ck.setCastleMove(ChessMove.castleMoveType.kingside);
-            moves.add(ck); // Kingside
-            ChessMove cq = new ChessMove(startPosition, new ChessPosition(row, 3));
-            cq.setCastleMove(ChessMove.castleMoveType.queenside);
-            moves.add(cq); // Queenside
+            //Check if the kingside rook is there or has moved
+            ChessPiece maybeRook = board.getPiece(row, 8);
+            if (maybeRook != null && maybeRook.getPieceType() == ChessPiece.PieceType.ROOK && !maybeRook.hasPieceMoved()) {
+                ChessMove ck = new ChessMove(startPosition, new ChessPosition(row, 7));
+                ck.setCastleMove(ChessMove.castleMoveType.kingside);
+                moves.add(ck); // Kingside
+            }
+            //Check if the queenside rook is there or has moved
+            maybeRook = board.getPiece(row, 1);
+            if (maybeRook != null && maybeRook.getPieceType() == ChessPiece.PieceType.ROOK && !maybeRook.hasPieceMoved()) {
+                ChessMove cq = new ChessMove(startPosition, new ChessPosition(row, 3));
+                cq.setCastleMove(ChessMove.castleMoveType.queenside);
+                moves.add(cq); // Queenside
+            }
         }
 
         return moves;
