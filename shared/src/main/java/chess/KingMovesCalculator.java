@@ -98,16 +98,29 @@ public class KingMovesCalculator {
                 case WHITE -> 1;
                 case BLACK -> 8;
             };
+            ChessPiece maybeRook;
+            boolean noPiecesInTheWay = true;
+            //Kingside
+            //Check if the spaces between it are empty
+            if (board.getPiece(row,6) != null || board.getPiece(row,7) != null) {
+                noPiecesInTheWay = false;
+            }
             //Check if the kingside rook is there or has moved
-            ChessPiece maybeRook = board.getPiece(row, 8);
-            if (maybeRook != null && maybeRook.getPieceType() == ChessPiece.PieceType.ROOK && !maybeRook.hasPieceMoved()) {
+            maybeRook = board.getPiece(row, 8);
+            if (maybeRook != null && maybeRook.getPieceType() == ChessPiece.PieceType.ROOK && !maybeRook.hasPieceMoved() && noPiecesInTheWay) {
                 ChessMove ck = new ChessMove(startPosition, new ChessPosition(row, 7));
                 ck.setCastleMove(ChessMove.castleMoveType.kingside);
                 moves.add(ck); // Kingside
             }
+            //Queenside
+            //Check if the spaces between them are empty
+            noPiecesInTheWay = true;
+            if (board.getPiece(row,2) != null || board.getPiece(row,3) != null || board.getPiece(row,4) != null) {
+                noPiecesInTheWay = false;
+            }
             //Check if the queenside rook is there or has moved
             maybeRook = board.getPiece(row, 1);
-            if (maybeRook != null && maybeRook.getPieceType() == ChessPiece.PieceType.ROOK && !maybeRook.hasPieceMoved()) {
+            if (maybeRook != null && maybeRook.getPieceType() == ChessPiece.PieceType.ROOK && !maybeRook.hasPieceMoved() && noPiecesInTheWay) {
                 ChessMove cq = new ChessMove(startPosition, new ChessPosition(row, 3));
                 cq.setCastleMove(ChessMove.castleMoveType.queenside);
                 moves.add(cq); // Queenside
