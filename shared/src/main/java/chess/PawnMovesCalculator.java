@@ -61,8 +61,10 @@ public class PawnMovesCalculator {
             if (PieceMovesCalculator.isSquareEmpty(pos, board)) {
                 pos.add(dir);
                 if (PieceMovesCalculator.isSquareEmpty(pos, board)) {
-                    //moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
-                    moves.addAll(jumpsAndPromotions(pos));
+                    ChessMove bigJump = new ChessMove(startPosition, pos);
+                    bigJump.setBigPawnJump(true);
+                    moves.add(bigJump);
+                    //moves.addAll(jumpsAndPromotions(pos)); //This doesn't work for en passant and is unnecessary
                 }
             }
         }/**/
@@ -75,6 +77,13 @@ public class PawnMovesCalculator {
             //moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
             moves.addAll(jumpsAndPromotions(pos));
         }
+        //En passant
+        ChessPiece enPassantTarget = board.getPiece(startPosition.getRow(),startPosition.getColumn()-1);
+        if (board.getPiece(pos) == null && enPassantTarget != null && enPassantTarget.isEnPassantable()) {
+            ChessMove enp = new ChessMove(startPosition,pos);
+            enp.setEnPassant(true);
+            moves.add(enp);
+        }
         pos = startPosition.copy();
         dir = new ChessPosition(up,1);
         pos.add(dir);
@@ -82,9 +91,13 @@ public class PawnMovesCalculator {
             //moves.add(new ChessMove(startPosition, pos, ChessPiece.PieceType.PAWN));
             moves.addAll(jumpsAndPromotions(pos));
         }
-
-        //No need to google En Passant
-        //Wait, what about promotion? Do we assume pawns are always promoted to be queens?
+        //En passant
+        enPassantTarget = board.getPiece(startPosition.getRow(),startPosition.getColumn()+1);
+        if (board.getPiece(pos) == null && enPassantTarget != null && enPassantTarget.isEnPassantable()) {
+            ChessMove enp = new ChessMove(startPosition,pos);
+            enp.setEnPassant(true);
+            moves.add(enp);
+        }
 
         return moves;
     }

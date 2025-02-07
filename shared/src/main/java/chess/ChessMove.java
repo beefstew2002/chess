@@ -13,6 +13,8 @@ public class ChessMove {
     private final ChessPiece.PieceType promotionPiece;
     public static enum castleMoveType {none,kingside,queenside};
     private castleMoveType castleMove;
+    private boolean bigPawnJump;
+    private boolean enPassant;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
@@ -20,6 +22,7 @@ public class ChessMove {
         this.endPosition = endPosition;
         this.promotionPiece = promotionPiece;
         this.castleMove = castleMoveType.none;
+        this.bigPawnJump = false;
     }
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition) {
         this.startPosition = startPosition;
@@ -61,6 +64,21 @@ public class ChessMove {
     }
     public castleMoveType getCastleMove() {
         return castleMove;
+    }
+
+    //Getting and setting whether it's a big pawn jump, which we need for en passant
+    public void setBigPawnJump(boolean b) {
+        this.bigPawnJump = b;
+    }
+    public boolean getBigPawnJump() {
+        return this.bigPawnJump;
+    }
+    //Is the move an en passant?
+    public void setEnPassant(boolean b) {
+        this.enPassant = b;
+    }
+    public boolean isEnPassant() {
+        return this.enPassant;
     }
 
     public String toString() {

@@ -27,6 +27,11 @@ public class ChessBoard implements Iterable<ChessPosition>{
         //throw new RuntimeException("Not implemented");
         squares[position.getRow()-1][position.getColumn()-1] = piece;
     }
+    //Overload
+    public void addPiece(int r, int c, ChessPiece piece) {
+        //throw new RuntimeException("Not implemented");
+        addPiece(new ChessPosition(r,c), piece);
+    }
 
     /**
      * Gets a chess piece on the chessboard
@@ -148,7 +153,7 @@ public class ChessBoard implements Iterable<ChessPosition>{
     public ChessBoard clone() {
         ChessBoard newb = new ChessBoard();
 
-        Iterator<ChessPosition> it = new SquaresIterator<ChessPosition>(this);
+        Iterator<ChessPosition> it = new SquaresIterator(this);
         ChessPosition pos;
 
         while (it.hasNext()) {
@@ -159,12 +164,12 @@ public class ChessBoard implements Iterable<ChessPosition>{
         return newb;
     }
 
-    public Iterator<ChessPosition> iterator() {
-        return new SquaresIterator<ChessPosition>(this);
+    public SquaresIterator iterator() {
+        return new SquaresIterator(this);
     }
 }
 
-class SquaresIterator<T> implements Iterator<ChessPosition> {
+class SquaresIterator implements Iterator<ChessPosition> {
     ChessPosition cursor;
     static ChessPosition right = new ChessPosition(0,1);
     static ChessPosition up = new ChessPosition(1,0);

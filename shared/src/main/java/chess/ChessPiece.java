@@ -15,6 +15,7 @@ public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
     private boolean hasMoved;
+    private boolean enPassantable = false;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
@@ -96,6 +97,14 @@ public class ChessPiece {
         return new ArrayList<>();
     }
 
+    //En passantable
+    public boolean isEnPassantable() {
+        return this.enPassantable;
+    }
+    public void setEnPassantable(boolean b) {
+        this.enPassantable = b;
+    }
+
     public String toString() {
         String c = switch(pieceColor) {
             case WHITE -> "W";
@@ -122,7 +131,9 @@ public class ChessPiece {
 
     @Override
     public ChessPiece clone() {
-        return new ChessPiece(pieceColor, type);
+        ChessPiece cp = new ChessPiece(pieceColor, type);
+        cp.setEnPassantable(this.enPassantable);
+        return cp;
 
     }
 }

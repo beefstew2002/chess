@@ -85,7 +85,7 @@ public class ChessGame {
         //I honestly dk if there's a better way to do this, though
         //This seems like the most efficient, at least for me to write it
         try {
-            testGame.makeMove(move); //there's something wrong here. It makes the move on the main game board too. That shouldn't be possible, I even fixed the pointers.
+            testGame.makeMove(move);
         } catch (InvalidMoveException e) {
             return false;
         }
@@ -110,10 +110,23 @@ public class ChessGame {
             if (move.getEndPosition().getColumn() == 7) move.setCastleMove(ChessMove.castleMoveType.kingside);
             else if (move.getEndPosition().getColumn() == 3) move.setCastleMove(ChessMove.castleMoveType.queenside);
         }
+        //Identify big pawn jumps and mark them for later
+        int pawnStartRow = switch(piece.getTeamColor()) { case WHITE -> 2; case BLACK -> 7;};
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && move.getStartPosition().getRow() == pawnStartRow) {
+            int length = Math.abs(move.getStartPosition().getRow() - move.getEndPosition().getRow());
+            if (length == 2) {
+                move.setBigPawnJump(true);
+            }
+        }
+        //Identify en passants and mark them for later
+        if (move.getStartPosition().getColumn() != move.getEndPosition().getColumn() && theBoard.getPiece(move.getEndPosition()) == null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            //Sets a move as "en passant" if it ends in a different column than it starts, the target square is empty, and the piece is a pawn
+            move.setEnPassant(true);
+        }
         //Shortcut: find out what piece is at that position, and make sure the move you're attempting is in the list
         ArrayList<ChessMove> possible_moves = (ArrayList<ChessMove>) piece.pieceMoves(theBoard, move.getStartPosition());
         if (!possible_moves.contains(move)) {
-            //throw new InvalidMoveException("Nice try, that piece can't do that!");
+            throw new InvalidMoveException("Nice try, that piece can't do that!"); //This messes with en passant
         }
         //Check if the piece is on the team of whose turn it is
         if (piece.getTeamColor() != whoseTurn && !experimental) {
@@ -167,6 +180,11 @@ public class ChessGame {
                 theBoard.addPiece(new ChessPosition(row, 1), null); //Erase it from where it was before
             }
         }
+        //If the move was an en passant, capture that piece
+        if (move.isEnPassant()) {
+            int up = switch(piece.getTeamColor()) {case WHITE -> 1; case TeamColor.BLACK -> -1;};
+            theBoard.addPiece(move.getEndPosition().getRow()-up,move.getEndPosition().getColumn(),null);
+        }
 
         //If your king is now in check
         if (isInCheck(theBoard.getPiece(move.getEndPosition()).getTeamColor())) {
@@ -174,6 +192,23 @@ public class ChessGame {
             //I really shouldn't have to do this, but here's some code to reset the board
 
             throw new InvalidMoveException("You left yourself in check!");
+        }
+
+        //After completing the move, set all pieces on the board to NOT be en passantable
+        SquaresIterator sqs = theBoard.iterator();
+        ChessPiece p;
+        while (sqs.hasNext()) {
+            p = theBoard.getPiece(sqs.next());
+            if (p != null) {
+                p.setEnPassantable(false);
+            }
+        }
+
+        //If that was a big pawn jump, that pawn is now en passantable, otherwise it's not
+        if (move.getBigPawnJump()) {
+            piece.setEnPassantable(true);
+        } else {
+            piece.setEnPassantable(false);
         }
 
         //Update whose turn it is
