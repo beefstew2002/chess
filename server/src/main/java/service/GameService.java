@@ -3,7 +3,9 @@ package service;
 import service.RequestResult.*;
 
 public class GameService {
-    //public CreateResult create(CreateRequest createRequest) {}
-    //public ListResult list(ListRequest listRequest) {}
-    //public ClearResult clear() {}
+    //public static CreateResult create(CreateRequest createRequest) {}
+    //public static ListResult list(ListRequest listRequest) {}
+    public static ClearResult clear(ClearRequest clearRequest) {
+        return new ClearResult();
+    }
 }

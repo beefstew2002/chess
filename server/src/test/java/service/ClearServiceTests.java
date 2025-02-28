@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import service.RequestResult.ClearRequest;
 import service.RequestResult.ClearResult;
 
+import static service.GameService.clear;
+import static service.UserService.*;
+
 public class ClearServiceTests {
 
     UserDAO udao;
@@ -36,7 +39,7 @@ public class ClearServiceTests {
 
 
         ClearRequest clearRequest = new ClearRequest();
-        ClearResult clearResult = new ClearResult();
+        ClearResult clearResult = clear(clearRequest);
 
         Assertions.assertTrue(udao.isEmpty(), "User data not empty");
         Assertions.assertTrue(adao.isEmpty(), "Auth data not empty");
