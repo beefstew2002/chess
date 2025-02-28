@@ -20,4 +20,8 @@ public class AuthDAO implements DAInterface{
 
         //return new RegisterResult(username, at);
     }
+
+    public boolean verifyAuth(AuthData authToken) {
+        return checkAuthData(authToken);
+    }
 }

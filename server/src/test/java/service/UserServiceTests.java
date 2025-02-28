@@ -1,18 +1,18 @@
 package service;
 
 //Imports
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static service.UserService.login;
 import static service.UserService.register;
 
-import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
-import dataaccess.UsernameAlreadyTaken;
+import dataaccess.*;
+import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import service.RequestResult.LoginRequest;
+import service.RequestResult.LoginResult;
 import service.RequestResult.RegisterRequest;
 
 public class UserServiceTests {
@@ -29,6 +29,7 @@ public class UserServiceTests {
     String email;
     RegisterRequest registerRequest;
     UserDAO udao;
+    AuthDAO adao;
     UserData userData;
 
     @BeforeEach
@@ -39,7 +40,7 @@ public class UserServiceTests {
         registerRequest = new RegisterRequest(username, password, email);
         userData = new UserData(username, password, email);
         udao = new UserDAO();
-
+        adao = new AuthDAO();
     }
 
     //Register
@@ -65,14 +66,28 @@ public class UserServiceTests {
     }
 
     //Login
-    /*@Test
+    @Test
     @DisplayName("Login success")
-    public void succeedLogin() {
+    public void succeedLogin() throws DataAccessException {
         register(registerRequest);
 
         LoginRequest loginRequest = new LoginRequest(username, password);
         LoginResult result = login(loginRequest);
-    }*/
+
+        AuthData ad = new AuthData(result.username(), result.authToken());
+
+        Assertions.assertTrue(adao.verifyAuth(ad));
+    }
+
+    @Test
+    @DisplayName("Login failure (wrong password)")
+    public void failLogin() throws DataAccessException {
+        register(registerRequest);
+
+        Assertions.assertThrows(WrongPasswordException.class, () -> {
+            LoginRequest loginRequest = new LoginRequest(username, "wrong password");
+        });
+    }
 
     //Logout
 }

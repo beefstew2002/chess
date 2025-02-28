@@ -36,9 +36,11 @@ public class UserService {
         }
         return result;
     }
-    public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
+    public static LoginResult login(LoginRequest loginRequest) throws DataAccessException {
 
         LoginResult result = new LoginResult("","");
+
+
 
         return result;
     }
