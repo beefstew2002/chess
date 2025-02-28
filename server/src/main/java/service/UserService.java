@@ -65,6 +65,19 @@ public class UserService {
 
         return result;
     }
-    //public void logout(LogoutRequest logoutRequest) {}
+    public static LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException{
+        String authToken = logoutRequest.authToken();
+        //Verify the authToken
+        if (!adao.verifyAuth(authToken)) {
+            throw new DataAccessException("You're trying to log out but either you never logged in or this user doesn't exist");
+        }
+
+        //Delete the authToken from the auth data
+        adao.deleteAuth(authToken);
+
+        //Create result
+        LogoutResult logoutResult = new LogoutResult();
+        return logoutResult;
+    }
     //public JoinResult join(JoinRequest joinRequest) {}
 }

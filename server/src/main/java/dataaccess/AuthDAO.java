@@ -16,7 +16,11 @@ public class AuthDAO implements DAInterface{
         storeAuthData(authData);
     }
 
-    public boolean verifyAuth(AuthData authToken) {
+    public boolean verifyAuth(String authToken) {
         return checkAuthData(authToken);
+    }
+
+    public void deleteAuth(String authToken) throws DataAccessException {
+        deleteAuthData(authToken);
     }
 }

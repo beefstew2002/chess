@@ -4,6 +4,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 public interface DAInterface {
@@ -54,11 +55,26 @@ public interface DAInterface {
     default void storeAuthData(AuthData ad) {
         authData.add(ad);
     }
-    default void deleteAuthData(AuthData ad) {
-        authData.remove(ad);
+    default void deleteAuthData(String authToken) throws DataAccessException {
+        int i = authData.size()-1;
+        while (i >= 0) {
+            if (authData.get(i).authToken().equals(authToken)) {
+                authData.remove(i);
+                return;
+            }
+            i--;
+        }
+        throw new DataAccessException("Could not find auth data to delete");
     }
-    default boolean checkAuthData(AuthData ad) {
-        return authData.contains(ad);
+    default boolean checkAuthData(String authToken) {
+        int i = 0;
+        while (i < authData.size()) {
+            if (authData.get(i).authToken().equals(authToken)) {
+                return true;
+            }
+            i++;
+        }
+        return false;
     }
     default void storeGameData(GameData gd) {
         gameData.add(gd);

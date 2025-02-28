@@ -1,8 +1,6 @@
 package service;
 
 //Imports
-import static service.UserService.login;
-import static service.UserService.register;
 
 import dataaccess.*;
 import model.AuthData;
@@ -11,9 +9,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.RequestResult.LoginRequest;
-import service.RequestResult.LoginResult;
-import service.RequestResult.RegisterRequest;
+import service.RequestResult.*;
+
+import static service.UserService.*;
 
 public class UserServiceTests {
 
@@ -74,9 +72,7 @@ public class UserServiceTests {
         LoginRequest loginRequest = new LoginRequest(username, password);
         LoginResult result = login(loginRequest);
 
-        AuthData ad = new AuthData(result.username(), result.authToken());
-
-        Assertions.assertTrue(adao.verifyAuth(ad));
+        Assertions.assertTrue(adao.verifyAuth(result.authToken()));
     }
 
     @Test
@@ -91,4 +87,32 @@ public class UserServiceTests {
     }
 
     //Logout
+
+    //Successful logout
+    @Test
+    @DisplayName("Logout success")
+    public void succeedLogout() throws DataAccessException {
+        register(registerRequest);
+
+        LoginRequest loginRequest = new LoginRequest(username, password);
+        LoginResult result = login(loginRequest);
+
+        LogoutRequest logoutRequest = new LogoutRequest(result.authToken());
+        LogoutResult logoutResult = logout(logoutRequest);
+
+        Assertions.assertFalse(adao.verifyAuth(result.authToken()));
+    }
+
+    //Failed logout: user not logged in
+    @Test
+    @DisplayName("Logout failure")
+    public void failLogout() throws DataAccessException {
+        register(registerRequest);
+
+        LogoutRequest logoutRequest = new LogoutRequest("a random string pretending to be an auth token");
+
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            LogoutResult logoutResult = logout(logoutRequest);
+        });
+    }
 }
