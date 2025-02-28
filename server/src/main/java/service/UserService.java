@@ -1,20 +1,22 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
-import dataaccess.UsernameAlreadyTaken;
+import dataaccess.*;
 import model.AuthData;
+import model.UserData;
 import service.RequestResult.*;
 
 import java.util.UUID;
 
 public class UserService {
+
+    private static UserDAO udao = new UserDAO();
+    private static AuthDAO adao = new AuthDAO();
+
     public static RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
         String username = registerRequest.username();
         String password = registerRequest.password();
         String email = registerRequest.email();
 
-        UserDAO udao = new UserDAO();
 
         RegisterResult result = null;
         try {
@@ -28,6 +30,7 @@ public class UserService {
             //Create auth
             String auth = UUID.randomUUID().toString();
             AuthData ad = new AuthData(username, auth);
+            adao.createAuth(ad);
 
             result = new RegisterResult(username, auth);
 
@@ -37,9 +40,27 @@ public class UserService {
         return result;
     }
     public static LoginResult login(LoginRequest loginRequest) throws DataAccessException {
+        //Get the user data
+        String username = loginRequest.username();
+        String password = loginRequest.password();
 
-        LoginResult result = new LoginResult("","");
+        LoginResult result = null;
 
+        //Verify the user exists
+        UserData realUser = udao.getUser(username);
+        if (realUser == null) {
+            throw new DataAccessException("username doesn't exist");
+        }
+        //Verify the password is correct
+        if (!realUser.password().equals(password)) {
+            throw new WrongPasswordException("wrong password LOL");
+        }
+        //Create auth and add
+        String auth = UUID.randomUUID().toString();
+        AuthData ad = new AuthData(username, auth);
+        adao.createAuth(ad);
+        //Create result
+        result = new LoginResult(username, ad.authToken());
 
 
         return result;

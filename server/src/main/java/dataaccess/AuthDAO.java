@@ -13,12 +13,7 @@ public class AuthDAO implements DAInterface{
     //deleteAuth
 
     public void createAuth(AuthData authData) throws DataAccessException {
-
         storeAuthData(authData);
-
-
-
-        //return new RegisterResult(username, at);
     }
 
     public boolean verifyAuth(AuthData authToken) {

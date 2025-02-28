@@ -86,6 +86,7 @@ public class UserServiceTests {
 
         Assertions.assertThrows(WrongPasswordException.class, () -> {
             LoginRequest loginRequest = new LoginRequest(username, "wrong password");
+            LoginResult result = login(loginRequest);
         });
     }
 
