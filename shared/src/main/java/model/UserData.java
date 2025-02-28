@@ -1,4 +1,4 @@
-package mode1;
+package model;
 
 public record UserData(String username, String password, String email) {
 }

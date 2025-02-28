@@ -1,4 +1,4 @@
-package mode1;
+package model;
 
 import chess.ChessGame;
 
