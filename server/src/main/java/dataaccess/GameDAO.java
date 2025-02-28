@@ -7,4 +7,7 @@ public class GameDAO implements DAInterface{
     //listGames
     //updateGame
     //clear
+    public boolean isEmpty() {
+        return isGameDataEmpty();
+    }
 }

@@ -23,4 +23,8 @@ public class AuthDAO implements DAInterface{
     public void deleteAuth(String authToken) throws DataAccessException {
         deleteAuthData(authToken);
     }
+
+    public boolean isEmpty() {
+        return isAuthDataEmpty();
+    }
 }

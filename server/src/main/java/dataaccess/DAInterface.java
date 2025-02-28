@@ -107,4 +107,13 @@ public interface DAInterface {
         gameData.clear();
         authData.clear();
     }
+    default boolean isUserDataEmpty() {
+        return userData.isEmpty();
+    }
+    default boolean isAuthDataEmpty() {
+        return authData.isEmpty();
+    }
+    default boolean isGameDataEmpty() {
+        return gameData.isEmpty();
+    }
 }
