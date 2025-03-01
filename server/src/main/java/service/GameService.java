@@ -6,7 +6,6 @@ import dataaccess.UserDAO;
 import service.RequestResult.*;
 
 public class GameService {
-    //public static CreateResult create(CreateRequest createRequest) {}
     //public static ListResult list(ListRequest listRequest) {}
     public static ClearResult clear(ClearRequest clearRequest) {
         UserDAO udao = new UserDAO();
@@ -18,5 +17,10 @@ public class GameService {
         gdao.clearData();
 
         return new ClearResult();
+    }
+
+    public static CreateResult create(CreateRequest createRequest) {
+
+        return null;
     }
 }
