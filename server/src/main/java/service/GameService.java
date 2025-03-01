@@ -4,7 +4,10 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
+import model.GameData;
 import service.RequestResult.*;
+
+import java.util.ArrayList;
 
 public class GameService {
     private static UserDAO udao = new UserDAO();
@@ -44,7 +47,16 @@ public class GameService {
     }
 
     public static ListResult list(ListRequest listRequest) throws DataAccessException {
+        String authToken = listRequest.authToken();
 
-        return new ListResult(null);
+        //Check that authToken is verified, otherwise throw exception
+        if (!adao.verifyAuth(authToken)) {
+            throw new DataAccessException("You're not authorized");
+        }
+
+        //Create a new listResult with the list data
+        ArrayList<GameData> games = gdao.listGames();
+
+        return new ListResult(games);
     }
 }

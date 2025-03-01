@@ -93,7 +93,7 @@ public class GameServiceTests {
     //List games failure
     @Test
     @DisplayName("List fails: bad auth")
-    public void litGamesBadAuth() throws DataAccessException {
+    public void listGamesBadAuth() throws DataAccessException {
         //Create a game
         create(createRequest);
 
