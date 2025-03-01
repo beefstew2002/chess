@@ -91,5 +91,17 @@ public class GameServiceTests {
     }
 
     //List games failure
+    @Test
+    @DisplayName("List fails: bad auth")
+    public void litGamesBadAuth() throws DataAccessException {
+        //Create a game
+        create(createRequest);
+
+        //Attempt to run list with a bad auth token
+        ListRequest listRequest = new ListRequest("this is not a good auth token");
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            ListResult listResult = list(listRequest);
+        });
+    }
 
 }
