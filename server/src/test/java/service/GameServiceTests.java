@@ -10,6 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import service.RequestResult.*;
+
+import java.util.ArrayList;
+
 import static service.GameService.*;
 import static service.UserService.*;
 
@@ -21,6 +24,7 @@ public class GameServiceTests {
     String gameName;
     CreateRequest createRequest;
     GameDAO gdao;
+    AuthDAO adao;
     String authToken;
 
     @BeforeEach
@@ -30,6 +34,7 @@ public class GameServiceTests {
         email = "thegobdoctor@spelljam.net";
         gameName = "The Goblin Campaign";
         gdao = new GameDAO();
+        adao = new AuthDAO();
 
         //Log in the user
         RegisterResult registerResult = register(new RegisterRequest(username, password, email));
@@ -49,7 +54,7 @@ public class GameServiceTests {
     }
 
     @Test
-    @DisplayName("Trying to create another game with the same name")
+    @DisplayName("Duplicate name")
     public void createGameFailure() throws DataAccessException{
         //Create the first game
         CreateResult createResult1 = create(createRequest);
@@ -63,5 +68,28 @@ public class GameServiceTests {
             create(new CreateRequest(gameName, authToken2));
         });
     }
+
+    //List games success
+    @Test
+    @DisplayName("List game succeeds")
+    public void listGamesSuccess() throws DataAccessException {
+        //Create three games
+        create(createRequest);
+        create(new CreateRequest("Raan's Cult vs the Chosen of Ilvash", authToken));
+        create(new CreateRequest("The Great Papyrus and sans.", authToken));
+
+        //Get the list of games straight from GameDAO
+        ArrayList<GameData> gamesList = gdao.listGames();
+
+        //Get the list of games from the service
+        ListRequest listRequest = new ListRequest(authToken);
+        ListResult listResult = list(listRequest);
+
+        //Check to make sure they're the same
+        Assertions.assertEquals(gamesList, listResult.gameList());
+
+    }
+
+    //List games failure
 
 }

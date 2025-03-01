@@ -42,4 +42,9 @@ public class GameService {
         CreateResult createResult = new CreateResult(gameId);
         return createResult;
     }
+
+    public static ListResult list(ListRequest listRequest) throws DataAccessException {
+
+        return new ListResult(null);
+    }
 }

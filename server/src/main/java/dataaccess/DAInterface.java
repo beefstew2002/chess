@@ -37,6 +37,10 @@ public interface DAInterface {
     ArrayList<GameData> gameData = new ArrayList<>();
     ArrayList<AuthData> authData = new ArrayList<>();
 
+    default ArrayList<UserData> getUserData() {return userData;}
+    default ArrayList<GameData> getGameData() {return gameData;}
+    default ArrayList<AuthData> getAuthData() {return authData;}
+
     default void storeUserData(UserData ud) {
         userData.add(ud);
     }

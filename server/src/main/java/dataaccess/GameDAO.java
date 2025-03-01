@@ -3,6 +3,8 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
+import java.util.ArrayList;
+
 public class GameDAO implements DAInterface{
     //Methods this will need:
     //createGame
@@ -20,6 +22,10 @@ public class GameDAO implements DAInterface{
         storeGameData(gameData);
 
         return gameId;
+    }
+
+    public ArrayList<GameData> listGames() {
+        return getGameData();
     }
 
     public boolean isEmpty() {
