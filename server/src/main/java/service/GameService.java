@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.GameData;
+import model.GameMetaData;
 import service.RequestResult.*;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class GameService {
         }
 
         //Create a new listResult with the list data
-        ArrayList<GameData> games = gdao.listGames();
+        ArrayList<GameMetaData> games = gdao.listGames();
 
         return new ListResult(games);
     }

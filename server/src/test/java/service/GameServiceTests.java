@@ -3,6 +3,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.GameMetaData;
 import model.UserData;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
@@ -79,7 +80,7 @@ public class GameServiceTests {
         create(new CreateRequest("The Great Papyrus and sans.", authToken));
 
         //Get the list of games straight from GameDAO
-        ArrayList<GameData> gamesList = gdao.listGames();
+        ArrayList<GameMetaData> gamesList = gdao.listGames();
 
         //Get the list of games from the service
         ListRequest listRequest = new ListRequest(authToken);
