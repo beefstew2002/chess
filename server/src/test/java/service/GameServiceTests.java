@@ -48,4 +48,20 @@ public class GameServiceTests {
         Assertions.assertFalse(gdao.isEmpty());
     }
 
+    @Test
+    @DisplayName("Trying to create another game with the same name")
+    public void createGameFailure() throws DataAccessException{
+        //Create the first game
+        CreateResult createResult1 = create(createRequest);
+
+        //For testing integrity, a different user with a different token will create the second game
+        RegisterResult registerResult2 = register(new RegisterRequest("Janet", "theGoblather", "dndj@spelljam.net"));
+        String authToken2 = registerResult2.authToken();
+
+        //Attempting to create a second game with the same name should fail
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            create(new CreateRequest(gameName, authToken2));
+        });
+    }
+
 }
