@@ -9,15 +9,12 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.util.Set;
-
 import static service.UserService.logout;
 
 public class LogoutHandler implements Route {
     public Object handle(Request req, Response res) {
         var serializer = new Gson();
 
-        //Maybe I should write a function to extract the authToken from the headers
         LogoutRequest logoutRequest = new LogoutRequest(req.headers("authorization"));
 
         try {
