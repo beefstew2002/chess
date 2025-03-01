@@ -40,7 +40,7 @@ public class GameServiceTests {
 
     @Test
     @DisplayName("Create game success")
-    public void createGameSuccess() {
+    public void createGameSuccess() throws DataAccessException{
         //Attempt to create the game
         CreateResult createResult = create(createRequest);
 

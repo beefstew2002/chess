@@ -91,16 +91,25 @@ public interface DAInterface {
         }
     }
     default GameData getGameData(String gameName) {
-        boolean searching = true;
-        int i=0;
-        while (searching) {
+        for (int i=0; i< gameData.size(); i++) {
             if (gameData.get(i).gameName().equals(gameName)) {
-                searching = false;
                 return gameData.get(i);
             }
             i++;
         }
         return null;
+    }
+    default boolean hasGameData(String gameName) {
+        for (int i=0; i<gameData.size(); i++ ) {
+            if (gameData.get(i).gameName().equals(gameName)) {
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+    default int getGameId() {
+        return gameData.size()+1;
     }
     default void clearData() {
         userData.clear();

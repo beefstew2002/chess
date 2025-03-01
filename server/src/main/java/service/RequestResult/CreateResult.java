@@ -1,4 +1,4 @@
 package service.RequestResult;
 
-public record CreateResult(String gameName, String authToken) {
+public record CreateResult(int gameId) {
 }
