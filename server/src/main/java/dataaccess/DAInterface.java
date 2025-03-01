@@ -56,6 +56,14 @@ public interface DAInterface {
         }
         return null;
     }
+    default GameData getGameData(int gameID) throws DataAccessException{
+        for (int i=0; i<gameData.size(); i++) {
+            if (gameData.get(i).gameID() == gameID) {
+                return gameData.get(i);
+            }
+        }
+        throw new DataAccessException("Game doesn't exist");
+    }
     default void storeAuthData(AuthData ad) {
         authData.add(ad);
     }

@@ -105,4 +105,22 @@ public class GameServiceTests {
         });
     }
 
+    //Join game success
+    @Test
+    @DisplayName("Join game succeeds")
+    public void joinGameSucceeds() throws DataAccessException {
+        //Create a game
+        CreateResult createResult = create(createRequest);
+
+        //Attempt to join a user to the list
+        JoinRequest joinRequest = new JoinRequest(createResult.gameId(), "white", username);
+
+        //Check if the user is in the game now
+        GameData game = gdao.getGame(createResult.gameId());
+
+        Assertions.assertEquals(username, game.whiteUsername());
+    }
+
+    //Join game failure
+
 }

@@ -25,6 +25,10 @@ public class GameDAO implements DAInterface{
         return gameId;
     }
 
+    public GameData getGame(int gameID) throws DataAccessException {
+        return getGameData(gameID);
+    }
+
     public ArrayList<GameMetaData> listGames() {
         ArrayList<GameData> gameData = getGameData();
         ArrayList<GameMetaData> gameList = new ArrayList<>();
