@@ -6,6 +6,7 @@ import model.GameMetaData;
 import service.RequestResult.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GameService {
     private static UserDAO udao = new UserDAO();
@@ -67,6 +68,11 @@ public class GameService {
         //Get the game you're looking for
         GameData game = gdao.getGame(gameID);
         GameData newGame = null;
+
+        String[] colors = {"WHITE", "BLACK", "WHITE/BLACK"};
+        if (!Arrays.asList(colors).contains(color)) {
+            throw new BadRequestException("That's not a color");
+        }
 
         if ((color.equals("WHITE/BLACK") || color.equals("WHITE")) && game.whiteUsername() == null) {
             newGame = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());

@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import dataaccess.BadRequestException;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
 import service.RequestResult.CreateRequest;
@@ -47,6 +48,10 @@ public class JoinHandler implements Route {
         catch (UnauthorizedException e) {
             res.status(401);
             res.body(serializer.toJson(new FailureResult("Error: unauthorized")));
+        }
+        catch (BadRequestException e) {
+            res.status(400);
+            res.body(serializer.toJson(new FailureResult("Error: bad request (wrong color)")));
         }
         catch (DataAccessException e) {
             res.status(403);
