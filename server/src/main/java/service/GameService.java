@@ -63,10 +63,25 @@ public class GameService {
     public static JoinResult join(JoinRequest joinRequest) throws DataAccessException {
         String authToken = joinRequest.authToken();
         String username = adao.getAuth(authToken).username(); //This throws an error if unauthorized
+        String color = joinRequest.playerColor();
+        int gameID = joinRequest.gameID();
 
-        gdao.joinUserToGame(joinRequest.gameID(), username, joinRequest.playerColor());
 
-        JoinResult joinResult = new JoinResult(joinRequest.playerColor(), joinRequest.gameID());
+        //Get the game you're looking for
+        GameData game = gdao.getGame(gameID);
+        GameData newGame = null;
+
+        if ((color.equals("WHITE/BLACK") || color.equals("WHITE")) && game.whiteUsername() == null) {
+            newGame = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+            gdao.updateGame(newGame);
+        } else if ((color.equals("WHITE/BLACK") || color.equals("BLACK")) && game.blackUsername() == null) {
+            newGame = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+            gdao.updateGame(newGame);
+        } else {
+            throw new DataAccessException("This game is full");
+        }
+
+        JoinResult joinResult = new JoinResult();
 
         return joinResult;
 

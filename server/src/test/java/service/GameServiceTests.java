@@ -113,7 +113,7 @@ public class GameServiceTests {
         CreateResult createResult = create(createRequest);
 
         //Attempt to join a user to the list
-        JoinRequest joinRequest = new JoinRequest(createResult.gameId(), "white", authToken);
+        JoinRequest joinRequest = new JoinRequest(createResult.gameId(), "WHITE", authToken);
         join(joinRequest);
 
         //Check if the user is in the game now
@@ -127,7 +127,7 @@ public class GameServiceTests {
     @DisplayName("Game doesn't exist")
     public void gameDoesntExist() throws DataAccessException {
         Assertions.assertThrows(DataAccessException.class, () -> {
-            JoinRequest joinRequest = new JoinRequest(1, "white", username);
+            JoinRequest joinRequest = new JoinRequest(1, "WHITE", username);
             join(joinRequest);
         });
     }

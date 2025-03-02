@@ -25,10 +25,6 @@ public class GameDAO implements DAInterface{
         return gameId;
     }
 
-    public void joinUserToGame(int gameID, String username, String playerColor) throws DataAccessException {
-        addUserToGame(gameID, username, playerColor);
-    }
-
     public GameData getGame(int gameID) throws DataAccessException {
         return getGameData(gameID);
     }
@@ -41,6 +37,10 @@ public class GameDAO implements DAInterface{
             gameList.add(new GameMetaData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName()));
         }
         return gameList;
+    }
+
+    public void updateGame(GameData gd) {
+        updateGameData(gd);
     }
 
     public boolean isEmpty() {
