@@ -37,6 +37,10 @@ public class LoginHandler implements Route {
             res.body(serializer.toJson(new FailureResult("Error: unauthorized")));
         }
         catch (DataAccessException e) {
+            res.status(401);
+            res.body(serializer.toJson(new FailureResult("Error: username doesn't exist")));
+        }
+        catch (Exception e) {
             res.status(500);
             res.body(serializer.toJson(new FailureResult(e.toString())));
         }

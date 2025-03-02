@@ -19,6 +19,10 @@ public class UserService {
 
 
         RegisterResult result = null;
+
+        if (password == null) {
+            throw new DataAccessException("no password");
+        }
         try {
             if (udao.getUserData(username) != null) {
                 throw new UsernameAlreadyTaken("Error: already taken");
