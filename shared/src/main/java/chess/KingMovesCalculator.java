@@ -35,62 +35,6 @@ public class KingMovesCalculator {
         }
 
         //Castling options
-        /*
-        //Check if it's in the right spot
-        boolean rightSpot = false;
-        int row = switch (color) {
-            case WHITE -> 1;
-            case BLACK -> 8;
-        };
-        rightSpot = startPosition.equals(new ChessPosition(row,5));
-
-        //Check if the king is in check
-        ChessGame testGame = new ChessGame();
-        testGame.setBoard(board);
-        testGame.experimental = true;
-        if (!hasMoved && rightSpot && !checkingForCheck) {
-            boolean isRookThere = false;
-            boolean hasRookMoved = true;
-            boolean areSpacesEmpty = false;
-            boolean areSpacesSafe = true;
-            //Kingside
-             //Check if the rook is there and hasn't moved
-            ChessPiece pieceThere = board.getPiece(new ChessPosition(row,8));
-            if (pieceThere != null && pieceThere.getPieceType().equals(ChessPiece.PieceType.ROOK) && pieceThere.getTeamColor() == color) {
-                isRookThere = true;
-            }
-            if (!pieceThere.hasPieceMoved()) {
-                hasRookMoved = false;
-            }
-             //Check if the spaces are empty
-            if (board.getPiece(new ChessPosition(row, 6)) == null && board.getPiece(new ChessPosition(row, 7)) == null) {
-                areSpacesEmpty = true;
-            }
-             //Check if the spaces are safe
-            testGame = new ChessGame();
-            testGame.setBoard(board);
-            testGame.experimental=true;
-            try {
-                testGame.makeMove(new ChessMove(startPosition, new ChessPosition(row, 6)));
-                testGame.setBoard(board);
-                testGame.makeMove(new ChessMove(startPosition, new ChessPosition(row, 6)));
-            } catch (InvalidMoveException e) {
-                areSpacesSafe = false;
-            }
-             //Add move to the list of possible moves
-            if (isRookThere && !hasRookMoved && areSpacesEmpty && areSpacesSafe) {
-                moves.add(new ChessMove(startPosition, new ChessPosition(row,7)));
-            }
-
-            //Queenside
-             //Check if the rook is there and hasn't moved
-             //Check if the spaces are empty
-             //Check if the spaces are safe
-             //Add move to the list of possible moves
-        }
-        */ //First attempt at making castling work
-
-        //Second attempt
         //Start with always making going to castle an option
         //Then narrow down when it's possible to do that
         if (!hasMoved) {

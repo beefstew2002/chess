@@ -92,6 +92,37 @@ public class ChessGame {
         return true;
     }
 
+    //Helper function to check for check for castling moves
+    private void avoidCheckInCastling(ChessPiece piece, ChessMove move) throws InvalidMoveException {
+        //Checking for check with castle moves
+        int row = switch(piece.getTeamColor()) {case TeamColor.WHITE -> 1; case TeamColor.BLACK -> 8;};
+        if (move.getCastleMove() != ChessMove.CastleMoveType.none) {
+            if (isInCheck(whoseTurn)) {
+                throw new InvalidMoveException("You can't castle when you're in check!");
+            }
+            ChessGame testGame = this.clone();
+            testGame.experimental = true;
+            //Kingside
+            if (move.getCastleMove() == ChessMove.CastleMoveType.kingside) {
+                try {
+                    testGame.makeMove(new ChessMove(move.getStartPosition(), new ChessPosition(row,6)));
+                    testGame.makeMove(new ChessMove(new ChessPosition(row,6), new ChessPosition(row,7)));
+                } catch (InvalidMoveException e) {
+                    throw new InvalidMoveException("You can't castle through checked squares!");
+                }
+            }
+            //Queenside
+            else if (move.getCastleMove() == ChessMove.CastleMoveType.queenside) {
+                try {
+                    testGame.makeMove(new ChessMove(move.getStartPosition(), new ChessPosition(row, 4)));
+                    testGame.makeMove(new ChessMove(new ChessPosition(row, 4), new ChessPosition(row, 3)));
+                } catch (InvalidMoveException e) {
+                    throw new InvalidMoveException("You can't castle through checked squares!");
+                }
+            }
+        }
+    }
+
     /**
      * Makes a move in a chess game
      *
@@ -132,33 +163,9 @@ public class ChessGame {
             throw new InvalidMoveException("That's not your piece!");
         }
 
-        //Checking for check with castle moves
-        int row = switch(piece.getTeamColor()) {case WHITE -> 1; case TeamColor.BLACK -> 8;};
-        if (move.getCastleMove() != ChessMove.CastleMoveType.none) {
-            if (isInCheck(whoseTurn)) {
-                throw new InvalidMoveException("You can't castle when you're in check!");
-            }
-            ChessGame testGame = this.clone();
-            testGame.experimental = true;
-            //Kingside
-            if (move.getCastleMove() == ChessMove.CastleMoveType.kingside) {
-                try {
-                    testGame.makeMove(new ChessMove(move.getStartPosition(), new ChessPosition(row,6)));
-                    testGame.makeMove(new ChessMove(new ChessPosition(row,6), new ChessPosition(row,7)));
-                } catch (InvalidMoveException e) {
-                    throw new InvalidMoveException("You can't castle through checked squares!");
-                }
-            }
-            //Queenside
-            else if (move.getCastleMove() == ChessMove.CastleMoveType.queenside) {
-                try {
-                    testGame.makeMove(new ChessMove(move.getStartPosition(), new ChessPosition(row, 4)));
-                    testGame.makeMove(new ChessMove(new ChessPosition(row, 4), new ChessPosition(row, 3)));
-                } catch (InvalidMoveException e) {
-                    throw new InvalidMoveException("You can't castle through checked squares!");
-                }
-            }
-        }
+        avoidCheckInCastling(piece, move);
+        int row = switch(piece.getTeamColor()) {case TeamColor.WHITE -> 1; case TeamColor.BLACK -> 8;};
+
         //Try the move!
         if (move.getPromotionPiece() != null) {
             theBoard.addPiece(move.getEndPosition(), new ChessPiece(whoseTurn,move.getPromotionPiece()));//Move and promote
