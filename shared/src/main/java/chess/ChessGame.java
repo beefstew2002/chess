@@ -64,11 +64,11 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //Get the set of possible moves for the piece
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
-        ArrayList<ChessMove> all_moves = (ArrayList<ChessMove>) theBoard.getPiece(startPosition).pieceMoves(theBoard, startPosition);
+        ArrayList<ChessMove> allMoves = (ArrayList<ChessMove>) theBoard.getPiece(startPosition).pieceMoves(theBoard, startPosition);
         //Check to see if any of the moves leave the king in danger
-        for (int i=0; i< all_moves.size(); i++) {
-            if (isMoveValid(all_moves.get(i))) {
-                moves.add(all_moves.get(i));
+        for (int i=0; i< allMoves.size(); i++) {
+            if (isMoveValid(allMoves.get(i))) {
+                moves.add(allMoves.get(i));
             }
         }
 
@@ -123,8 +123,8 @@ public class ChessGame {
             move.setEnPassant(true);
         }
         //Shortcut: find out what piece is at that position, and make sure the move you're attempting is in the list
-        ArrayList<ChessMove> possible_moves = (ArrayList<ChessMove>) piece.pieceMoves(theBoard, move.getStartPosition());
-        if (!possible_moves.contains(move)) {
+        ArrayList<ChessMove> possibleMoves = (ArrayList<ChessMove>) piece.pieceMoves(theBoard, move.getStartPosition());
+        if (!possibleMoves.contains(move)) {
             throw new InvalidMoveException("Nice try, that piece can't do that!"); //This messes with en passant
         }
         //Check if the piece is on the team of whose turn it is
