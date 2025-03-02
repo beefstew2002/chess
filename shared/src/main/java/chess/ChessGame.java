@@ -333,14 +333,18 @@ public class ChessGame {
         ChessPosition targetPosition = new ChessPosition(1,1);
         ChessPiece targetPiece;
         ArrayList<ChessMove> moves;
-        for (int x=1; x<=8; x++) { for (int y=1; y<=8; y++) {
+
+        SquaresIterator si = new SquaresIterator(theBoard);
+        ChessPosition sq;
+        while (si.hasNext()) {
+            sq = si.next();
             //Look at the current square
-            targetPosition.setRow(y);
-            targetPosition.setCol(x);
+            targetPosition.setRow(sq.getRow());
+            targetPosition.setCol(sq.getColumn());
             targetPiece = theBoard.getPiece(targetPosition);
             if (targetPiece != null && (targetPiece.getTeamColor() == enemyColor)) {
                 moves = (ArrayList<ChessMove>) targetPiece.pieceMoves(theBoard, targetPosition);
-                for (int i=0; i<moves.size(); i++) {
+                for (int i = 0; i < moves.size(); i++) {
                     //If any pieces of the opposite team can move to this square
                     //Return true
                     if (moves.get(i).getEndPosition().equals(position)) {
@@ -348,8 +352,8 @@ public class ChessGame {
                     }
                 }
             }
+        }
 
-        }}
         return false;
     }
 }
