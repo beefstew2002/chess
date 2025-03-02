@@ -1,4 +1,4 @@
 package service.RequestResult;
 
-public record CreateResult(int gameId) {
+public record CreateResult(int gameID) {
 }

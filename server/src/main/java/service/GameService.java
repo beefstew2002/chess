@@ -36,10 +36,10 @@ public class GameService {
         }
 
         //Create a new game and add it to the database
-        int gameId = gdao.createGame(gameName);
+        int gameID = gdao.createGame(gameName);
 
         //Create the CreateResult and return it
-        CreateResult createResult = new CreateResult(gameId);
+        CreateResult createResult = new CreateResult(gameID);
         return createResult;
     }
 
