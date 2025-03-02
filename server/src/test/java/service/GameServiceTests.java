@@ -128,6 +128,7 @@ public class GameServiceTests {
     public void gameDoesntExist() throws DataAccessException {
         Assertions.assertThrows(DataAccessException.class, () -> {
             JoinRequest joinRequest = new JoinRequest(1, "white", username);
+            join(joinRequest);
         });
     }
 }
