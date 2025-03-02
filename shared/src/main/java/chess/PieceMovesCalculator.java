@@ -22,7 +22,9 @@ public interface PieceMovesCalculator {
         return false;
     }
 
-    public static ArrayList<ChessMove> sendRay(ChessPosition startPosition, ChessBoard board, ChessGame.TeamColor color, ChessPosition direction) { //Check the squares stepping in a particular direction
+    //Check the squares stepping in a particular direction
+    public static ArrayList<ChessMove> sendRay(
+            ChessPosition startPosition, ChessBoard board, ChessGame.TeamColor color, ChessPosition direction) {
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
 
         var pos = startPosition.copy();

@@ -11,7 +11,7 @@ public class RookMovesCalculator implements PieceMovesCalculator {
     private final ChessBoard board;
     private final ChessGame.TeamColor color;
 
-    public RookMovesCalculator(/*ChessPiece bishop, */ChessPosition startPosition, ChessBoard board, ChessGame.TeamColor color) {
+    public RookMovesCalculator(ChessPosition startPosition, ChessBoard board, ChessGame.TeamColor color) {
         this.startPosition = startPosition;
         this.board = board;
         this.color=color;

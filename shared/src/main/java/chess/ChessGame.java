@@ -149,8 +149,11 @@ public class ChessGame {
             }
         }
         //Identify en passants and mark them for later
-        if (move.getStartPosition().getColumn() != move.getEndPosition().getColumn() && theBoard.getPiece(move.getEndPosition()) == null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            //Sets a move as "en passant" if it ends in a different column than it starts, the target square is empty, and the piece is a pawn
+        if (move.getStartPosition().getColumn() != move.getEndPosition().getColumn() &&
+                theBoard.getPiece(move.getEndPosition()) == null &&
+                piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            //Sets a move as "en passant" if it ends in a different column than it starts,
+            // the target square is empty, and the piece is a pawn
             move.setEnPassant(true);
         }
         //Shortcut: find out what piece is at that position, and make sure the move you're attempting is in the list
@@ -230,7 +233,6 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         //Create a helper function isInDanger to check if any given piece is in danger
-        //throw new RuntimeException("Not implemented");
 
         //Identify the king of the team
         //ChessPiece king;

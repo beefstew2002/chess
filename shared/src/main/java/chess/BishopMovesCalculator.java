@@ -6,13 +6,11 @@ import static chess.ChessPiece.PieceType;
 
 public class BishopMovesCalculator implements PieceMovesCalculator {
 
-    //private final ChessPiece bishop;
     private final ChessPosition startPosition;
     private final ChessBoard board;
     private final ChessGame.TeamColor color;
 
-    public BishopMovesCalculator(/*ChessPiece bishop, */ChessPosition startPosition, ChessBoard board, ChessGame.TeamColor color) {
-        //this.bishop = bishop;
+    public BishopMovesCalculator(ChessPosition startPosition, ChessBoard board, ChessGame.TeamColor color) {
         this.startPosition = startPosition;
         this.board = board;
         this.color=color;

@@ -16,7 +16,12 @@ public class PawnMovesCalculator {
     private ArrayList<ChessMove> jumpsAndPromotions(ChessPosition position) {
         ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
         boolean promote = false;
-        ChessPiece.PieceType[] promotables = {ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.ROOK};
+        ChessPiece.PieceType[] promotables = {
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.ROOK
+        };
         if ((color == ChessGame.TeamColor.BLACK && position.getRow()==1)||(color == ChessGame.TeamColor.WHITE && position.getRow()==8)) {
             promote = true;
         }
