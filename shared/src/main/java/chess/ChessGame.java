@@ -137,8 +137,8 @@ public class ChessGame {
         ChessPiece piece = theBoard.getPiece(move.getStartPosition());
         //Identify castling moves and mark them for later
         if (piece.getPieceType() == ChessPiece.PieceType.KING && move.getStartPosition().getColumn() == 5) {
-            if (move.getEndPosition().getColumn() == 7) move.setCastleMove(ChessMove.CastleMoveType.kingside);
-            else if (move.getEndPosition().getColumn() == 3) move.setCastleMove(ChessMove.CastleMoveType.queenside);
+            if (move.getEndPosition().getColumn() == 7) {move.setCastleMove(ChessMove.CastleMoveType.kingside);}
+            else if (move.getEndPosition().getColumn() == 3) {move.setCastleMove(ChessMove.CastleMoveType.queenside);}
         }
         //Identify big pawn jumps and mark them for later
         int pawnStartRow = switch(piece.getTeamColor()) { case WHITE -> 2; case BLACK -> 7;};
@@ -221,8 +221,8 @@ public class ChessGame {
         }
 
         //Update whose turn it is
-        if (whoseTurn == TeamColor.WHITE) whoseTurn = TeamColor.BLACK;
-        else whoseTurn = TeamColor.WHITE;
+        if (whoseTurn == TeamColor.WHITE) {whoseTurn = TeamColor.BLACK;}
+        else {whoseTurn = TeamColor.WHITE;}
     }
 
     /**
@@ -326,8 +326,8 @@ public class ChessGame {
         //Identify the color of the piece at the position
         TeamColor myTeam = theBoard.getPiece(position).getTeamColor();
         TeamColor enemyColor;
-        if (myTeam.equals(TeamColor.WHITE)) enemyColor = TeamColor.BLACK;
-        else enemyColor = TeamColor.WHITE;
+        if (myTeam.equals(TeamColor.WHITE)) {enemyColor = TeamColor.BLACK;}
+        else {enemyColor = TeamColor.WHITE;}
 
         //Loop through each of the pieces on the opposite team
         ChessPosition targetPosition = new ChessPosition(1,1);

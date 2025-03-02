@@ -148,7 +148,7 @@ public class ChessBoard implements Iterable<ChessPosition>{
 
         while (it.hasNext()) {
             pos = it.next();
-            if (getPiece(pos) != null) newb.addPiece(pos, getPiece(pos).clone());
+            if (getPiece(pos) != null) {newb.addPiece(pos, getPiece(pos).clone());}
         }
 
         return newb;
