@@ -21,7 +21,7 @@ public class ListHandler implements Route {
             ListResult listResult = list(listRequest);
             res.body(serializer.toJson(listResult));
         } catch (DataAccessException e) {
-            res.status(400);
+            res.status(401);
             res.body(serializer.toJson(new FailureResult("Error: unauthorized")));
             return res.body();
         } catch (Exception e) {
