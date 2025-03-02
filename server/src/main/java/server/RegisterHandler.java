@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import dataaccess.DataAccessException;
 import dataaccess.UsernameAlreadyTaken;
-import service.RequestResult.RegisterRequest;
-import service.RequestResult.RegisterResult;
+import service.reqres.RegisterRequest;
+import service.reqres.RegisterResult;
 import service.UserService;
-import service.RequestResult.FailureResult;
+import service.reqres.FailureResult;
 
 import spark.Request;
 import spark.Response;

@@ -1,4 +1,4 @@
-package service.RequestResult;
+package service.reqres;
 
 public record ListRequest(String authToken) {
 }

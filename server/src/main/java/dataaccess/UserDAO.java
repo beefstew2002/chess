@@ -1,10 +1,5 @@
 package dataaccess;
-import model.AuthData;
-import model.GameData;
 import model.UserData;
-import service.RequestResult.RegisterResult;
-
-import java.util.UUID;
 
 public class UserDAO implements DAInterface{
     //Methods this will require:

@@ -2,9 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import service.RequestResult.FailureResult;
-import service.RequestResult.LogoutRequest;
-import service.RequestResult.LogoutResult;
+import service.reqres.FailureResult;
+import service.reqres.LogoutRequest;
+import service.reqres.LogoutResult;
 import spark.Request;
 import spark.Response;
 import spark.Route;

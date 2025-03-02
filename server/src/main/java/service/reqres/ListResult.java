@@ -1,4 +1,4 @@
-package service.RequestResult;
+package service.reqres;
 
 import model.GameMetaData;
 

@@ -6,9 +6,9 @@ import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
 import spark.Request;
 import spark.Response;
-import service.RequestResult.FailureResult;
-import service.RequestResult.CreateRequest;
-import service.RequestResult.CreateResult;
+import service.reqres.FailureResult;
+import service.reqres.CreateRequest;
+import service.reqres.CreateResult;
 import spark.Route;
 
 import java.util.Properties;

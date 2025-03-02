@@ -6,16 +6,14 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.GameData;
-import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.RequestResult.ClearRequest;
-import service.RequestResult.ClearResult;
+import service.reqres.ClearRequest;
+import service.reqres.ClearResult;
 
 import static service.GameService.clear;
-import static service.UserService.*;
 
 public class ClearServiceTests {
 

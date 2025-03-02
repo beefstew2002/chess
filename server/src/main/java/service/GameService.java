@@ -3,7 +3,7 @@ package service;
 import dataaccess.*;
 import model.GameData;
 import model.GameMetaData;
-import service.RequestResult.*;
+import service.reqres.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

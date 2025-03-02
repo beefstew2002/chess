@@ -1,9 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
-import service.RequestResult.ClearRequest;
-import service.RequestResult.ClearResult;
-import service.RequestResult.FailureResult;
+import service.reqres.ClearRequest;
+import service.reqres.ClearResult;
+import service.reqres.FailureResult;
 import spark.Request;
 import spark.Response;
 import spark.Route;
