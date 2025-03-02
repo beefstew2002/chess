@@ -22,6 +22,7 @@ public class GameServiceTests {
     String email;
     String gameName;
     CreateRequest createRequest;
+    UserDAO udao;
     GameDAO gdao;
     AuthDAO adao;
     String authToken;
@@ -32,8 +33,13 @@ public class GameServiceTests {
         password = "JanetIsADifferentPersonIMeanTheSamePersonIMean";
         email = "thegobdoctor@spelljam.net";
         gameName = "The Goblin Campaign";
+        udao = new UserDAO();
         gdao = new GameDAO();
         adao = new AuthDAO();
+
+        udao.clearData();
+        gdao.clearData();
+        adao.clearData();
 
         //Log in the user
         RegisterResult registerResult = register(new RegisterRequest(username, password, email));

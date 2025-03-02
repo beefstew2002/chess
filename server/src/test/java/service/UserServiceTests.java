@@ -28,6 +28,7 @@ public class UserServiceTests {
     RegisterRequest registerRequest;
     UserDAO udao;
     AuthDAO adao;
+    GameDAO gdao;
     UserData userData;
 
     @BeforeEach
@@ -39,6 +40,11 @@ public class UserServiceTests {
         userData = new UserData(username, password, email);
         udao = new UserDAO();
         adao = new AuthDAO();
+        gdao = new GameDAO();
+
+        udao.clearData();
+        adao.clearData();
+        gdao.clearData();
     }
 
     //Register
