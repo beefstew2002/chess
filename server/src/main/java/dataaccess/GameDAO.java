@@ -32,8 +32,7 @@ public class GameDAO implements DAInterface{
     public ArrayList<GameMetaData> listGames() {
         ArrayList<GameData> gameData = getGameData();
         ArrayList<GameMetaData> gameList = new ArrayList<>();
-        for (int i=0; i<gameData.size(); i++) {
-            GameData game = gameData.get(i);
+        for (GameData game : gameData) {
             gameList.add(new GameMetaData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName()));
         }
         return gameList;

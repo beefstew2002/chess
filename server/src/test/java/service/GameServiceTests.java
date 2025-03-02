@@ -2,9 +2,7 @@ package service;
 
 
 import dataaccess.*;
-import model.AuthData;
 import model.GameMetaData;
-import model.UserData;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +46,7 @@ public class GameServiceTests {
     @DisplayName("Create game success")
     public void createGameSuccess() throws DataAccessException{
         //Attempt to create the game
-        CreateResult createResult = create(createRequest);
+        create(createRequest);
 
         //Check to see if a game was created
         Assertions.assertFalse(gdao.isEmpty());
@@ -58,16 +56,16 @@ public class GameServiceTests {
     @DisplayName("Duplicate name")
     public void createGameFailure() throws DataAccessException{
         //Create the first game
-        CreateResult createResult1 = create(createRequest);
+        create(createRequest);
 
         //For testing integrity, a different user with a different token will create the second game
         RegisterResult registerResult2 = register(new RegisterRequest("Janet", "theGoblather", "dndj@spelljam.net"));
         String authToken2 = registerResult2.authToken();
 
         //Attempting to create a second game with the same name should fail
-        Assertions.assertThrows(DataAccessException.class, () -> {
-            create(new CreateRequest(gameName, authToken2));
-        });
+        Assertions.assertThrows(DataAccessException.class, () ->
+            create(new CreateRequest(gameName, authToken2))
+        );
     }
 
     //List games success
@@ -101,7 +99,7 @@ public class GameServiceTests {
         //Attempt to run list with a bad auth token
         ListRequest listRequest = new ListRequest("this is not a good auth token");
         Assertions.assertThrows(DataAccessException.class, () -> {
-            ListResult listResult = list(listRequest);
+            list(listRequest);
         });
     }
 
@@ -125,7 +123,7 @@ public class GameServiceTests {
     //Join game failure
     @Test
     @DisplayName("Game doesn't exist")
-    public void gameDoesntExist() throws DataAccessException {
+    public void gameDoesntExist() {
         Assertions.assertThrows(DataAccessException.class, () -> {
             JoinRequest joinRequest = new JoinRequest(1, "WHITE", username);
             join(joinRequest);

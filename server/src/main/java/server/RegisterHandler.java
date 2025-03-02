@@ -6,11 +6,9 @@ import dataaccess.DataAccessException;
 import dataaccess.UsernameAlreadyTaken;
 import service.RequestResult.RegisterRequest;
 import service.RequestResult.RegisterResult;
-import dataaccess.UserDAO;
 import service.UserService;
 import service.RequestResult.FailureResult;
 
-import spark.Spark;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -20,7 +18,7 @@ public class RegisterHandler implements Route{
     public Object handle(Request req, Response res) {
 
         var serializer = new Gson();
-        RegisterRequest registerRequest = null;
+        RegisterRequest registerRequest;
 
         try {
             registerRequest = serializer.fromJson(req.body(), RegisterRequest.class);

@@ -20,10 +20,10 @@ public class ClearHandler implements Route {
             res.status(200);
             res.body(serializer.toJson(clearResult));
         }
-        
+
         catch (Exception e) {
             res.status(500);
-            res.body(serializer.toJson(new FailureResult("Error: "+e.toString())));
+            res.body(serializer.toJson(new FailureResult("Error: "+e)));
         }
 
         return res.body();

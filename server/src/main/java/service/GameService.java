@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameService {
-    private static UserDAO udao = new UserDAO();
-    private static AuthDAO adao = new AuthDAO();
-    private static GameDAO gdao = new GameDAO();
+    private static final UserDAO udao = new UserDAO();
+    private static final AuthDAO adao = new AuthDAO();
+    private static final GameDAO gdao = new GameDAO();
 
     public static ClearResult clear(ClearRequest clearRequest) {
 
@@ -40,8 +40,7 @@ public class GameService {
         int gameID = gdao.createGame(gameName);
 
         //Create the CreateResult and return it
-        CreateResult createResult = new CreateResult(gameID);
-        return createResult;
+        return new CreateResult(gameID);
     }
 
     public static ListResult list(ListRequest listRequest) throws DataAccessException {
@@ -67,7 +66,7 @@ public class GameService {
 
         //Get the game you're looking for
         GameData game = gdao.getGame(gameID);
-        GameData newGame = null;
+        GameData newGame;
 
         String[] colors = {"WHITE", "BLACK", "WHITE/BLACK"};
         if (!Arrays.asList(colors).contains(color)) {
@@ -84,9 +83,7 @@ public class GameService {
             throw new DataAccessException("This game is full");
         }
 
-        JoinResult joinResult = new JoinResult();
-
-        return joinResult;
+        return new JoinResult();
 
     }
 }

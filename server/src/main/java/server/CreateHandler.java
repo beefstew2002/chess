@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
-import service.RequestResult.LogoutRequest;
 import spark.Request;
 import spark.Response;
 import service.RequestResult.FailureResult;
@@ -20,8 +19,7 @@ public class CreateHandler implements Route {
     public Object handle(Request req, Response res) {
         var serializer = new Gson();
 
-        CreateRequest createRequest = null;
-        String authToken = req.headers("authorization");
+        CreateRequest createRequest;
 
 
         try {
@@ -50,7 +48,7 @@ public class CreateHandler implements Route {
         }
         catch (DataAccessException e) {
             res.status(500);
-            res.body(serializer.toJson(new FailureResult("Error: exception" + e.toString())));
+            res.body(serializer.toJson(new FailureResult("Error: exception" + e)));
         }
 
         return res.body();

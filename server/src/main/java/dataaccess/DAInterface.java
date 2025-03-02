@@ -4,34 +4,9 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 public interface DAInterface {
-    //In order to abstract from your services where data is actually being stored,
-    //you must create a Java interface that hides all of the implementation details
-    //for accessing and retrieving data. In this phase you will create an implementation
-    //of your data access interface that stores your server's data in main memory (RAM)
-    //using standard data structures (maps, sets, lists). In the next phase you
-    //will create an implementation of the data access interface that uses an external
-    //SQL database.
-
-    //So for Phase 3 purposes, it's just going to store everything internally
-    //In an interface? How is everything going to access it?
-
-    //ok ok ok ok ok
-    //What this needs to store:
-    //Set of UserData objects
-    //Set of AuthData objects
-    //Set of GameData objects
-
-    //Methods this needs:
-    //store user data
-    //store auth data
-    //store game data
-    //get that data
-    //update game data
-    //clear all data
 
     ArrayList<UserData> userData = new ArrayList<>();
     ArrayList<GameData> gameData = new ArrayList<>();
@@ -45,29 +20,25 @@ public interface DAInterface {
         userData.add(ud);
     }
     default UserData getUserData(String username) {
-        boolean searching = true;
-        int i = 0;
-        while (searching && i < userData.size()) {
+        for (int i=0; i< userData.size(); i++) {
             if (userData.get(i).username().equals(username)) {
-                searching = false;
                 return userData.get(i);
             }
-            i++;
         }
         return null;
     }
     default AuthData getAuthData(String authToken) throws DataAccessException{
-        for (int i=0; i<authData.size(); i++) {
-            if (authData.get(i).authToken().equals(authToken)) {
-                return authData.get(i);
+        for (AuthData ad : authData) {
+            if (ad.authToken().equals(authToken)) {
+                return ad;
             }
         }
         throw new UnauthorizedException("Auth doesn't exist");
     }
     default GameData getGameData(int gameID) throws DataAccessException{
-        for (int i=0; i<gameData.size(); i++) {
-            if (gameData.get(i).gameID() == gameID) {
-                return gameData.get(i);
+        for (GameData gd : gameData) {
+            if (gd.gameID() == gameID) {
+                return gd;
             }
         }
         throw new DataAccessException("Game doesn't exist");

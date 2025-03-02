@@ -20,15 +20,15 @@ public class LogoutHandler implements Route {
         try {
             LogoutResult logoutResult = logout(logoutRequest);
             res.status(200);
-            res.body("");
+            res.body(serializer.toJson(logoutResult));
         } catch (DataAccessException e) {
             //Maybe I'll build a bunch of custom exceptions for this but I don't really feel like it rn, this should work for now
             res.status(401);
-            res.body(serializer.toJson(new FailureResult("Error: Logout failure. Exception: "+e.toString())));
+            res.body(serializer.toJson(new FailureResult("Error: Logout failure. Exception: "+e)));
             return res.body();
         } catch (Exception e) {
             res.status(500);
-            res.body(serializer.toJson(new FailureResult("Error: Logout failure. Exception: "+e.toString())));
+            res.body(serializer.toJson(new FailureResult("Error: Logout failure. Exception: "+e)));
             return res.body();
         }
 

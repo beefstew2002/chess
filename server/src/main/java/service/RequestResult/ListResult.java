@@ -1,6 +1,5 @@
 package service.RequestResult;
 
-import model.GameData;
 import model.GameMetaData;
 
 import java.util.ArrayList;

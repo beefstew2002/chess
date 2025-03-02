@@ -16,7 +16,7 @@ public class LoginHandler implements Route {
     public Object handle(Request req, Response res) {
         var serializer = new Gson();
 
-        LoginRequest loginRequest = null;
+        LoginRequest loginRequest;
 
         try {
             loginRequest = serializer.fromJson(req.body(), LoginRequest.class);

@@ -26,7 +26,7 @@ public class ListHandler implements Route {
             return res.body();
         } catch (Exception e) {
             res.status(500);
-            res.body(serializer.toJson(new FailureResult("Error: " + e.toString())));
+            res.body(serializer.toJson(new FailureResult("Error: " + e)));
         }
 
         return res.body();

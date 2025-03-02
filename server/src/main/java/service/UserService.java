@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public class UserService {
 
-    private static UserDAO udao = new UserDAO();
-    private static AuthDAO adao = new AuthDAO();
+    private static final UserDAO udao = new UserDAO();
+    private static final AuthDAO adao = new AuthDAO();
 
     public static RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
         String username = registerRequest.username();
@@ -18,29 +18,26 @@ public class UserService {
         String email = registerRequest.email();
 
 
-        RegisterResult result = null;
+        RegisterResult result;
 
         if (password == null) {
             throw new DataAccessException("no password");
         }
-        try {
-            if (udao.getUserData(username) != null) {
-                throw new UsernameAlreadyTaken("Error: already taken");
-            }
-
-            //Create user
-            udao.createUser(username, password, email);
-
-            //Create auth
-            String auth = UUID.randomUUID().toString();
-            AuthData ad = new AuthData(username, auth);
-            adao.createAuth(ad);
-
-            result = new RegisterResult(username, auth);
-
-        } catch (DataAccessException e) {
-            throw e;
+        if (udao.getUserData(username) != null) {
+            throw new UsernameAlreadyTaken("Error: already taken");
         }
+
+        //Create user
+        udao.createUser(username, password, email);
+
+        //Create auth
+        String auth = UUID.randomUUID().toString();
+        AuthData ad = new AuthData(username, auth);
+        adao.createAuth(ad);
+
+        result = new RegisterResult(username, auth);
+
+
         return result;
     }
     public static LoginResult login(LoginRequest loginRequest) throws DataAccessException {
@@ -48,7 +45,7 @@ public class UserService {
         String username = loginRequest.username();
         String password = loginRequest.password();
 
-        LoginResult result = null;
+        LoginResult result;
 
         //Verify the user exists
         UserData realUser = udao.getUser(username);
@@ -80,8 +77,7 @@ public class UserService {
         adao.deleteAuth(authToken);
 
         //Create result
-        LogoutResult logoutResult = new LogoutResult();
-        return logoutResult;
+        return new LogoutResult();
     }
     //public JoinResult join(JoinRequest joinRequest) {}
 }
