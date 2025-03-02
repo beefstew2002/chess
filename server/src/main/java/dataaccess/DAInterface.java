@@ -8,37 +8,37 @@ import java.util.ArrayList;
 
 public interface DAInterface {
 
-    ArrayList<UserData> userData = new ArrayList<>();
-    ArrayList<GameData> gameData = new ArrayList<>();
-    ArrayList<AuthData> authData = new ArrayList<>();
+    ArrayList<UserData> USER_DATA = new ArrayList<>();
+    ArrayList<GameData> GAME_DATA = new ArrayList<>();
+    ArrayList<AuthData> AUTH_DATA = new ArrayList<>();
 
     default ArrayList<UserData> getUserData() {
-        return userData;
+        return USER_DATA;
     }
 
     default ArrayList<GameData> getGameData() {
-        return gameData;
+        return GAME_DATA;
     }
 
     default ArrayList<AuthData> getAuthData() {
-        return authData;
+        return AUTH_DATA;
     }
 
     default void storeUserData(UserData ud) {
-        userData.add(ud);
+        USER_DATA.add(ud);
     }
 
     default UserData getUserData(String username) {
-        for (int i = 0; i < userData.size(); i++) {
-            if (userData.get(i).username().equals(username)) {
-                return userData.get(i);
+        for (int i = 0; i < USER_DATA.size(); i++) {
+            if (USER_DATA.get(i).username().equals(username)) {
+                return USER_DATA.get(i);
             }
         }
         return null;
     }
 
     default AuthData getAuthData(String authToken) throws DataAccessException {
-        for (AuthData ad : authData) {
+        for (AuthData ad : AUTH_DATA) {
             if (ad.authToken().equals(authToken)) {
                 return ad;
             }
@@ -47,7 +47,7 @@ public interface DAInterface {
     }
 
     default GameData getGameData(int gameID) throws DataAccessException {
-        for (GameData gd : gameData) {
+        for (GameData gd : GAME_DATA) {
             if (gd.gameID() == gameID) {
                 return gd;
             }
@@ -56,14 +56,14 @@ public interface DAInterface {
     }
 
     default void storeAuthData(AuthData ad) {
-        authData.add(ad);
+        AUTH_DATA.add(ad);
     }
 
     default void deleteAuthData(String authToken) throws DataAccessException {
-        int i = authData.size() - 1;
+        int i = AUTH_DATA.size() - 1;
         while (i >= 0) {
-            if (authData.get(i).authToken().equals(authToken)) {
-                authData.remove(i);
+            if (AUTH_DATA.get(i).authToken().equals(authToken)) {
+                AUTH_DATA.remove(i);
                 return;
             }
             i--;
@@ -73,8 +73,8 @@ public interface DAInterface {
 
     default boolean checkAuthData(String authToken) {
         int i = 0;
-        while (i < authData.size()) {
-            if (authData.get(i).authToken().equals(authToken)) {
+        while (i < AUTH_DATA.size()) {
+            if (AUTH_DATA.get(i).authToken().equals(authToken)) {
                 return true;
             }
             i++;
@@ -83,15 +83,15 @@ public interface DAInterface {
     }
 
     default void storeGameData(GameData gd) {
-        gameData.add(gd);
+        GAME_DATA.add(gd);
     }
 
     default void updateGameData(GameData gd) {
         boolean searching = true;
         int i = 0;
         while (searching) {
-            if (gameData.get(i).gameName().equals(gd.gameName())) {
-                gameData.set(i, gd);
+            if (GAME_DATA.get(i).gameName().equals(gd.gameName())) {
+                GAME_DATA.set(i, gd);
                 searching = false;
             }
             i++;
@@ -99,8 +99,8 @@ public interface DAInterface {
     }
 
     default boolean hasGameData(String gameName) {
-        for (int i = 0; i < gameData.size(); i++) {
-            if (gameData.get(i).gameName().equals(gameName)) {
+        for (int i = 0; i < GAME_DATA.size(); i++) {
+            if (GAME_DATA.get(i).gameName().equals(gameName)) {
                 return true;
             }
             i++;
@@ -109,24 +109,24 @@ public interface DAInterface {
     }
 
     default int getGameId() {
-        return gameData.size() + 1;
+        return GAME_DATA.size() + 1;
     }
 
     default void clearData() {
-        userData.clear();
-        gameData.clear();
-        authData.clear();
+        USER_DATA.clear();
+        GAME_DATA.clear();
+        AUTH_DATA.clear();
     }
 
     default boolean isUserDataEmpty() {
-        return userData.isEmpty();
+        return USER_DATA.isEmpty();
     }
 
     default boolean isAuthDataEmpty() {
-        return authData.isEmpty();
+        return AUTH_DATA.isEmpty();
     }
 
     default boolean isGameDataEmpty() {
-        return gameData.isEmpty();
+        return GAME_DATA.isEmpty();
     }
 }

@@ -109,7 +109,7 @@ public class KingMovesCalculator {
             maybeRook = board.getPiece(row, 8);
             if (maybeRook != null && maybeRook.getPieceType() == ChessPiece.PieceType.ROOK && !maybeRook.hasPieceMoved() && noPiecesInTheWay) {
                 ChessMove ck = new ChessMove(startPosition, new ChessPosition(row, 7));
-                ck.setCastleMove(ChessMove.castleMoveType.kingside);
+                ck.setCastleMove(ChessMove.CastleMoveType.kingside);
                 moves.add(ck); // Kingside
             }
             //Queenside
@@ -122,7 +122,7 @@ public class KingMovesCalculator {
             maybeRook = board.getPiece(row, 1);
             if (maybeRook != null && maybeRook.getPieceType() == ChessPiece.PieceType.ROOK && !maybeRook.hasPieceMoved() && noPiecesInTheWay) {
                 ChessMove cq = new ChessMove(startPosition, new ChessPosition(row, 3));
-                cq.setCastleMove(ChessMove.castleMoveType.queenside);
+                cq.setCastleMove(ChessMove.CastleMoveType.queenside);
                 moves.add(cq); // Queenside
             }
         }

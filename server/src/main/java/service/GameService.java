@@ -9,15 +9,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameService {
-    private static final UserDAO udao = new UserDAO();
-    private static final AuthDAO adao = new AuthDAO();
-    private static final GameDAO gdao = new GameDAO();
+    private static final UserDAO USER_DAO = new UserDAO();
+    private static final AuthDAO AUTH_DAO = new AuthDAO();
+    private static final GameDAO GAME_DAO = new GameDAO();
 
     public static ClearResult clear(ClearRequest clearRequest) {
 
-        udao.clearData();
-        adao.clearData();
-        gdao.clearData();
+        USER_DAO.clearData();
+        AUTH_DAO.clearData();
+        GAME_DAO.clearData();
 
         return new ClearResult();
     }
@@ -27,17 +27,17 @@ public class GameService {
         String authToken = createRequest.authToken();
 
         //Check that authToken is verified, otherwise throw exception
-        if (!adao.verifyAuth(authToken)) {
+        if (!AUTH_DAO.verifyAuth(authToken)) {
             throw new UnauthorizedException("You're not authorized");
         }
 
         //Check that gameName isn't taken, otherwise throw exception
-        if (gdao.hasGame(gameName)) {
+        if (GAME_DAO.hasGame(gameName)) {
             throw new DataAccessException("That game already exists");
         }
 
         //Create a new game and add it to the database
-        int gameID = gdao.createGame(gameName);
+        int gameID = GAME_DAO.createGame(gameName);
 
         //Create the CreateResult and return it
         return new CreateResult(gameID);
@@ -47,25 +47,25 @@ public class GameService {
         String authToken = listRequest.authToken();
 
         //Check that authToken is verified, otherwise throw exception
-        if (!adao.verifyAuth(authToken)) {
+        if (!AUTH_DAO.verifyAuth(authToken)) {
             throw new DataAccessException("You're not authorized");
         }
 
         //Create a new listResult with the list data
-        ArrayList<GameMetaData> games = gdao.listGames();
+        ArrayList<GameMetaData> games = GAME_DAO.listGames();
 
         return new ListResult(games);
     }
 
     public static JoinResult join(JoinRequest joinRequest) throws DataAccessException {
         String authToken = joinRequest.authToken();
-        String username = adao.getAuth(authToken).username(); //This throws an error if unauthorized
+        String username = AUTH_DAO.getAuth(authToken).username(); //This throws an error if unauthorized
         String color = joinRequest.playerColor();
         int gameID = joinRequest.gameID();
 
 
         //Get the game you're looking for
-        GameData game = gdao.getGame(gameID);
+        GameData game = GAME_DAO.getGame(gameID);
         GameData newGame;
 
         String[] colors = {"WHITE", "BLACK", "WHITE/BLACK"};
@@ -75,10 +75,10 @@ public class GameService {
 
         if ((color.equals("WHITE/BLACK") || color.equals("WHITE")) && game.whiteUsername() == null) {
             newGame = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
-            gdao.updateGame(newGame);
+            GAME_DAO.updateGame(newGame);
         } else if ((color.equals("WHITE/BLACK") || color.equals("BLACK")) && game.blackUsername() == null) {
             newGame = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
-            gdao.updateGame(newGame);
+            GAME_DAO.updateGame(newGame);
         } else {
             throw new DataAccessException("This game is full");
         }

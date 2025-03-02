@@ -1,6 +1,5 @@
 package chess;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -107,8 +106,8 @@ public class ChessGame {
         ChessPiece piece = theBoard.getPiece(move.getStartPosition());
         //Identify castling moves and mark them for later
         if (piece.getPieceType() == ChessPiece.PieceType.KING && move.getStartPosition().getColumn() == 5) {
-            if (move.getEndPosition().getColumn() == 7) move.setCastleMove(ChessMove.castleMoveType.kingside);
-            else if (move.getEndPosition().getColumn() == 3) move.setCastleMove(ChessMove.castleMoveType.queenside);
+            if (move.getEndPosition().getColumn() == 7) move.setCastleMove(ChessMove.CastleMoveType.kingside);
+            else if (move.getEndPosition().getColumn() == 3) move.setCastleMove(ChessMove.CastleMoveType.queenside);
         }
         //Identify big pawn jumps and mark them for later
         int pawnStartRow = switch(piece.getTeamColor()) { case WHITE -> 2; case BLACK -> 7;};
@@ -135,14 +134,14 @@ public class ChessGame {
 
         //Checking for check with castle moves
         int row = switch(piece.getTeamColor()) {case WHITE -> 1; case TeamColor.BLACK -> 8;};
-        if (move.getCastleMove() != ChessMove.castleMoveType.none) {
+        if (move.getCastleMove() != ChessMove.CastleMoveType.none) {
             if (isInCheck(whoseTurn)) {
                 throw new InvalidMoveException("You can't castle when you're in check!");
             }
             ChessGame testGame = this.clone();
             testGame.experimental = true;
             //Kingside
-            if (move.getCastleMove() == ChessMove.castleMoveType.kingside) {
+            if (move.getCastleMove() == ChessMove.CastleMoveType.kingside) {
                 try {
                     testGame.makeMove(new ChessMove(move.getStartPosition(), new ChessPosition(row,6)));
                     testGame.makeMove(new ChessMove(new ChessPosition(row,6), new ChessPosition(row,7)));
@@ -151,7 +150,7 @@ public class ChessGame {
                 }
             }
             //Queenside
-            else if (move.getCastleMove() == ChessMove.castleMoveType.queenside) {
+            else if (move.getCastleMove() == ChessMove.CastleMoveType.queenside) {
                 try {
                     testGame.makeMove(new ChessMove(move.getStartPosition(), new ChessPosition(row, 4)));
                     testGame.makeMove(new ChessMove(new ChessPosition(row, 4), new ChessPosition(row, 3)));
@@ -169,13 +168,13 @@ public class ChessGame {
         theBoard.addPiece(move.getStartPosition(), null);//Erase what was there before
         theBoard.getPiece(move.getEndPosition()).itMoved();//Set that that piece moved, important for castling
         //Other castling details: moving the rooks
-        if (move.getCastleMove() != ChessMove.castleMoveType.none) {
+        if (move.getCastleMove() != ChessMove.CastleMoveType.none) {
             //Oh, maybe THIS is where it checks the validity of the move, yeah!
-            if (move.getCastleMove() == ChessMove.castleMoveType.kingside) {
+            if (move.getCastleMove() == ChessMove.CastleMoveType.kingside) {
                 theBoard.addPiece(new ChessPosition(row, 6), theBoard.getPiece(new ChessPosition(row, 8))); //Add the rook to the side
                 theBoard.addPiece(new ChessPosition(row, 8), null); //Erase it from where it was before
             }
-            else if (move.getCastleMove() == ChessMove.castleMoveType.queenside) {
+            else if (move.getCastleMove() == ChessMove.CastleMoveType.queenside) {
                 theBoard.addPiece(new ChessPosition(row, 4), theBoard.getPiece(new ChessPosition(row, 1))); //Add the rook to the side
                 theBoard.addPiece(new ChessPosition(row, 1), null); //Erase it from where it was before
             }

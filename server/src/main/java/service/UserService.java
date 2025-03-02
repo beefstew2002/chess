@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public class UserService {
 
-    private static final UserDAO udao = new UserDAO();
-    private static final AuthDAO adao = new AuthDAO();
+    private static final UserDAO USER_DAO = new UserDAO();
+    private static final AuthDAO AUTH_DAO = new AuthDAO();
 
     public static RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
         String username = registerRequest.username();
@@ -23,17 +23,17 @@ public class UserService {
         if (password == null) {
             throw new DataAccessException("no password");
         }
-        if (udao.getUserData(username) != null) {
+        if (USER_DAO.getUserData(username) != null) {
             throw new UsernameAlreadyTaken("Error: already taken");
         }
 
         //Create user
-        udao.createUser(username, password, email);
+        USER_DAO.createUser(username, password, email);
 
         //Create auth
         String auth = UUID.randomUUID().toString();
         AuthData ad = new AuthData(username, auth);
-        adao.createAuth(ad);
+        AUTH_DAO.createAuth(ad);
 
         result = new RegisterResult(username, auth);
 
@@ -49,7 +49,7 @@ public class UserService {
         LoginResult result;
 
         //Verify the user exists
-        UserData realUser = udao.getUser(username);
+        UserData realUser = USER_DAO.getUser(username);
         if (realUser == null) {
             throw new DataAccessException("username doesn't exist");
         }
@@ -60,7 +60,7 @@ public class UserService {
         //Create auth and add
         String auth = UUID.randomUUID().toString();
         AuthData ad = new AuthData(username, auth);
-        adao.createAuth(ad);
+        AUTH_DAO.createAuth(ad);
         //Create result
         result = new LoginResult(username, ad.authToken());
 
@@ -71,12 +71,12 @@ public class UserService {
     public static LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException {
         String authToken = logoutRequest.authToken();
         //Verify the authToken
-        if (!adao.verifyAuth(authToken)) {
+        if (!AUTH_DAO.verifyAuth(authToken)) {
             throw new DataAccessException("You're trying to log out but either you never logged in or this user doesn't exist");
         }
 
         //Delete the authToken from the auth data
-        adao.deleteAuth(authToken);
+        AUTH_DAO.deleteAuth(authToken);
 
         //Create result
         return new LogoutResult();

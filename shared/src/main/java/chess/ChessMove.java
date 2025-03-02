@@ -11,8 +11,8 @@ public class ChessMove {
     private final ChessPosition startPosition;
     private final ChessPosition endPosition;
     private final ChessPiece.PieceType promotionPiece;
-    public static enum castleMoveType {none,kingside,queenside};
-    private castleMoveType castleMove;
+    public static enum CastleMoveType {none,kingside,queenside};
+    private CastleMoveType castleMove;
     private boolean bigPawnJump;
     private boolean enPassant;
 
@@ -21,14 +21,14 @@ public class ChessMove {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.promotionPiece = promotionPiece;
-        this.castleMove = castleMoveType.none;
+        this.castleMove = CastleMoveType.none;
         this.bigPawnJump = false;
     }
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.promotionPiece = null;
-        this.castleMove = castleMoveType.none;
+        this.castleMove = CastleMoveType.none;
     }
 
     /**
@@ -59,10 +59,10 @@ public class ChessMove {
     }
 
     //Getting and setting whether or not it's a castle move
-    public void setCastleMove(castleMoveType c) {
+    public void setCastleMove(CastleMoveType c) {
         this.castleMove = c;
     }
-    public castleMoveType getCastleMove() {
+    public CastleMoveType getCastleMove() {
         return castleMove;
     }
 
