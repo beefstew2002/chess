@@ -40,6 +40,7 @@ public class UserService {
 
         return result;
     }
+
     public static LoginResult login(LoginRequest loginRequest) throws DataAccessException {
         //Get the user data
         String username = loginRequest.username();
@@ -66,7 +67,8 @@ public class UserService {
 
         return result;
     }
-    public static LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException{
+
+    public static LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException {
         String authToken = logoutRequest.authToken();
         //Verify the authToken
         if (!adao.verifyAuth(authToken)) {
@@ -79,5 +81,5 @@ public class UserService {
         //Create result
         return new LogoutResult();
     }
-    //public JoinResult join(JoinRequest joinRequest) {}
+
 }

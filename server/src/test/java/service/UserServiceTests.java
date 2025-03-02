@@ -3,7 +3,6 @@ package service;
 //Imports
 
 import dataaccess.*;
-import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +65,7 @@ public class UserServiceTests {
         register(registerRequest);
         registerRequest = new RegisterRequest(username, "myBrotherIsTheCoolest", "sans@metta.ton");
 
-        Assertions.assertThrows(UsernameAlreadyTaken.class, () -> {register(registerRequest);});
+        Assertions.assertThrows(UsernameAlreadyTaken.class, () -> register(registerRequest));
     }
 
     //Login
@@ -88,7 +87,7 @@ public class UserServiceTests {
 
         Assertions.assertThrows(WrongPasswordException.class, () -> {
             LoginRequest loginRequest = new LoginRequest(username, "wrong password");
-            LoginResult result = login(loginRequest);
+            login(loginRequest);
         });
     }
 
@@ -104,7 +103,7 @@ public class UserServiceTests {
         LoginResult result = login(loginRequest);
 
         LogoutRequest logoutRequest = new LogoutRequest(result.authToken());
-        LogoutResult logoutResult = logout(logoutRequest);
+        logout(logoutRequest);
 
         Assertions.assertFalse(adao.verifyAuth(result.authToken()));
     }
@@ -118,7 +117,7 @@ public class UserServiceTests {
         LogoutRequest logoutRequest = new LogoutRequest("a random string pretending to be an auth token");
 
         Assertions.assertThrows(DataAccessException.class, () -> {
-            LogoutResult logoutResult = logout(logoutRequest);
+            logout(logoutRequest);
         });
     }
 }

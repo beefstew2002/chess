@@ -23,10 +23,6 @@ public class CreateHandler implements Route {
 
 
         try {
-            //It got a little tricky here to extract the data I needed, since the authToken is
-            //in the header and the gameName is in the body. I feel like there was supposed
-            //to be a better way to do this. Does the createRequest even need the authToken?
-            //Couldn't the handler be the one to check the authorization?
             Properties data = serializer.fromJson(req.body(), Properties.class);
             String gameName = data.getProperty("gameName");
             createRequest = new CreateRequest(gameName, req.headers("authorization"));

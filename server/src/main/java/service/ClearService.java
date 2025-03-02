@@ -1,4 +1,5 @@
 package service;
+
 import service.RequestResult.*;
 
 public class ClearService {

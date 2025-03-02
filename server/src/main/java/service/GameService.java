@@ -15,8 +15,8 @@ public class GameService {
 
     public static ClearResult clear(ClearRequest clearRequest) {
 
-        udao.clearData(); //The way it's written right now, a single clearData will erase everything
-        adao.clearData(); //Including the others in case that changes later, I might rewrite the class
+        udao.clearData();
+        adao.clearData();
         gdao.clearData();
 
         return new ClearResult();

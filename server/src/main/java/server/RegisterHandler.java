@@ -13,7 +13,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class RegisterHandler implements Route{
+public class RegisterHandler implements Route {
 
     public Object handle(Request req, Response res) {
 
@@ -32,16 +32,13 @@ public class RegisterHandler implements Route{
             res.status(200);
             RegisterResult regResult = UserService.register(registerRequest);
             res.body(serializer.toJson(regResult));
-        }
-        catch (UsernameAlreadyTaken e) {
+        } catch (UsernameAlreadyTaken e) {
             res.status(403);
             res.body(serializer.toJson(new FailureResult("Error: already taken")));
-        }
-        catch (DataAccessException e) {
+        } catch (DataAccessException e) {
             res.status(400);
             res.body(serializer.toJson(new FailureResult("Error: bad request")));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             res.status(500);
             res.body(serializer.toJson(new FailureResult(e.toString())));
         }
