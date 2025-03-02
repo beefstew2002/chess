@@ -38,6 +38,11 @@ public class JoinHandler implements Route {
             res.body(serializer.toJson(new FailureResult("Error: bad request")));
             return res.body();
         }
+        catch (NumberFormatException e) {
+            res.status(400);
+            res.body(serializer.toJson(new FailureResult("Error: bad request")));
+            return res.body();
+        }
 
         try {
             JoinResult joinResult = join(joinRequest);
