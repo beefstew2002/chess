@@ -52,6 +52,47 @@ public class ChessBoard implements Iterable<ChessPosition>{
         return getPiece(new ChessPosition(x,y));
     }
 
+    private void addTeam(ChessGame.TeamColor color) {
+        int left = 1;
+        int right = 8;
+        ChessPiece.PieceType type;
+
+        int row = 0;
+        int pawnRow = 0;
+
+        if (color == ChessGame.TeamColor.WHITE) {
+            row = 1;
+            pawnRow = 2;
+        }
+        else if (color == ChessGame.TeamColor.BLACK) {
+            row = 8;
+            pawnRow = 7;
+        }
+
+        //Rooks
+        type = ChessPiece.PieceType.ROOK;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Knights
+        type = ChessPiece.PieceType.KNIGHT;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Bishops
+        type = ChessPiece.PieceType.BISHOP;
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
+        left++;right--;
+        //Royalty
+        addPiece(new ChessPosition(row,left), new ChessPiece(color, ChessPiece.PieceType.QUEEN));
+        addPiece(new ChessPosition(row,right), new ChessPiece(color, ChessPiece.PieceType.KING));
+        //Pawns
+        for (int i=1; i<=8; i++) {
+            addPiece(new ChessPosition(pawnRow, i), new ChessPiece(color, ChessPiece.PieceType.PAWN));
+        }
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
@@ -66,59 +107,8 @@ public class ChessBoard implements Iterable<ChessPosition>{
         int right = 8;
         //addPiece(new ChessPosition(0,0), new ChessPiece(color, type));
 
-        //White pieces
-        color = ChessGame.TeamColor.WHITE;
-        //Rooks
-        type = ChessPiece.PieceType.ROOK;
-        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
-        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
-        left++;right--;
-        //Knights
-        type = ChessPiece.PieceType.KNIGHT;
-        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
-        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
-        left++;right--;
-        //Bishops
-        type = ChessPiece.PieceType.BISHOP;
-        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
-        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
-        left++;right--;
-        //Royalty
-        addPiece(new ChessPosition(row,left), new ChessPiece(color, ChessPiece.PieceType.QUEEN));
-        addPiece(new ChessPosition(row,right), new ChessPiece(color, ChessPiece.PieceType.KING));
-        //Pawns
-        for (int i=1; i<=8; i++) {
-            addPiece(new ChessPosition(2, i), new ChessPiece(color, ChessPiece.PieceType.PAWN));
-        }
-
-        //Black pieces
-        row = 8;
-        left = 1;
-        right = 8;
-
-        color = ChessGame.TeamColor.BLACK;
-        //Rooks
-        type = ChessPiece.PieceType.ROOK;
-        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
-        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
-        left++;right--;
-        //Knights
-        type = ChessPiece.PieceType.KNIGHT;
-        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
-        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
-        left++;right--;
-        //Bishops
-        type = ChessPiece.PieceType.BISHOP;
-        addPiece(new ChessPosition(row,left), new ChessPiece(color, type));
-        addPiece(new ChessPosition(row,right), new ChessPiece(color, type));
-        left++;right--;
-        //Royalty
-        addPiece(new ChessPosition(row,left), new ChessPiece(color, ChessPiece.PieceType.QUEEN));
-        addPiece(new ChessPosition(row,right), new ChessPiece(color, ChessPiece.PieceType.KING));
-        //Pawns
-        for (int i=1; i<=8; i++) {
-            addPiece(new ChessPosition(7, i), new ChessPiece(color, ChessPiece.PieceType.PAWN));
-        }
+        addTeam(ChessGame.TeamColor.WHITE);
+        addTeam(ChessGame.TeamColor.BLACK);
 
     }
 

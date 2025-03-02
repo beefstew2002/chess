@@ -30,23 +30,6 @@ public class RookMovesCalculator implements PieceMovesCalculator {
                 case 2 -> direction.set(-1,0);
                 case 3 -> direction.set(0,1);
             }
-            /*
-            pos = startPosition.copy();
-            going = true;
-
-            while (going) {
-                pos.add(direction); //Advance to the next square
-                if ((board.getPiece(pos)==null) && pos.inBounds()) {
-                    moves.add(new ChessMove(startPosition, pos.copy(), null));//If it's empty, add it to the array of possible squares
-                }else{
-                    if (board.getPiece(pos)!=null) {
-                        if (board.getPiece(pos).getTeamColor()!=color) {
-                            moves.add(new ChessMove(startPosition, pos.copy(), null));
-                        }
-                    }
-                    going=false;
-                }
-            }*/
 
             moves.addAll(PieceMovesCalculator.sendRay(startPosition, board, color, direction));
 
