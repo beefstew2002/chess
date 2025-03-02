@@ -41,7 +41,12 @@ public class CreateHandler implements Route {
 
         try {
             CreateResult createResult = create(createRequest);
+            res.status(200);
             res.body(serializer.toJson(createResult));
+        }
+        catch (UnauthorizedException e) {
+            res.status(401);
+            res.body(serializer.toJson(new FailureResult("Error: You're not authorized")));
         }
         catch (DataAccessException e) {
             res.status(500);

@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import model.GameData;
 import model.GameMetaData;
 import service.RequestResult.*;
@@ -30,7 +27,7 @@ public class GameService {
 
         //Check that authToken is verified, otherwise throw exception
         if (!adao.verifyAuth(authToken)) {
-            throw new DataAccessException("You're not authorized");
+            throw new UnauthorizedException("You're not authorized");
         }
 
         //Check that gameName isn't taken, otherwise throw exception
