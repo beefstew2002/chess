@@ -16,13 +16,17 @@ public class GameDAO implements DAInterface{
     //clear
     public int createGame(String gameName) {
         int gameId = getGameId();
-        String whiteUsername = "";
-        String blackUsername = "";
+        String whiteUsername = null;
+        String blackUsername = null;
         ChessGame game = new ChessGame();
         GameData gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
         storeGameData(gameData);
 
         return gameId;
+    }
+
+    public void joinUserToGame(int gameID, String username, String playerColor) throws DataAccessException {
+        addUserToGame(gameID, username, playerColor);
     }
 
     public GameData getGame(int gameID) throws DataAccessException {

@@ -113,7 +113,8 @@ public class GameServiceTests {
         CreateResult createResult = create(createRequest);
 
         //Attempt to join a user to the list
-        JoinRequest joinRequest = new JoinRequest(createResult.gameId(), "white", username);
+        JoinRequest joinRequest = new JoinRequest(createResult.gameId(), "white", authToken);
+        join(joinRequest);
 
         //Check if the user is in the game now
         GameData game = gdao.getGame(createResult.gameId());

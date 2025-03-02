@@ -15,7 +15,6 @@ public class GameService {
     private static AuthDAO adao = new AuthDAO();
     private static GameDAO gdao = new GameDAO();
 
-    //public static ListResult list(ListRequest listRequest) {}
     public static ClearResult clear(ClearRequest clearRequest) {
 
         udao.clearData(); //The way it's written right now, a single clearData will erase everything
@@ -59,5 +58,17 @@ public class GameService {
         ArrayList<GameMetaData> games = gdao.listGames();
 
         return new ListResult(games);
+    }
+
+    public static JoinResult join(JoinRequest joinRequest) throws DataAccessException {
+        String authToken = joinRequest.authToken();
+        String username = adao.getAuth(authToken).username(); //This throws an error if unauthorized
+
+        gdao.joinUserToGame(joinRequest.gameID(), username, joinRequest.playerColor());
+
+        JoinResult joinResult = new JoinResult(joinRequest.playerColor(), joinRequest.gameID());
+
+        return joinResult;
+
     }
 }

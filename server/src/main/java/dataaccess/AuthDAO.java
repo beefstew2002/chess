@@ -20,6 +20,10 @@ public class AuthDAO implements DAInterface{
         return checkAuthData(authToken);
     }
 
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        return getAuthData(authToken);
+    }
+
     public void deleteAuth(String authToken) throws DataAccessException {
         deleteAuthData(authToken);
     }

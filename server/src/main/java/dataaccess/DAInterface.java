@@ -56,6 +56,14 @@ public interface DAInterface {
         }
         return null;
     }
+    default AuthData getAuthData(String authToken) throws DataAccessException{
+        for (int i=0; i<authData.size(); i++) {
+            if (authData.get(i).authToken() == authToken) {
+                return authData.get(i);
+            }
+        }
+        throw new DataAccessException("Auth doesn't exist");
+    }
     default GameData getGameData(int gameID) throws DataAccessException{
         for (int i=0; i<gameData.size(); i++) {
             if (gameData.get(i).gameID() == gameID) {
@@ -122,6 +130,37 @@ public interface DAInterface {
     }
     default int getGameId() {
         return gameData.size()+1;
+    }
+    default void addUserToGame(int gameID, String username, String color) throws DataAccessException{
+        GameData newGame = null;
+        for (int i=0; i < gameData.size(); i++) {
+            GameData game = gameData.get(i);
+
+            if (game.gameID() == gameID) {
+
+                switch (color) {
+                    case "white":
+                        if (game.whiteUsername() == null) {
+                            newGame = new GameData(
+                                    game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+                        } else {
+                            throw new DataAccessException("That spot is taken");
+                        }
+                        break;
+                    case "black":
+                        if (game.blackUsername() == null) {
+                            newGame = new GameData(
+                                    game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+                        } else {
+                            throw new DataAccessException("that spot is taken");
+                        }
+                        break;
+                }
+                updateGameData(newGame);
+                return;
+            }
+        }
+        throw new DataAccessException("You're trying to join a game that doesn't exist");
     }
     default void clearData() {
         userData.clear();
