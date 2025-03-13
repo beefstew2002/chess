@@ -67,7 +67,7 @@ public class SQLUserDAOTests {
                         String username = rs.getString("username");
                         String password = rs.getString("password");
                         String email = rs.getString("email");
-                        UserData aUser = new UserData(username, email, password);
+                        UserData aUser = new UserData(username, password, email);
                         userData.add(aUser);
                     }
                 }
@@ -119,14 +119,18 @@ public class SQLUserDAOTests {
     //Success createUser
     @Test
     @DisplayName("Success createUser")
-    public void successcreateUser() {
+    public void successcreateUser() throws DataAccessException{
+        udao.createUser(username, password, email);
 
+        Assertions.assertEquals(user, checkUsers().get(0));
     }
     //Failure createUser
     @Test
     @DisplayName("Failure createUser")
     public void failcreateUser() {
-
+        //Name too long
+        String longName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdkfjljklajklas";
+        Assertions.assertThrows(DataAccessException.class, ()->{udao.createUser(longName, password, email);});
     }
 
     //Success isEmpty

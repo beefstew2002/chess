@@ -61,7 +61,7 @@ public class SQLUserDAO implements DAInterface{
                         String username = rs.getString("username");
                         String password = rs.getString("password");
                         String email = rs.getString("email");
-                        UserData aUser = new UserData(username, email, password);
+                        UserData aUser = new UserData(username, password, email);
                         userData.add(aUser);
                     }
                 }
