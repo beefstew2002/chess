@@ -150,7 +150,12 @@ public class SQLUserDAOTests {
     //Success clearData
     @Test
     @DisplayName("Success clearData")
-    public void successclearData() {
+    public void successclearData() throws DataAccessException {
+        inventUser();
+
+        udao.clearData();
+
+        Assertions.assertTrue(checkUsers().isEmpty());
 
     }
 
