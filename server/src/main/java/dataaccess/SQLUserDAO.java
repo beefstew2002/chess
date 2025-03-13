@@ -7,46 +7,18 @@ import java.util.ArrayList;
 
 import static dataaccess.DatabaseManager.createDatabase;
 
-public class SQLUserDAO implements DAInterface{
-
-    private Connection getConnection() throws SQLException {
-        try {
-            return DatabaseManager.getConnection();
-        }
-        catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+public class SQLUserDAO extends SQLDAO{
 
     public SQLUserDAO(){
         //Constructor: create the database if it doesn't exist
-        try {
-            configureDatabase();
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void configureDatabase() throws DataAccessException {
-        //Get database name
-        createDatabase();
-        try (var conn = getConnection()) {
-
-            var createUserTable = """
+        super("""
                     CREATE TABLE  IF NOT EXISTS user (
                         username VARCHAR(256) NOT NULL,
                         password VARCHAR(256) NOT NULL,
                         email VARCHAR(256) NOT NULL,
                         PRIMARY KEY (username)
                     );
-                    """;
-
-            try (var createTableStatement = conn.prepareStatement(createUserTable)) {
-                createTableStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+                    """);
     }
 
     public ArrayList<UserData> getUserData() {

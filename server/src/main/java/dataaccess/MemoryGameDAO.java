@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class MemoryGameDAO implements DAInterface{
 
-    static ArrayList<GameData> GAME_DATA = new ArrayList<>();
+    private static final ArrayList<GameData> GAME_DATA = new ArrayList<>();
 
     //Methods this will need:
     //createGame

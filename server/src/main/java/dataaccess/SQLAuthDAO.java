@@ -8,45 +8,17 @@ import java.util.ArrayList;
 
 import static dataaccess.DatabaseManager.createDatabase;
 
-public class SQLAuthDAO implements DAInterface {
+public class SQLAuthDAO extends SQLDAO {
 
     public SQLAuthDAO() {
         //Constructor: create the database if it doesn't exist
-        try {
-            configureDatabase();
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Connection getConnection() throws SQLException {
-        try {
-            return DatabaseManager.getConnection();
-        }
-        catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    private void configureDatabase() throws DataAccessException {
-        //Get database name
-        createDatabase();
-        try (var conn = getConnection()) {
-
-            var createUserTable = """
+        super("""
                     CREATE TABLE IF NOT EXISTS auth (
                         username VARCHAR(256) NOT NULL,
                         authToken VARCHAR(256) NOT NULL,
                         PRIMARY KEY (authToken)
                     );
-                    """;
-
-            try (var createTableStatement = conn.prepareStatement(createUserTable)) {
-                createTableStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+                    """);
     }
 
     public ArrayList<AuthData> getAuthData() {

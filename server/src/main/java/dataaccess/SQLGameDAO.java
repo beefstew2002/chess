@@ -12,32 +12,11 @@ import java.util.ArrayList;
 import static dataaccess.DatabaseManager.createDatabase;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
-public class SQLGameDAO implements DAInterface{
+public class SQLGameDAO extends SQLDAO{
 
     public SQLGameDAO() {
         //Constructor: create the database if it doesn't exist
-        try {
-            configureDatabase();
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Connection getConnection() throws SQLException {
-        try {
-            return DatabaseManager.getConnection();
-        }
-        catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    private void configureDatabase() throws DataAccessException {
-
-        createDatabase();
-        try (var conn = getConnection()) {
-
-            var createUserTable = """
+        super("""
                     CREATE TABLE IF NOT EXISTS game (
                         gameID int NOT NULL AUTO_INCREMENT,
                         whiteUsername varchar(256) DEFAULT NULL,
@@ -46,14 +25,7 @@ public class SQLGameDAO implements DAInterface{
                         gameJson longtext NOT NULL,
                         PRIMARY KEY (gameID)
                     );
-                    """;
-
-            try (var createTableStatement = conn.prepareStatement(createUserTable)) {
-                createTableStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+                    """);
     }
 
     public int createGame(String gameName) {
@@ -71,11 +43,11 @@ public class SQLGameDAO implements DAInterface{
                 preparedStatement.executeUpdate();
 
                 var resultSet = preparedStatement.getGeneratedKeys();
-                var ID = 0;
+                var id = 0;
                 if (resultSet.next()) {
-                    ID = resultSet.getInt(1);
+                    id = resultSet.getInt(1);
                 }
-                return ID;
+                return id;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

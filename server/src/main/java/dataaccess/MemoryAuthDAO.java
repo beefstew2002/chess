@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class MemoryAuthDAO implements DAInterface {
 
-    static ArrayList<AuthData> AUTH_DATA = new ArrayList<>();
+    private static final ArrayList<AuthData> AUTH_DATA = new ArrayList<>();
 
     public ArrayList<AuthData> getAuthData() {
         return AUTH_DATA;

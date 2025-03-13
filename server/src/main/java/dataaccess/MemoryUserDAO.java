@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class MemoryUserDAO implements DAInterface{
 
-    private static ArrayList<UserData> USER_DATA = new ArrayList<>();
+    private static final ArrayList<UserData> USER_DATA = new ArrayList<>();
 
     public ArrayList<UserData> getUserData() {
         return USER_DATA;
