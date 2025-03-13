@@ -47,30 +47,16 @@ public class SQLAuthDAOTests {
         }
 
         //Check if it's there
-        Assertions.assertTrue(adao.verifyAuth(authToken));
+        Assertions.assertDoesNotThrow(()->{adao.getAuthData();});
 
     }
     //getAuthData - failure
     @Test
     @DisplayName("Auth data not found")
-    public void wrongAuth() throws DataAccessException {
-        //Invent a user
-        String username = "peeps";
-        String authToken = "fake auth token";
-
-        //Add auth data
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?);")) {
-                preparedStatement.setString(1, username);
-                preparedStatement.setString(2, authToken);
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void noAuth() throws DataAccessException {
 
         //Check a different auth token
-        Assertions.assertFalse(adao.verifyAuth("giggity"));
+        Assertions.assertTrue(adao.getAuthData().isEmpty());
     }
 
     //createAuth - success
@@ -127,15 +113,48 @@ public class SQLAuthDAOTests {
 
     //verifyAuth - success
     @Test
-    @DisplayName("")
-    public void test2() throws DataAccessException {
+    @DisplayName("Verify Auth success")
+    public void verifyAuthSuccess() throws DataAccessException {
+        //Invent a user
+        String username = "peeps";
+        String authToken = "fake auth token";
 
+        //Add auth data
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?);")) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, authToken);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Check if it's there
+        Assertions.assertTrue(adao.verifyAuth(authToken));
     }
     //verifyAuth - failure
     @Test
-    @DisplayName("")
-    public void test3() throws DataAccessException {
+    @DisplayName("Verify Auth failure")
+    public void verifyAuthFailure() throws DataAccessException {
 
+        //Invent a user
+        String username = "peeps";
+        String authToken = "fake auth token";
+
+        //Add auth data
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?);")) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, authToken);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Check a different auth token
+        Assertions.assertFalse(adao.verifyAuth("giggity"));
     }
 
     //getAuth - success
