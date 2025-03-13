@@ -59,15 +59,6 @@ public class SQLGameDAO implements DAInterface{
     }
 
     public int createGame(String gameName) {
-        /*int gameId = getGameId();
-        String whiteUsername = null;
-        String blackUsername = null;
-        ChessGame game = new ChessGame();
-        GameData gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
-        GAME_DATA.add(gameData);
-
-        return gameId;*/
-
 
         //INSERT INTO game (gameID, gameName, gameJson) VALUES (*id+1, *gameName, *ChessGame json)
 
@@ -213,10 +204,6 @@ public class SQLGameDAO implements DAInterface{
         }
 
         return gameData;
-    }
-
-    public int getGameId() {
-        return 0;
     }
 
     public void clearData() {
