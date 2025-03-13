@@ -4,12 +4,10 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import model.GameMetaData;
-import model.UserData;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import static dataaccess.DatabaseManager.createDatabase;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -123,7 +121,7 @@ public class SQLGameDAO implements DAInterface{
 
     public ArrayList<GameMetaData> listGames() {
 
-        ArrayList<GameMetaData> gameData = new ArrayList<GameMetaData>();
+        ArrayList<GameMetaData> gameData = new ArrayList<>();
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM game")) {
@@ -169,8 +167,8 @@ public class SQLGameDAO implements DAInterface{
             try (var preparedStatement = conn.prepareStatement("SELECT * from game WHERE gameName = ?")) {
                 preparedStatement.setString(1, gameName);
                 try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        String theGameName = rs.getString("gameName");
+                    if (rs.next()) {
+                        rs.getString("gameName");
                         return true;
                     }
                 } catch (SQLException e) {
@@ -184,7 +182,7 @@ public class SQLGameDAO implements DAInterface{
     }
 
     public ArrayList<GameData> getGameData() {
-        ArrayList<GameData> gameData = new ArrayList<GameData>();
+        ArrayList<GameData> gameData = new ArrayList<>();
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM game")) {

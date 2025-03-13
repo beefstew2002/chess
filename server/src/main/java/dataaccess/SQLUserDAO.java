@@ -2,10 +2,8 @@ package dataaccess;
 import model.UserData;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import static dataaccess.DatabaseManager.createDatabase;
 
@@ -52,7 +50,7 @@ public class SQLUserDAO implements DAInterface{
     }
 
     public ArrayList<UserData> getUserData() {
-        ArrayList<UserData> userData = new ArrayList<UserData>();
+        ArrayList<UserData> userData = new ArrayList<>();
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM user;")) {
@@ -116,7 +114,7 @@ public class SQLUserDAO implements DAInterface{
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Unable to configure database" + ex.toString());
+            throw new DataAccessException("Unable to configure database" + ex);
         }
     }
     public boolean isEmpty() {

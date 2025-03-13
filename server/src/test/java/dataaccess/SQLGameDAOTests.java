@@ -2,7 +2,6 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
 import model.GameData;
 import model.GameMetaData;
 import org.junit.jupiter.api.Assertions;
@@ -60,7 +59,7 @@ public class SQLGameDAOTests {
     }
     //get game data
     private ArrayList<GameData> checkGames() throws DataAccessException{
-        ArrayList<GameData> gameData = new ArrayList<GameData>();
+        ArrayList<GameData> gameData = new ArrayList<>();
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM game")) {
@@ -93,9 +92,9 @@ public class SQLGameDAOTests {
     //createGame failure
     @Test
     @DisplayName("createGame failure: name too long")
-    public void createGameFailure() throws DataAccessException{
+    public void createGameFailure() {
         String longName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdkfjljklajklas";
-        Assertions.assertThrows(RuntimeException.class, ()->{gdao.createGame(longName);});
+        Assertions.assertThrows(RuntimeException.class, ()->gdao.createGame(longName));
     }
 
     //getGame success
@@ -111,8 +110,8 @@ public class SQLGameDAOTests {
     //getGame failure
     @Test
     @DisplayName("getGame failure")
-    public void getGameFailure() throws DataAccessException {
-        Assertions.assertThrows(DataAccessException.class, ()->{gdao.getGame(1);});
+    public void getGameFailure() {
+        Assertions.assertThrows(DataAccessException.class, ()->gdao.getGame(1));
     }
 
     //listGames success
@@ -129,7 +128,7 @@ public class SQLGameDAOTests {
     //listGames failure
     @Test
     @DisplayName("listGames failure")
-    public void listGamesFailure() throws DataAccessException {
+    public void listGamesFailure() {
         //No entries if no games
         ArrayList<GameMetaData> gameData = gdao.listGames();
 
@@ -146,19 +145,19 @@ public class SQLGameDAOTests {
         GameData newGame = new GameData(id, "zoinks", "rikes", "scooby", new ChessGame());
         gdao.updateGame(newGame);
 
-        GameData theGame = checkGames().get(0);
+        GameData theGame = checkGames().getFirst();
         Assertions.assertEquals(newGame.getMetaData(), theGame.getMetaData());
     }
     //updateGame failure
     @Test
     @DisplayName("updateGame failure")
     public void updateGameFailure() throws DataAccessException {
-        int id = addGame("scooby");
+        addGame("scooby");
 
         GameData newGame = new GameData(2, "zoinks", "rikes", "scooby", new ChessGame());
         gdao.updateGame(newGame);
 
-        GameData theGame = checkGames().get(0);
+        GameData theGame = checkGames().getFirst();
         Assertions.assertNotEquals(newGame.getMetaData(), theGame.getMetaData());
 
     }
@@ -166,7 +165,7 @@ public class SQLGameDAOTests {
     //isEmpty success
     @Test
     @DisplayName("isEmpty success")
-    public void isEmpty() throws DataAccessException {
+    public void isEmpty() {
         //List is empty
         Assertions.assertTrue(gdao.isEmpty());
     }
@@ -189,7 +188,7 @@ public class SQLGameDAOTests {
     //hasGame failure
     @Test
     @DisplayName("hasGame failure")
-    public void hasGameFailure() throws DataAccessException {
+    public void hasGameFailure() {
         Assertions.assertFalse(gdao.hasGame("jinkies"));
     }
 
@@ -199,12 +198,12 @@ public class SQLGameDAOTests {
     public void getGameDataSuccess() throws DataAccessException {
         addGame("firstGame");
 
-        Assertions.assertEquals(checkGames().get(0).getMetaData(), gdao.getGameData().get(0).getMetaData());
+        Assertions.assertEquals(checkGames().getFirst().getMetaData(), gdao.getGameData().getFirst().getMetaData());
     }
     //getGameData failure
     @Test
     @DisplayName("getGameData failure")
-    public void getGameDataFailure() throws DataAccessException {
+    public void getGameDataFailure() {
         //No games to get
         Assertions.assertTrue(gdao.getGameData().isEmpty());
     }

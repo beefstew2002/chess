@@ -5,7 +5,6 @@ import model.AuthData;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import static dataaccess.DatabaseManager.createDatabase;
 
@@ -53,7 +52,7 @@ public class SQLAuthDAO implements DAInterface {
     public ArrayList<AuthData> getAuthData() {
 
         //SELECT * FROM auth;
-        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
+        ArrayList<AuthData> authDataList = new ArrayList<>();
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
@@ -71,7 +70,7 @@ public class SQLAuthDAO implements DAInterface {
         }
     }
 
-    public void createAuth(AuthData authData) throws DataAccessException {
+    public void createAuth(AuthData authData) {
         //AUTH_DATA.add(authData);
 
         //INSERT INTO auth (username, authToken) VALUES (*username, *authToken)
@@ -121,7 +120,7 @@ public class SQLAuthDAO implements DAInterface {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth WHERE authToken = ?")) {
                 preparedStatement.setString(1, authToken);
                 try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
+                    if (rs.next()) {
                         String username = rs.getString("username");
                         String theAuthToken = rs.getString("authToken");
                         return new AuthData(username, theAuthToken);
@@ -134,7 +133,7 @@ public class SQLAuthDAO implements DAInterface {
         throw new UnauthorizedException("there's no auth");
     }
 
-    public void deleteAuth(String authToken) throws DataAccessException {
+    public void deleteAuth(String authToken) {
 
         //DELETE FROM auth WHERE username = *username;
 

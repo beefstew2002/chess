@@ -1,7 +1,5 @@
 package chess;
 
-import model.GameMetaData;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -65,12 +63,17 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //Get the set of possible moves for the piece
-        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> moves = new ArrayList<>();
         ArrayList<ChessMove> allMoves = (ArrayList<ChessMove>) theBoard.getPiece(startPosition).pieceMoves(theBoard, startPosition);
         //Check to see if any of the moves leave the king in danger
-        for (int i=0; i< allMoves.size(); i++) {
+        /*for (int i=0; i< allMoves.size(); i++) {
             if (isMoveValid(allMoves.get(i))) {
                 moves.add(allMoves.get(i));
+            }
+        }*/
+        for (ChessMove move : allMoves) {
+            if (isMoveValid(move)) {
+                moves.add(move);
             }
         }
 
@@ -216,11 +219,7 @@ public class ChessGame {
         }
 
         //If that was a big pawn jump, that pawn is now en passantable, otherwise it's not
-        if (move.getBigPawnJump()) {
-            piece.setEnPassantable(true);
-        } else {
-            piece.setEnPassantable(false);
-        }
+        piece.setEnPassantable( move.getBigPawnJump() );
 
         //Update whose turn it is
         if (whoseTurn == TeamColor.WHITE) {whoseTurn = TeamColor.BLACK;}
@@ -346,10 +345,15 @@ public class ChessGame {
             targetPiece = theBoard.getPiece(targetPosition);
             if (targetPiece != null && (targetPiece.getTeamColor() == enemyColor)) {
                 moves = (ArrayList<ChessMove>) targetPiece.pieceMoves(theBoard, targetPosition);
-                for (int i = 0; i < moves.size(); i++) {
+                /*for (int i = 0; i < moves.size(); i++) {
                     //If any pieces of the opposite team can move to this square
                     //Return true
                     if (moves.get(i).getEndPosition().equals(position)) {
+                        return true;
+                    }
+                }*/
+                for (ChessMove move : moves) {
+                    if (move.getEndPosition().equals(position)) {
                         return true;
                     }
                 }

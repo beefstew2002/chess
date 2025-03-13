@@ -1,13 +1,11 @@
 package dataaccess;
 
-import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -58,7 +56,7 @@ public class SQLUserDAOTests {
         }
     }
     private ArrayList<UserData> checkUsers() {
-        ArrayList<UserData> userData = new ArrayList<UserData>();
+        ArrayList<UserData> userData = new ArrayList<>();
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM user;")) {
@@ -122,7 +120,7 @@ public class SQLUserDAOTests {
     public void successcreateUser() throws DataAccessException{
         udao.createUser(username, password, email);
 
-        Assertions.assertEquals(user, checkUsers().get(0));
+        Assertions.assertEquals(user, checkUsers().getFirst());
     }
     //Failure createUser
     @Test
@@ -130,7 +128,7 @@ public class SQLUserDAOTests {
     public void failcreateUser() {
         //Name too long
         String longName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdkfjljklajklas";
-        Assertions.assertThrows(DataAccessException.class, ()->{udao.createUser(longName, password, email);});
+        Assertions.assertThrows(DataAccessException.class, ()->udao.createUser(longName, password, email));
     }
 
     //Success isEmpty
