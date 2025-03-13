@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -101,14 +102,18 @@ public class SQLUserDAOTests {
     //Success getUser
     @Test
     @DisplayName("Success getUser")
-    public void successgetUser() {
+    public void successgetUser() throws DataAccessException {
+        inventUser();
 
+        UserData theUser = udao.getUser(username);
+
+        Assertions.assertEquals(user, theUser);
     }
     //Failure getUser
     @Test
     @DisplayName("Failure getUser")
     public void failgetUser() {
-
+        Assertions.assertNull(udao.getUser("gaster"));
     }
 
     //Success createUser
