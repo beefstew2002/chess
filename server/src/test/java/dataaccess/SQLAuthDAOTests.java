@@ -4,6 +4,7 @@ import model.AuthData;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static dataaccess.DatabaseManager.getConnection;
 
@@ -193,15 +194,57 @@ public class SQLAuthDAOTests {
 
     //deleteAuth - success
     @Test
-    @DisplayName("")
-    public void test6() throws DataAccessException {
+    @DisplayName("deleteAuth success")
+    public void deleteAuthSuccess() throws DataAccessException {
+        inventUser();
 
+        adao.deleteAuth(authToken);
+
+        //Get auth data
+        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
+
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        String username = rs.getString("username");
+                        String authToken = rs.getString("authToken");
+                        authDataList.add(new AuthData(username, authToken));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        Assertions.assertTrue(authDataList.isEmpty());
     }
     //deleteAuth - failure
     @Test
-    @DisplayName("")
-    public void test7() throws DataAccessException {
+    @DisplayName("deleteAuth failure")
+    public void deleteAuthFailure() throws DataAccessException {
+        inventUser();
 
+        adao.deleteAuth("different auth token");
+
+        //Get auth data
+        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
+
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        String username = rs.getString("username");
+                        String authToken = rs.getString("authToken");
+                        authDataList.add(new AuthData(username, authToken));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        Assertions.assertFalse(authDataList.isEmpty());
     }
 
     //isEmpty - success
