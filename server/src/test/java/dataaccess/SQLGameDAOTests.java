@@ -36,7 +36,7 @@ public class SQLGameDAOTests {
     }
 
     //invent game
-    private void addGame(String gameName) throws DataAccessException{
+    private int addGame(String gameName) throws DataAccessException{
         var json = new Gson().toJson(new ChessGame());
 
         try (var conn = getConnection()) {
@@ -51,7 +51,7 @@ public class SQLGameDAOTests {
                 if (resultSet.next()) {
                     ID = resultSet.getInt(1);
                 }
-                //return ID;
+                return ID;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -100,85 +100,89 @@ public class SQLGameDAOTests {
     //getGame success
     @Test
     @DisplayName("getGame success")
-    public void getGameSuccess() {
+    public void getGameSuccess() throws DataAccessException{
+        int id = addGame("guh");
 
+        GameData game = gdao.getGame(id);
+
+        Assertions.assertEquals("guh", game.gameName());
     }
     //getGame failure
     @Test
     @DisplayName("getGame failure")
-    public void getGameFailure() {
-
+    public void getGameFailure() throws DataAccessException {
+        Assertions.assertThrows(DataAccessException.class, ()->{gdao.getGame(1);});
     }
 
     //listGames success
     @Test
     @DisplayName("listGames success")
-    public void listGamesSuccess() {
+    public void listGamesSuccess() throws DataAccessException {
 
     }
     //listGames failure
     @Test
     @DisplayName("listGames failure")
-    public void listGamesFailure() {
+    public void listGamesFailure() throws DataAccessException {
 
     }
 
     //updateGame success
     @Test
     @DisplayName("updateGame success")
-    public void updateGameSuccess() {
+    public void updateGameSuccess() throws DataAccessException {
 
     }
     //updateGame failure
     @Test
     @DisplayName("updateGame failure")
-    public void updateGameFailure() {
+    public void updateGameFailure() throws DataAccessException {
 
     }
 
     //isEmpty success
     @Test
     @DisplayName("isEmpty success")
-    public void isEmpty() {
+    public void isEmpty() throws DataAccessException {
 
     }
     //isEmpty failure
     @Test
     @DisplayName("isEmpty failure")
-    public void isEmptyFailure() {
+    public void isEmptyFailure() throws DataAccessException {
 
     }
 
     //hasGame success
     @Test
     @DisplayName("hasGame success")
-    public void hasGameSuccess() {
+    public void hasGameSuccess() throws DataAccessException {
 
     }
     //hasGame failure
     @Test
     @DisplayName("hasGame failure")
-    public void hasGameFailure() {
+    public void hasGameFailure() throws DataAccessException {
 
     }
 
     //getGameData success
     @Test
     @DisplayName("getGameData success")
-    public void getGameDataSuccess() {
+    public void getGameDataSuccess() throws DataAccessException {
 
     }
     //getGameData failure
     @Test
     @DisplayName("getGameData failure")
-    public void getGameDataFailure() {
+    public void getGameDataFailure() throws DataAccessException {
 
     }
 
     //clearData success
     @Test
     @DisplayName("clear")
-    public void clear() {
+    public void clear() throws DataAccessException {
 
     }
 }
