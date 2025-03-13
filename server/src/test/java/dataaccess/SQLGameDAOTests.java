@@ -213,6 +213,10 @@ public class SQLGameDAOTests {
     @Test
     @DisplayName("clear")
     public void clear() throws DataAccessException {
+        addGame("the core");
 
+        gdao.clearData();
+
+        Assertions.assertTrue(checkGames().isEmpty());
     }
 }
