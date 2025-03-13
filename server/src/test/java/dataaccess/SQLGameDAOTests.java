@@ -167,13 +167,15 @@ public class SQLGameDAOTests {
     @Test
     @DisplayName("isEmpty success")
     public void isEmpty() throws DataAccessException {
-
+        //List is empty
+        Assertions.assertTrue(gdao.isEmpty());
     }
     //isEmpty failure
     @Test
     @DisplayName("isEmpty failure")
     public void isEmptyFailure() throws DataAccessException {
-
+        addGame("zoinks");
+        Assertions.assertFalse(gdao.isEmpty());
     }
 
     //hasGame success
