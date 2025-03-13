@@ -131,7 +131,7 @@ public class GameServiceTests {
     @DisplayName("Game doesn't exist")
     public void gameDoesntExist() {
         Assertions.assertThrows(DataAccessException.class, () -> {
-            JoinRequest joinRequest = new JoinRequest(1, "WHITE", username);
+            JoinRequest joinRequest = new JoinRequest(1, "WHITE", authToken);
             join(joinRequest);
         });
     }

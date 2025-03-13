@@ -33,7 +33,7 @@ public class ClearServiceTests {
     public void clearTest() throws DataAccessException {
         udao.createUser("dog", "bark bark bark", "tobyfox@metta.ton");
         adao.createAuth(new AuthData("scoobydoo", "reeheeheeheehee"));
-        gdao.storeGameData(new GameData(3, "toriel", "asgore", "welcome to the underground",null));
+        gdao.createGame("Welcome to the underground");
 
 
         ClearRequest clearRequest = new ClearRequest();

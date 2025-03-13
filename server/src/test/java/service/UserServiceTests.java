@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import service.reqres.*;
 
 import static service.UserService.*;
@@ -36,7 +37,7 @@ public class UserServiceTests {
         password = "NyehHehHeh";
         email = "gr8papyrus@metta.ton";
         registerRequest = new RegisterRequest(username, password, email);
-        userData = new UserData(username, password, email);
+        userData = new UserData(username, BCrypt.hashpw(password, BCrypt.gensalt()), email);
         udao = new UserDAO();
         adao = new AuthDAO();
         gdao = new GameDAO();
@@ -55,7 +56,7 @@ public class UserServiceTests {
 
         UserData result = udao.getUser(username);
 
-        Assertions.assertEquals(userData, result, "UserData not stored or accessed properly");
+        Assertions.assertTrue(userData.equals(result), "UserData not stored or accessed properly");
 
     }
 

@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 import service.reqres.*;
 
 import java.util.UUID;
@@ -23,9 +24,11 @@ public class UserService {
         if (password == null) {
             throw new DataAccessException("no password");
         }
-        if (USER_DAO.getUserData(username) != null) {
+        if (USER_DAO.getUser(username) != null) {
             throw new UsernameAlreadyTaken("Error: already taken");
         }
+
+        password = BCrypt.hashpw(password, BCrypt.gensalt());
 
         //Create user
         USER_DAO.createUser(username, password, email);
@@ -54,7 +57,7 @@ public class UserService {
             throw new DataAccessException("username doesn't exist");
         }
         //Verify the password is correct
-        if (!realUser.password().equals(password)) {
+        if (!BCrypt.checkpw(password, realUser.password())) {
             throw new WrongPasswordException("wrong password LOL");
         }
         //Create auth and add
