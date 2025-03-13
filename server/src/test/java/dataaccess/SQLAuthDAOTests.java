@@ -1,5 +1,6 @@
 package dataaccess;
 
+import dataaccess.exceptions.DataAccessException;
 import model.AuthData;
 import org.junit.jupiter.api.*;
 
@@ -50,6 +51,46 @@ public class SQLAuthDAOTests {
         }
     }
 
+    //check
+    private boolean checkForAuth(String authToken) throws DataAccessException{
+
+        //Check if it's there
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth WHERE authToken = ?")) {
+                preparedStatement.setString(1, authToken);
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        String theAuthToken = rs.getString("authToken");
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+    private ArrayList<AuthData> getAuthData() throws DataAccessException {
+        //Get auth data
+        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
+
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        String username = rs.getString("username");
+                        String authToken = rs.getString("authToken");
+                        authDataList.add(new AuthData(username, authToken));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return authDataList;
+    }
+
     //getAuthData - success
     @Test
     @DisplayName("Auth data found")
@@ -59,15 +100,7 @@ public class SQLAuthDAOTests {
         String authToken = "fake auth token";
 
         //Add auth data
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?);")) {
-                preparedStatement.setString(1, username);
-                preparedStatement.setString(2, authToken);
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        inventUser(username, authToken);
 
         //Check if it's there
         Assertions.assertDoesNotThrow(()->{adao.getAuthData();});
@@ -88,24 +121,9 @@ public class SQLAuthDAOTests {
     public void createAuthSucceed() throws DataAccessException {
         String authToken = "uhuhuhuh";
         adao.createAuth(new AuthData("sans", authToken));
-        boolean found = false;
 
-        //Check if it's there
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth WHERE authToken = ?")) {
-                preparedStatement.setString(1, authToken);
-                try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        String theAuthToken = rs.getString("authToken");
-                        found = true;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
-        Assertions.assertTrue(found);
+        Assertions.assertTrue(checkForAuth(authToken));
     }
     //createAuth - failure
     @Test
@@ -115,22 +133,7 @@ public class SQLAuthDAOTests {
         adao.createAuth(new AuthData("sans", authToken));
         //Attempt to create a duplicate
         Assertions.assertThrows(RuntimeException.class, ()->{adao.createAuth(new AuthData("sans", authToken));});
-        boolean found = false;
 
-        //Check if it's there
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth WHERE authToken = ?")) {
-                preparedStatement.setString(1, authToken);
-                try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        String theAuthToken = rs.getString("authToken");
-                        found = true;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
     }
 
@@ -143,15 +146,7 @@ public class SQLAuthDAOTests {
         String authToken = "fake auth token";
 
         //Add auth data
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?);")) {
-                preparedStatement.setString(1, username);
-                preparedStatement.setString(2, authToken);
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        inventUser(username, authToken);
 
         //Check if it's there
         Assertions.assertTrue(adao.verifyAuth(authToken));
@@ -166,15 +161,7 @@ public class SQLAuthDAOTests {
         String authToken = "fake auth token";
 
         //Add auth data
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?);")) {
-                preparedStatement.setString(1, username);
-                preparedStatement.setString(2, authToken);
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        inventUser(username, authToken);
 
         //Check a different auth token
         Assertions.assertFalse(adao.verifyAuth("giggity"));
@@ -204,24 +191,7 @@ public class SQLAuthDAOTests {
 
         adao.deleteAuth(authToken);
 
-        //Get auth data
-        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
-
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
-                try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        String username = rs.getString("username");
-                        String authToken = rs.getString("authToken");
-                        authDataList.add(new AuthData(username, authToken));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        Assertions.assertTrue(authDataList.isEmpty());
+        Assertions.assertTrue(getAuthData().isEmpty());
     }
     //deleteAuth - failure
     @Test
@@ -231,24 +201,7 @@ public class SQLAuthDAOTests {
 
         adao.deleteAuth("different auth token");
 
-        //Get auth data
-        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
-
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
-                try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        String username = rs.getString("username");
-                        String authToken = rs.getString("authToken");
-                        authDataList.add(new AuthData(username, authToken));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        Assertions.assertFalse(authDataList.isEmpty());
+        Assertions.assertFalse(getAuthData().isEmpty());
     }
 
     //isEmpty - success
@@ -279,23 +232,6 @@ public class SQLAuthDAOTests {
 
         //Check if list is empty
 
-        //Get auth data
-        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
-
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
-                try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        String username = rs.getString("username");
-                        String authToken = rs.getString("authToken");
-                        authDataList.add(new AuthData(username, authToken));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        Assertions.assertTrue(authDataList.isEmpty());
+        Assertions.assertTrue(getAuthData().isEmpty());
     }
 }

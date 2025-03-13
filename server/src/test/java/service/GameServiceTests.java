@@ -2,6 +2,7 @@ package service;
 
 
 import dataaccess.*;
+import dataaccess.exceptions.DataAccessException;
 import model.GameMetaData;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +29,7 @@ public class GameServiceTests {
     String authToken;
 
     @BeforeEach
-    public void setup() throws DataAccessException{
+    public void setup() throws DataAccessException {
         username = "Cram";
         password = "JanetIsADifferentPersonIMeanTheSamePersonIMean";
         email = "thegobdoctor@spelljam.net";

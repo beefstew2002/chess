@@ -1,10 +1,11 @@
 package dataaccess;
 
+import dataaccess.exceptions.DataAccessException;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import static dataaccess.DatabaseManager.createDatabase;
-import static dataaccess.DatabaseManager.getConnection;
 
 public class SQLDAO implements DAInterface{
     public SQLDAO(String createUserTable) throws RuntimeException{

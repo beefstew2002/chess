@@ -3,6 +3,9 @@ package service;
 //Imports
 
 import dataaccess.*;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.UsernameAlreadyTaken;
+import dataaccess.exceptions.WrongPasswordException;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

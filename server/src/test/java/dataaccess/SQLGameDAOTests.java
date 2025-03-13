@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.exceptions.DataAccessException;
 import model.GameData;
 import model.GameMetaData;
 import org.junit.jupiter.api.Assertions;
@@ -36,26 +37,24 @@ public class SQLGameDAOTests {
     }
 
     //invent game
-    private int addGame(String gameName) throws DataAccessException{
-        var json = new Gson().toJson(new ChessGame());
+    private int addGame(String gameName) throws DataAccessException {
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO game (gameName, gameJson) VALUES (?, ?)", RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, gameName);
-                preparedStatement.setString(2, json);
+                preparedStatement.setString(2, new Gson().toJson(new ChessGame()));
 
                 preparedStatement.executeUpdate();
 
                 var resultSet = preparedStatement.getGeneratedKeys();
-                var id = 0;
                 if (resultSet.next()) {
-                    id = resultSet.getInt(1);
+                    return resultSet.getInt(1);
                 }
-                return id;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return 0;
     }
     //get game data
     private ArrayList<GameData> checkGames() throws DataAccessException{
@@ -65,12 +64,13 @@ public class SQLGameDAOTests {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM game")) {
                 try (var rs = preparedStatement.executeQuery()) {
                     while (rs.next()) {
-                        int gameID = rs.getInt("gameID");
-                        String whiteUsername = rs.getString("whiteUsername");
-                        String blackUsername = rs.getString("blackUsername");
-                        String gameName = rs.getString("gameName");
                         ChessGame game = new Gson().fromJson(rs.getString("gameJson"), ChessGame.class);
-                        gameData.add(new GameData(gameID, whiteUsername, blackUsername, gameName, game));
+                        gameData.add(new GameData(
+                                rs.getInt("gameID"),
+                                rs.getString("whiteUsername"),
+                                rs.getString("blackUsername"),
+                                rs.getString("gameName"),
+                                game));
                     }
                 }
             }
@@ -93,7 +93,10 @@ public class SQLGameDAOTests {
     @Test
     @DisplayName("createGame failure: name too long")
     public void createGameFailure() {
-        String longName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdkfjljklajklas";
+        String longName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdkfjljklajklas";
         Assertions.assertThrows(RuntimeException.class, ()->gdao.createGame(longName));
     }
 

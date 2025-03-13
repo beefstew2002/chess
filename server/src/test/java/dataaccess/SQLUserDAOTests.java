@@ -1,5 +1,6 @@
 package dataaccess;
 
+import dataaccess.exceptions.DataAccessException;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,10 +63,7 @@ public class SQLUserDAOTests {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM user;")) {
                 try (var rs = preparedStatement.executeQuery()) {
                     while (rs.next()) {
-                        String username = rs.getString("username");
-                        String password = rs.getString("password");
-                        String email = rs.getString("email");
-                        UserData aUser = new UserData(username, password, email);
+                        UserData aUser = new UserData(rs.getString("username"), rs.getString("password"), rs.getString("email"));
                         userData.add(aUser);
                     }
                 }
@@ -127,7 +125,12 @@ public class SQLUserDAOTests {
     @DisplayName("Failure createUser")
     public void failcreateUser() {
         //Name too long
-        String longName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdkfjljklajklas";
+        String longName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaasdkfjljklajklas";
         Assertions.assertThrows(DataAccessException.class, ()->udao.createUser(longName, password, email));
     }
 

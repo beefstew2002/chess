@@ -1,12 +1,12 @@
 package dataaccess;
 
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.UnauthorizedException;
 import model.AuthData;
 
-import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import static dataaccess.DatabaseManager.createDatabase;
 
 public class SQLAuthDAO extends SQLDAO {
 
@@ -59,22 +59,16 @@ public class SQLAuthDAO extends SQLDAO {
     }
 
     public boolean verifyAuth(String authToken) {
-        /*int i = 0;
-        while (i < AUTH_DATA.size()) {
-            if (AUTH_DATA.get(i).authToken().equals(authToken)) {
-                return true;
-            }
-            i++;
-        }*/
+
+        ResultSet rs;
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * from auth WHERE authToken = ?")) {
                 preparedStatement.setString(1, authToken);
-                try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        if (rs.getString("authToken").equals(authToken)) {
-                            return true;
-                        }
+                rs = preparedStatement.executeQuery();
+                while (rs.next()) {
+                    if (rs.getString("authToken").equals(authToken)) {
+                        return true;
                     }
                 }
             }

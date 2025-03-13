@@ -1,11 +1,9 @@
 package dataaccess;
+import dataaccess.exceptions.DataAccessException;
 import model.UserData;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import static dataaccess.DatabaseManager.createDatabase;
 
 public class SQLUserDAO extends SQLDAO{
 

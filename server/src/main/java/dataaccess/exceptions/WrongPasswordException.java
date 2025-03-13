@@ -1,4 +1,4 @@
-package dataaccess;
+package dataaccess.exceptions;
 
 public class WrongPasswordException extends RuntimeException {
     public WrongPasswordException(String message) {

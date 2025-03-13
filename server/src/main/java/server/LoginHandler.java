@@ -2,8 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import dataaccess.DataAccessException;
-import dataaccess.WrongPasswordException;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.WrongPasswordException;
 import service.reqres.FailureResult;
 import service.reqres.LoginRequest;
 import service.reqres.LoginResult;

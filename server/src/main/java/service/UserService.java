@@ -1,6 +1,9 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.UsernameAlreadyTaken;
+import dataaccess.exceptions.WrongPasswordException;
 import model.AuthData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;

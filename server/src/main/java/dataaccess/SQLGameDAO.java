@@ -2,14 +2,13 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.exceptions.DataAccessException;
 import model.GameData;
 import model.GameMetaData;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static dataaccess.DatabaseManager.createDatabase;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class SQLGameDAO extends SQLDAO{

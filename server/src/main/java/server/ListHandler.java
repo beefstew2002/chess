@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
+import dataaccess.exceptions.DataAccessException;
 import service.reqres.FailureResult;
 import service.reqres.ListRequest;
 import service.reqres.ListResult;

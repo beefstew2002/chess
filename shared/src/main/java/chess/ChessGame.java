@@ -66,11 +66,6 @@ public class ChessGame {
         ArrayList<ChessMove> moves = new ArrayList<>();
         ArrayList<ChessMove> allMoves = (ArrayList<ChessMove>) theBoard.getPiece(startPosition).pieceMoves(theBoard, startPosition);
         //Check to see if any of the moves leave the king in danger
-        /*for (int i=0; i< allMoves.size(); i++) {
-            if (isMoveValid(allMoves.get(i))) {
-                moves.add(allMoves.get(i));
-            }
-        }*/
         for (ChessMove move : allMoves) {
             if (isMoveValid(move)) {
                 moves.add(move);
@@ -345,13 +340,6 @@ public class ChessGame {
             targetPiece = theBoard.getPiece(targetPosition);
             if (targetPiece != null && (targetPiece.getTeamColor() == enemyColor)) {
                 moves = (ArrayList<ChessMove>) targetPiece.pieceMoves(theBoard, targetPosition);
-                /*for (int i = 0; i < moves.size(); i++) {
-                    //If any pieces of the opposite team can move to this square
-                    //Return true
-                    if (moves.get(i).getEndPosition().equals(position)) {
-                        return true;
-                    }
-                }*/
                 for (ChessMove move : moves) {
                     if (move.getEndPosition().equals(position)) {
                         return true;
