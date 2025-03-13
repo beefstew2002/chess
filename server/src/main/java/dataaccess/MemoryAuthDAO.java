@@ -14,7 +14,7 @@ public class MemoryAuthDAO implements DAInterface {
         return AUTH_DATA;
     }
 
-    public void createAuth(AuthData authData) throws DataAccessException {
+    public void createAuth(AuthData authData) {
         AUTH_DATA.add(authData);
     }
 

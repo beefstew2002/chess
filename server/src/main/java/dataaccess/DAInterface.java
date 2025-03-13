@@ -12,9 +12,9 @@ public interface DAInterface {
 
     default ArrayList<UserData> getUserData() {return null;}
 
-    default  ArrayList<GameData> getGameData() {return null;};
+    default  ArrayList<GameData> getGameData() {return null;}
 
-    default ArrayList<AuthData> getAuthData() {return null;};
+    default ArrayList<AuthData> getAuthData() {return null;}
 
     default void createUser(String username, String password, String email) throws DataAccessException {}
 

@@ -120,8 +120,8 @@ public class UserServiceTests {
 
         LogoutRequest logoutRequest = new LogoutRequest("a random string pretending to be an auth token");
 
-        Assertions.assertThrows(DataAccessException.class, () -> {
-            logout(logoutRequest);
-        });
+        Assertions.assertThrows(DataAccessException.class, () ->
+            logout(logoutRequest)
+        );
     }
 }

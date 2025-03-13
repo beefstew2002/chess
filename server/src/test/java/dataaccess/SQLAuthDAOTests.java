@@ -59,8 +59,7 @@ public class SQLAuthDAOTests {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth WHERE authToken = ?")) {
                 preparedStatement.setString(1, authToken);
                 try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        String theAuthToken = rs.getString("authToken");
+                    if (rs.next()) {
                         return true;
                     }
                 }
@@ -72,7 +71,7 @@ public class SQLAuthDAOTests {
     }
     private ArrayList<AuthData> getAuthData() throws DataAccessException {
         //Get auth data
-        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
+        ArrayList<AuthData> authDataList = new ArrayList<>();
 
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
@@ -109,7 +108,7 @@ public class SQLAuthDAOTests {
     //getAuthData - failure
     @Test
     @DisplayName("Auth data not found")
-    public void noAuth() throws DataAccessException {
+    public void noAuth() {
 
         //Check a different auth token
         Assertions.assertTrue(adao.getAuthData().isEmpty());
@@ -128,11 +127,11 @@ public class SQLAuthDAOTests {
     //createAuth - failure
     @Test
     @DisplayName("Create auth failure")
-    public void createAuthFail() throws DataAccessException {
+    public void createAuthFail() {
         String authToken = "uhuhuhuh";
         adao.createAuth(new AuthData("sans", authToken));
         //Attempt to create a duplicate
-        Assertions.assertThrows(RuntimeException.class, ()->{adao.createAuth(new AuthData("sans", authToken));});
+        Assertions.assertThrows(RuntimeException.class, ()->adao.createAuth(new AuthData("sans", authToken)));
 
 
     }
@@ -178,9 +177,9 @@ public class SQLAuthDAOTests {
     //getAuth - failure
     @Test
     @DisplayName("getAuth failure")
-    public void getAuthFailure() throws DataAccessException {
+    public void getAuthFailure() {
 
-        Assertions.assertThrows(DataAccessException.class, ()->{adao.getAuth(authToken);});
+        Assertions.assertThrows(DataAccessException.class, ()->adao.getAuth(authToken));
     }
 
     //deleteAuth - success
@@ -207,7 +206,7 @@ public class SQLAuthDAOTests {
     //isEmpty - success
     @Test
     @DisplayName("isEmpty success")
-    public void isEmptySuccess() throws DataAccessException {
+    public void isEmptySuccess() {
 
         Assertions.assertTrue(adao.isEmpty());
     }

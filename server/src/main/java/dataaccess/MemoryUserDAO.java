@@ -13,14 +13,14 @@ public class MemoryUserDAO implements DAInterface{
     }
 
     public model.UserData getUser(String username) {
-        for (int i = 0; i < USER_DATA.size(); i++) {
-            if (USER_DATA.get(i).username().equals(username)) {
-                return USER_DATA.get(i);
+        for (UserData user : USER_DATA) {
+            if (user.username().equals(username)) {
+                return user;
             }
         }
         return null;
     }
-    public void createUser(String username, String password, String email) throws DataAccessException {
+    public void createUser(String username, String password, String email)  {
         UserData newUser = new UserData(username, password, email);
         USER_DATA.add(newUser);
     }

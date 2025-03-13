@@ -105,9 +105,9 @@ public class GameServiceTests {
 
         //Attempt to run list with a bad auth token
         ListRequest listRequest = new ListRequest("this is not a good auth token");
-        Assertions.assertThrows(DataAccessException.class, () -> {
-            list(listRequest);
-        });
+        Assertions.assertThrows(DataAccessException.class, () ->
+            list(listRequest)
+        );
     }
 
     //Join game success
