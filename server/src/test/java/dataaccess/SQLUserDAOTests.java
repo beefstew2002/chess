@@ -137,13 +137,14 @@ public class SQLUserDAOTests {
     @Test
     @DisplayName("Success isEmpty")
     public void successisEmpty() {
-
+        Assertions.assertTrue(udao.isEmpty());
     }
     //Failure isEmpty
     @Test
     @DisplayName("Failure isEmpty")
-    public void failisEmpty() {
-
+    public void failisEmpty() throws DataAccessException {
+        inventUser();
+        Assertions.assertFalse(udao.isEmpty());
     }
 
     //Success clearData
