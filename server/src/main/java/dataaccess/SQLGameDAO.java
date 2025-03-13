@@ -9,6 +9,7 @@ import model.UserData;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -33,11 +34,24 @@ public class SQLGameDAO implements DAInterface{
     }
 
     private void configureDatabase() throws DataAccessException {
+
+        //Get database name
+        String DATABASE_NAME;
+        try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
+            if (propStream == null) {
+                throw new Exception("Unable to load db.properties");
+            }
+            Properties props = new Properties();
+            props.load(propStream);
+            DATABASE_NAME = props.getProperty("db.name");
+        } catch (Exception e) {
+            throw new DataAccessException("yikes");
+        }
         try (var conn = getConnection()) {
-            var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
+            var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS "+DATABASE_NAME);
             createDbStatement.executeUpdate();
 
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
 
             var createUserTable = """
                     CREATE TABLE IF NOT EXISTS game (
