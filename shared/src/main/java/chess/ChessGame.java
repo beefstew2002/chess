@@ -1,5 +1,7 @@
 package chess;
 
+import model.GameMetaData;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -360,4 +362,5 @@ public class ChessGame {
     public boolean equals(ChessGame otherGame) {
         return this.theBoard.equals(otherGame.getBoard());
     }
+
 }

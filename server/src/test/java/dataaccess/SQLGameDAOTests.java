@@ -141,12 +141,25 @@ public class SQLGameDAOTests {
     @Test
     @DisplayName("updateGame success")
     public void updateGameSuccess() throws DataAccessException {
+        int id = addGame("scooby");
 
+        GameData newGame = new GameData(id, "zoinks", "rikes", "scooby", new ChessGame());
+        gdao.updateGame(newGame);
+
+        GameData theGame = checkGames().get(0);
+        Assertions.assertEquals(newGame.getMetaData(), theGame.getMetaData());
     }
     //updateGame failure
     @Test
     @DisplayName("updateGame failure")
     public void updateGameFailure() throws DataAccessException {
+        int id = addGame("scooby");
+
+        GameData newGame = new GameData(2, "zoinks", "rikes", "scooby", new ChessGame());
+        gdao.updateGame(newGame);
+
+        GameData theGame = checkGames().get(0);
+        Assertions.assertNotEquals(newGame.getMetaData(), theGame.getMetaData());
 
     }
 
