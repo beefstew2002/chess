@@ -249,15 +249,18 @@ public class SQLAuthDAOTests {
 
     //isEmpty - success
     @Test
-    @DisplayName("")
-    public void test8() throws DataAccessException {
+    @DisplayName("isEmpty success")
+    public void isEmptySuccess() throws DataAccessException {
 
+        Assertions.assertTrue(adao.isEmpty());
     }
     //isEmpty - failure
     @Test
-    @DisplayName("")
-    public void test9() throws DataAccessException {
+    @DisplayName("isEmpty failure")
+    public void isntEmpty() throws DataAccessException {
+        inventUser();
 
+        Assertions.assertFalse(adao.isEmpty());
     }
 
     //clearData success
