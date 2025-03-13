@@ -13,6 +13,9 @@ public class SQLAuthDAOTests {
     AuthDAO adao;
     GameDAO gdao;
 
+    String username = "peeps";
+    String authToken = "fake auth token";
+    AuthData user;
     //setup
     @BeforeEach
     public void setup() {
@@ -24,7 +27,22 @@ public class SQLAuthDAOTests {
         adao.clearData();
         gdao.clearData();
 
+        user = new AuthData(username, authToken);
+    }
 
+    //invent user
+    private void inventUser() throws DataAccessException {
+
+        //Add auth data
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?);")) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, authToken);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //getAuthData - success
@@ -159,15 +177,18 @@ public class SQLAuthDAOTests {
 
     //getAuth - success
     @Test
-    @DisplayName("")
-    public void test4() throws DataAccessException {
+    @DisplayName("GetAuth success")
+    public void getAuthSuccess() throws DataAccessException {
+        inventUser();
 
+        Assertions.assertEquals(user, adao.getAuth(authToken));
     }
     //getAuth - failure
     @Test
-    @DisplayName("")
-    public void test5() throws DataAccessException {
+    @DisplayName("getAuth failure")
+    public void getAuthFailure() throws DataAccessException {
 
+        Assertions.assertThrows(DataAccessException.class, ()->{adao.getAuth(authToken);});
     }
 
     //deleteAuth - success
