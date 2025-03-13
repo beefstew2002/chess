@@ -1,5 +1,6 @@
 package dataaccess;
 
+import model.AuthData;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
@@ -74,14 +75,53 @@ public class SQLAuthDAOTests {
 
     //createAuth - success
     @Test
-    @DisplayName("")
-    public void test() throws DataAccessException {
+    @DisplayName("Create auth successfully")
+    public void createAuthSucceed() throws DataAccessException {
+        String authToken = "uhuhuhuh";
+        adao.createAuth(new AuthData("sans", authToken));
+        boolean found = false;
 
+        //Check if it's there
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth WHERE authToken = ?")) {
+                preparedStatement.setString(1, authToken);
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        String theAuthToken = rs.getString("authToken");
+                        found = true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        Assertions.assertTrue(found);
     }
     //createAuth - failure
     @Test
-    @DisplayName("")
-    public void test1() throws DataAccessException {
+    @DisplayName("Create auth failure")
+    public void createAuthFail() throws DataAccessException {
+        String authToken = "uhuhuhuh";
+        adao.createAuth(new AuthData("sans", authToken));
+        //Attempt to create a duplicate
+        Assertions.assertThrows(RuntimeException.class, ()->{adao.createAuth(new AuthData("sans", authToken));});
+        boolean found = false;
+
+        //Check if it's there
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth WHERE authToken = ?")) {
+                preparedStatement.setString(1, authToken);
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        String theAuthToken = rs.getString("authToken");
+                        found = true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
