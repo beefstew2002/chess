@@ -197,13 +197,16 @@ public class SQLGameDAOTests {
     @Test
     @DisplayName("getGameData success")
     public void getGameDataSuccess() throws DataAccessException {
+        addGame("firstGame");
 
+        Assertions.assertEquals(checkGames().get(0).getMetaData(), gdao.getGameData().get(0).getMetaData());
     }
     //getGameData failure
     @Test
     @DisplayName("getGameData failure")
     public void getGameDataFailure() throws DataAccessException {
-
+        //No games to get
+        Assertions.assertTrue(gdao.getGameData().isEmpty());
     }
 
     //clearData success
