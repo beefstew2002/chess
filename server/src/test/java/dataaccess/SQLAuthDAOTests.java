@@ -34,6 +34,10 @@ public class SQLAuthDAOTests {
     //invent user
     private void inventUser() throws DataAccessException {
 
+        inventUser(username, authToken);
+    }
+    private void inventUser(String username, String authToken) throws DataAccessException {
+
         //Add auth data
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?);")) {
@@ -265,8 +269,33 @@ public class SQLAuthDAOTests {
 
     //clearData success
     @Test
-    @DisplayName("")
-    public void test0() throws DataAccessException {
+    @DisplayName("clearData success")
+    public void clearDataTest() throws DataAccessException {
+        inventUser();
+        inventUser("papyrus", "spaghetti");
+        inventUser("cram", "janet");
 
+        adao.clearData();
+
+        //Check if list is empty
+
+        //Get auth data
+        ArrayList<AuthData> authDataList = new ArrayList<AuthData>();
+
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth;")) {
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        String username = rs.getString("username");
+                        String authToken = rs.getString("authToken");
+                        authDataList.add(new AuthData(username, authToken));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        Assertions.assertTrue(authDataList.isEmpty());
     }
 }
