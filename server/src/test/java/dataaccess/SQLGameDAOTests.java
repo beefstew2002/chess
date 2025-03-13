@@ -4,6 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
+import model.GameMetaData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -118,12 +119,21 @@ public class SQLGameDAOTests {
     @Test
     @DisplayName("listGames success")
     public void listGamesSuccess() throws DataAccessException {
+        addGame("gooby");
+        addGame("bingus");
+        addGame("cromslor");
+        ArrayList<GameMetaData> gameData = gdao.listGames();
 
+        Assertions.assertEquals(3, gameData.size());
     }
     //listGames failure
     @Test
     @DisplayName("listGames failure")
     public void listGamesFailure() throws DataAccessException {
+        //No entries if no games
+        ArrayList<GameMetaData> gameData = gdao.listGames();
+
+        Assertions.assertEquals(0, gameData.size());
 
     }
 
