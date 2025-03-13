@@ -182,13 +182,15 @@ public class SQLGameDAOTests {
     @Test
     @DisplayName("hasGame success")
     public void hasGameSuccess() throws DataAccessException {
+        addGame("zoinks");
 
+        Assertions.assertTrue(gdao.hasGame("zoinks"));
     }
     //hasGame failure
     @Test
     @DisplayName("hasGame failure")
     public void hasGameFailure() throws DataAccessException {
-
+        Assertions.assertFalse(gdao.hasGame("jinkies"));
     }
 
     //getGameData success
