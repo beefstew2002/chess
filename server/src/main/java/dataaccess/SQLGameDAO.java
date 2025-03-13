@@ -94,17 +94,7 @@ public class SQLGameDAO implements DAInterface{
     }
 
     public GameData getGame(int gameID) throws DataAccessException {
-        /*for (GameData gd : GAME_DATA) {
-            if (gd.gameID() == gameID) {
-                return gd;
-            }
-        }
-        throw new DataAccessException("Game doesn't exist");*/
 
-        //SELECT * from game WHERE gameID = *gameID;
-
-        //Select the game's state (JSON string) from the database
-        //Deserialize the JSON string to a ChessGame Java object
 
         String whiteUsername = null;
         String blackUsername = null;
@@ -226,7 +216,7 @@ public class SQLGameDAO implements DAInterface{
     }
 
     public int getGameId() {
-        return 0;//GAME_DATA.size() + 1;
+        return 0;
     }
 
     public void clearData() {

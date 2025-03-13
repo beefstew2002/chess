@@ -34,10 +34,6 @@ public class SQLUserDAO implements DAInterface{
 
             conn.setCatalog("chess");
 
-            /*try (var debugTableStatement = conn.prepareStatement("DROP TABLE IF EXISTS user;")) {
-                debugTableStatement.executeUpdate();
-            }*/
-
             var createUserTable = """
                     CREATE TABLE  IF NOT EXISTS user (
                         username VARCHAR(256) NOT NULL,
@@ -78,12 +74,6 @@ public class SQLUserDAO implements DAInterface{
     }
 
     public model.UserData getUser(String username) {
-        /*
-        for (int i = 0; i < USER_DATA.size(); i++) {
-            if (USER_DATA.get(i).username().equals(username)) {
-                return USER_DATA.get(i);
-            }
-        }*/
         String theUsername = null;
         String password = "";
         String email = "";
@@ -115,9 +105,6 @@ public class SQLUserDAO implements DAInterface{
 
     //SQL helper function
     public void createUser(String username, String password, String email) throws DataAccessException {
-        /*UserData newUser = new UserData(username, password, email);
-        USER_DATA.add(newUser);*/
-
         String sql = "INSERT INTO user (username, password, email) VALUES (?, ?, ?);";
 
         try (var conn = getConnection()) {

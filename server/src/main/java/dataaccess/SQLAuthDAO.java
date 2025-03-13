@@ -113,13 +113,6 @@ public class SQLAuthDAO implements DAInterface {
     }
 
     public AuthData getAuth(String authToken) throws DataAccessException {
-        /*for (AuthData ad : AUTH_DATA) {
-            if (ad.authToken().equals(authToken)) {
-                return ad;
-            }
-        }
-        throw new UnauthorizedException("Auth doesn't exist");*/
-
 
         //SELECT * FROM auth WHERE authToken = authToken;
 
@@ -141,16 +134,6 @@ public class SQLAuthDAO implements DAInterface {
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
-        /*int i = AUTH_DATA.size() - 1;
-        while (i >= 0) {
-            if (AUTH_DATA.get(i).authToken().equals(authToken)) {
-                AUTH_DATA.remove(i);
-                return;
-            }
-            i--;
-        }
-        throw new DataAccessException("Could not find auth data to delete");*/
-
 
         //DELETE FROM auth WHERE username = *username;
 
