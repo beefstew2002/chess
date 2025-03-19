@@ -1,4 +1,8 @@
+package server;
+
 import com.google.gson.Gson;
+import model.GameMetaData;
+import exception.ResponseException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +19,51 @@ public class ServerFacade {
     }
 
     //Methods for API
-    //...
+    //register
+    public void register(RegisterRequest request) throws ResponseException{
+        var path = "/user";
+        this.makeRequest("POST", path, request, null);
+    }
 
-    private <T> T MakeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    //login
+    public void login(LoginRequest request) throws ResponseException {
+        var path = "/session";
+        this.makeRequest("POST", path, request, null);
+    }
+
+    //logout
+    public void logout() throws ResponseException {
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, null);
+    }
+
+    //create
+    public int create(String name) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("POST", path, name, Integer.class);
+    }
+
+    //list
+    public GameMetaData[] list() throws ResponseException {
+        var path = "/game";
+        record listResponse(GameMetaData[] games) {}
+        var response = this.makeRequest("GET", path, null, listResponse.class);
+        return response.games();
+    }
+
+    //join
+    public void join(int id) throws ResponseException {
+        var path = "/game";
+        this.makeRequest("PUT", path, id, null);
+    }
+
+    //clear
+    public void clearData() throws ResponseException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null);
+    }
+
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();

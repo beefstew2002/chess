@@ -1,4 +1,4 @@
-/*
+package exception;/*
 THIS IS ALL COPIED STRAIGHT OUT OF PETSHOP
 As the Founding Fathers intended
  */
