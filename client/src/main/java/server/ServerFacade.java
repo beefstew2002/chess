@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import model.AuthData;
 import model.GameMetaData;
 import exception.ResponseException;
 
@@ -17,18 +18,21 @@ public class ServerFacade {
     public ServerFacade(String url) {
         serverUrl = url;
     }
+    public ServerFacade(int url) {
+        serverUrl = Integer.toString(url);
+    }
 
     //Methods for API
     //register
-    public void register(RegisterRequest request) throws ResponseException{
+    public AuthData register(String username, String password, String email) throws ResponseException{
         var path = "/user";
-        this.makeRequest("POST", path, request, null);
+        return this.makeRequest("POST", path, new RegisterRequest(username, password, email), null);
     }
 
     //login
-    public void login(LoginRequest request) throws ResponseException {
+    public AuthData login(String username, String password) throws ResponseException {
         var path = "/session";
-        this.makeRequest("POST", path, request, null);
+        return this.makeRequest("POST", path, new LoginRequest(username, password), null);
     }
 
     //logout
