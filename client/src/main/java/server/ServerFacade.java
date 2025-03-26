@@ -89,6 +89,18 @@ public class ServerFacade {
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
+            /*
+             * I need to add a way to check if the request object includes an authToken
+             * and to add the authToken to the header as authorization if it does
+             * http.addRequestProperty("authorization", authToken);
+             *
+             * Found a cursed way to do it. There's got to be a better one. Do I want to find it?
+             * I could outsource it to a helper function at least...
+             * */
+            if (request.getClass() == LogoutRequest.class) {
+                http.addRequestProperty("authorization", ((LogoutRequest) request).authToken());
+            }
+
             http.addRequestProperty("Content-Type", "application/json");
             String reqData = new Gson().toJson(request);
             try (OutputStream reqBody = http.getOutputStream()) {
