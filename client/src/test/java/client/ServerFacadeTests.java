@@ -212,6 +212,11 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Create failure")
     void createFailure() throws Exception {
+        var authData = facade.register("player1", "password", "p1@mail.com");
+        int gameID = facade.create("welcome to the underground", authData.authToken()).gameID();
+        assertThrows(Exception.class, () -> {
+            facade.create("welcome to the underground", authData.authToken());
+        });
 
     }
 
