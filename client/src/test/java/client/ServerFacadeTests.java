@@ -28,7 +28,7 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade("http://localhost:"+port);
+        facade = new ServerFacade(port);
     }
 
     /*
@@ -76,6 +76,20 @@ public class ServerFacadeTests {
         //rikes
         try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE game")) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE user")) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE auth")) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {

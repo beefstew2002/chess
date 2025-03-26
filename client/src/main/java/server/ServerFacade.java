@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import model.AuthData;
 import model.GameMetaData;
 import exception.ResponseException;
+import server.reqres.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,17 +17,17 @@ public class ServerFacade {
     private final String serverUrl;
 
     public ServerFacade(String url) {
-        serverUrl = url;
+        serverUrl = "http://localhost:"+ url;
     }
     public ServerFacade(int url) {
-        serverUrl = Integer.toString(url);
+        serverUrl = "http://localhost:"+ Integer.toString(url);
     }
 
     //Methods for API
     //register
     public AuthData register(String username, String password, String email) throws ResponseException{
         var path = "/user";
-        return this.makeRequest("POST", path, new RegisterRequest(username, password, email), null);
+        return this.makeRequest("POST", path, new RegisterRequest(username, password, email), AuthData.class);
     }
 
     //login
@@ -68,6 +69,7 @@ public class ServerFacade {
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -100,7 +102,11 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr != null) {
-                    throw ResponseException.fromJson(respErr);
+                    try {
+                        throw ResponseException.fromJson(respErr);
+                    } catch (Exception e) {
+                        throw new ResponseException(status, "other failure: " + status);
+                    }
                 }
             }
 
