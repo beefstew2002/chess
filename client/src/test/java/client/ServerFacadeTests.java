@@ -285,6 +285,17 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Clear success")
     void clearSuccess() throws Exception {
+        var authData = facade.register("player1", "password", "p1@mail.com");
+        facade.create("welcome to the underground", authData.authToken());
+        facade.create("how was the fall", authData.authToken());
+        facade.create("if you wanna look around", authData.authToken());
+        facade.create("give us a call", authData.authToken());
+
+        facade.clearData();
+
+        assertThrows(Exception.class, () -> {
+            facade.login("player1", "password");
+        });
 
     }
 }
