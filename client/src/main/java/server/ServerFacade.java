@@ -49,11 +49,9 @@ public class ServerFacade {
     }
 
     //list
-    public GameMetaData[] list() throws ResponseException {
+    public ListResult list(String authToken) throws ResponseException {
         var path = "/game";
-        record listResponse(GameMetaData[] games) {}
-        var response = this.makeRequest("GET", path, null, listResponse.class);
-        return response.games();
+        return this.makeRequest("GET", path, new ListRequest(authToken), ListResult.class);
     }
 
     //join
@@ -102,9 +100,12 @@ public class ServerFacade {
             }
 
             http.addRequestProperty("Content-Type", "application/json");
-            String reqData = new Gson().toJson(request);
-            try (OutputStream reqBody = http.getOutputStream()) {
-                reqBody.write(reqData.getBytes());
+
+            if (http.getRequestMethod() != "GET") {
+                String reqData = new Gson().toJson(request);
+                try (OutputStream reqBody = http.getOutputStream()) { //It looks like this line sets the method to POST for some reason
+                    reqBody.write(reqData.getBytes());
+                }
             }
         }
     }
@@ -143,3 +144,7 @@ public class ServerFacade {
         return status / 100 == 2;
     }
 }
+
+
+// reader.sd.in.in.in.buf
+

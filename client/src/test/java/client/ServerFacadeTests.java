@@ -224,7 +224,15 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("List success")
     void listSuccess() throws Exception {
+        var authData = facade.register("player1", "password", "p1@mail.com");
+        facade.create("welcome to the underground", authData.authToken());
+        facade.create("how was the fall", authData.authToken());
+        facade.create("if you wanna look around", authData.authToken());
+        facade.create("give us a call", authData.authToken());
 
+        var listGames = facade.list(authData.authToken()).games();
+
+        assertFalse(listGames.isEmpty());
     }
 
     //List failure
