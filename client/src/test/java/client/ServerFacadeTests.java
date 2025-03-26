@@ -149,7 +149,12 @@ public class ServerFacadeTests {
     void logoutSuccess() throws Exception {
         facade.register("player1", "password", "p1@mail.com");
         var authData = facade.login("player1", "password");
-        facade.logout(authData.authToken());
+        assertDoesNotThrow(() -> {
+            facade.logout(authData.authToken());
+        });
+        assertThrows(Exception.class, ()->{
+            facade.logout(authData.authToken());
+        });
 
     }
 
@@ -168,6 +173,8 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Create success")
     void createSuccess() throws Exception {
+        var authData = facade.register("player1", "password", "p1@mail.com");
+        facade.create("welcome to the underground", authData.authToken());
 
     }
 

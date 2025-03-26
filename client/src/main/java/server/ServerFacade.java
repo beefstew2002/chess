@@ -43,9 +43,9 @@ public class ServerFacade {
     }
 
     //create
-    public int create(String name) throws ResponseException {
+    public int create(String name, String authToken) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("POST", path, name, Integer.class);
+        return this.makeRequest("POST", path, new CreateRequest(name, authToken), Integer.class);
     }
 
     //list
