@@ -255,6 +255,12 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("Join success")
     void joinSuccess() throws Exception {
+        String username = "TheGr8Papyrus";
+        var authData = facade.register(username, "password", "p1@mail.com");
+        int gameId = facade.create("welcome to the underground", authData.authToken()).gameID();
+        facade.join(gameId, "WHITE", authData.authToken());
+
+        assertEquals(username, facade.list(authData.authToken()).games().getFirst().whiteUsername());
 
     }
 

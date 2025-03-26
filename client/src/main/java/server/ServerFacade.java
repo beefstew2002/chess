@@ -55,9 +55,9 @@ public class ServerFacade {
     }
 
     //join
-    public void join(int id) throws ResponseException {
+    public void join(int id, String playerColor, String authToken) throws ResponseException {
         var path = "/game";
-        this.makeRequest("PUT", path, id, null);
+        this.makeRequest("PUT", path, new JoinRequest(id, playerColor, authToken), JoinResult.class);
     }
 
     //clear
