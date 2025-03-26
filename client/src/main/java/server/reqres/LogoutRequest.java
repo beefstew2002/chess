@@ -1,5 +1,5 @@
 package server.reqres;
 
-public record LogoutRequest(String authToken) {
+public record LogoutRequest(String authToken) implements Authorized {
 
 }

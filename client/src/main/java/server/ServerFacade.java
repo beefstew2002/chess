@@ -94,10 +94,10 @@ public class ServerFacade {
              * and to add the authToken to the header as authorization if it does
              * http.addRequestProperty("authorization", authToken);
              *
-             * Found a cursed way to do it. There's got to be a better one. Do I want to find it?
+             * Found a cursed way to do it. There's got to be a better way. Do I want to find it?
              * I could outsource it to a helper function at least...
              * */
-            if (request.getClass() == LogoutRequest.class) {
+            if (request instanceof Authorized) {
                 http.addRequestProperty("authorization", ((LogoutRequest) request).authToken());
             }
 
