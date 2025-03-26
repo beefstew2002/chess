@@ -239,6 +239,15 @@ public class ServerFacadeTests {
     @Test
     @DisplayName("List failure")
     void listFailure() throws Exception {
+        var authData = facade.register("player1", "password", "p1@mail.com");
+        facade.create("welcome to the underground", authData.authToken());
+        facade.create("how was the fall", authData.authToken());
+        facade.create("if you wanna look around", authData.authToken());
+        facade.create("give us a call", authData.authToken());
+
+        assertThrows(Exception.class, () -> {
+            facade.list("bad auth token");
+        });
 
     }
 
