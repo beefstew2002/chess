@@ -33,13 +33,13 @@ public class ServerFacade {
     //login
     public AuthData login(String username, String password) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, new LoginRequest(username, password), null);
+        return this.makeRequest("POST", path, new LoginRequest(username, password), AuthData.class);
     }
 
     //logout
-    public void logout() throws ResponseException {
+    public void logout(String authToken) throws ResponseException {
         var path = "/session";
-        this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, new LogoutRequest(authToken), null);
     }
 
     //create

@@ -122,4 +122,94 @@ public class ServerFacadeTests {
         assertThrows(Exception.class, ()->{facade.register("player1", "password", "p1@mail.com");});
 
     }
+
+    //Login success
+    @Test
+    @DisplayName("Login success")
+    void loginSuccess() throws Exception {
+        facade.register("player1", "password", "p1@mail.com");
+        var authData = facade.login("player1", "password");
+        assertTrue(authData.authToken().length() > 10);
+    }
+
+    //Login failure
+    @Test
+    @DisplayName("Login failure")
+    void loginFailure() throws Exception {
+        facade.register("player1", "password", "p1@mail.com");
+        assertThrows(Exception.class, ()->{
+            facade.login("player1", "wrong_password");
+        });
+
+    }
+
+    //Logout success
+    @Test
+    @DisplayName("Logout success")
+    void logoutSuccess() throws Exception {
+        facade.register("player1", "password", "p1@mail.com");
+        var authData = facade.login("player1", "password");
+        facade.logout(authData.authToken());
+
+    }
+
+    //Logout failure
+    @Test
+    @DisplayName("Logout failure")
+    void logoutFailure() throws Exception {
+        var authData = facade.register("player1", "password", "p1@mail.com");
+        facade.logout(authData.authToken());
+        assertThrows(Exception.class, ()->{
+            facade.logout(authData.authToken());
+        });
+    }
+
+    //Create success
+    @Test
+    @DisplayName("Create success")
+    void createSuccess() throws Exception {
+
+    }
+
+    //Create failure
+    @Test
+    @DisplayName("Create failure")
+    void createFailure() throws Exception {
+
+    }
+
+    //List success
+    @Test
+    @DisplayName("List success")
+    void listSuccess() throws Exception {
+
+    }
+
+    //List failure
+    @Test
+    @DisplayName("List failure")
+    void listFailure() throws Exception {
+
+    }
+
+    //Join success
+    @Test
+    @DisplayName("Join success")
+    void joinSuccess() throws Exception {
+
+    }
+
+    //Join failure
+    @Test
+    @DisplayName("Join failure")
+    void joinFailure() throws Exception {
+
+    }
+
+    //Clear success
+    @Test
+    @DisplayName("Clear success")
+    void clearSuccess() throws Exception {
+
+    }
 }
