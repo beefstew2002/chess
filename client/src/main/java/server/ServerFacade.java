@@ -43,9 +43,9 @@ public class ServerFacade {
     }
 
     //create
-    public int create(String name, String authToken) throws ResponseException {
+    public CreateResult create(String name, String authToken) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("POST", path, new CreateRequest(name, authToken), Integer.class);
+        return this.makeRequest("POST", path, new CreateRequest(name, authToken), CreateResult.class);
     }
 
     //list
@@ -97,8 +97,8 @@ public class ServerFacade {
              * Found a cursed way to do it. There's got to be a better way. Do I want to find it?
              * I could outsource it to a helper function at least...
              * */
-            if (request instanceof Authorized) {
-                http.addRequestProperty("authorization", ((LogoutRequest) request).authToken());
+            if (request instanceof Authorized authorizedRequest) {
+                http.addRequestProperty("authorization", authorizedRequest.authToken());
             }
 
             http.addRequestProperty("Content-Type", "application/json");

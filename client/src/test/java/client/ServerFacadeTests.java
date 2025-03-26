@@ -1,7 +1,10 @@
 package client;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import dataaccess.DatabaseManager;
 import dataaccess.exceptions.DataAccessException;
+import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
@@ -9,6 +12,7 @@ import server.ServerFacade;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,6 +107,32 @@ public class ServerFacadeTests {
     }
 
 
+    //get game data
+    private ArrayList<GameData> checkGames() throws DataAccessException{
+        ArrayList<GameData> gameData = new ArrayList<>();
+
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM game")) {
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        ChessGame game = new Gson().fromJson(rs.getString("gameJson"), ChessGame.class);
+                        gameData.add(new GameData(
+                                rs.getInt("gameID"),
+                                rs.getString("whiteUsername"),
+                                rs.getString("blackUsername"),
+                                rs.getString("gameName"),
+                                game));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return gameData;
+    }
+
+
     @Test
     public void sampleTest() {
         assertTrue(true);
@@ -174,8 +204,8 @@ public class ServerFacadeTests {
     @DisplayName("Create success")
     void createSuccess() throws Exception {
         var authData = facade.register("player1", "password", "p1@mail.com");
-        facade.create("welcome to the underground", authData.authToken());
-
+        int gameID = facade.create("welcome to the underground", authData.authToken()).gameID();
+        assertEquals(1, gameID);
     }
 
     //Create failure
