@@ -2,6 +2,7 @@ package ui;
 
 import exception.ResponseException;
 import model.AuthData;
+import model.GameMetaData;
 import model.UserData;
 import server.ServerFacade;
 
@@ -33,7 +34,7 @@ public class ChessClient {
                 case "register" -> register(params);
                 case "logout" -> logout();
                 case "create" -> create(params);
-                //case "list" -> list();
+                case "list" -> list();
                 //case "join" -> join(params);
                 //case "observe" -> observe(params);
                 default -> help();
@@ -75,6 +76,26 @@ public class ChessClient {
             return String.format("You created a new game %s with ID number %d", params[0], gameId);
         }
         throw new ResponseException(400, "Expected: <username> <password>");
+    }
+    public String list() throws ResponseException {
+        assertSignedIn();
+        var gameList = server.list(user.authToken()).games();
+        String s = "";
+        for (GameMetaData game : gameList) {
+            s += game.gameName() + "\n";
+
+            s += "     White";
+            s += (game.whiteUsername() == null) ? " empty" : ": " + game.whiteUsername();
+            s += "\n";
+
+            s += "     Black";
+            s += (game.blackUsername() == null) ? " empty" : ": " + game.blackUsername();
+            s += "\n";
+
+            s += "     " + "ID: " + game.gameID() + "\n";
+            s += "\n";
+        }
+        return s;
     }
 
     public String help() {
