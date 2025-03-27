@@ -17,7 +17,7 @@ public class ServerFacade {
     private final String serverUrl;
 
     public ServerFacade(String url) {
-        serverUrl = "http://localhost:"+ url;
+        serverUrl = /*"http://localhost:"+*/ url;
     }
     public ServerFacade(int url) {
         serverUrl = "http://localhost:"+ Integer.toString(url);
