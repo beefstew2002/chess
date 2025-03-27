@@ -31,7 +31,7 @@ public class ChessClient {
                 case "quit" -> "quit";
                 case "login" -> login(params);
                 case "register" -> register(params);
-                //case "logout" -> logout();
+                case "logout" -> logout();
                 //case "create" -> create(params);
                 //case "list" -> list();
                 //case "join" -> join(params);
@@ -56,10 +56,16 @@ public class ChessClient {
         assertSignedOut();
         if (params.length >= 2) {
             state = State.SIGNEDIN;
-            AuthData user = server.login(params[0], params[1]);
+            user = server.login(params[0], params[1]);
             return String.format("You signed in as %s", user.username());
         }
         throw new ResponseException(400, "Expected: <username> <password>");
+    }
+    public String logout() throws ResponseException {
+        assertSignedIn();
+        state = State.SIGNEDOUT;
+        server.logout(user.authToken());
+        return String.format("You signed out as %s", user.username());
     }
 
     public String help() {
