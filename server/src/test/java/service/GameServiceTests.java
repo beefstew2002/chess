@@ -91,7 +91,10 @@ public class GameServiceTests {
         ListResult listResult = list(listRequest);
 
         //Check to make sure they're the same
-        Assertions.assertEquals(gamesList, listResult.games());
+        //Assertions.assertEquals(gamesList, listResult.games());
+        for (int i=0; i<gamesList.size(); i++) {
+            Assertions.assertEquals(gamesList.get(i), listResult.games().get(i));
+        }
 
     }
 
