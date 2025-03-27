@@ -2,7 +2,6 @@ package client;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import dataaccess.DatabaseManager;
 import dataaccess.exceptions.DataAccessException;
 import model.GameData;
 import org.junit.jupiter.api.*;
@@ -22,10 +21,10 @@ public class ServerFacadeTests {
 
     private static Server server;
     static ServerFacade facade;
-    private static String DATABASE_NAME;
-    private static String USER;
-    private static String PASSWORD;
-    private static String CONNECTION_URL;
+    private static final String DATABASE_NAME;
+    private static final String USER;
+    private static final String PASSWORD;
+    private static final String CONNECTION_URL;
 
     @BeforeAll
     public static void init() {

@@ -2,7 +2,6 @@ package server;
 
 import com.google.gson.Gson;
 import model.AuthData;
-import model.GameMetaData;
 import exception.ResponseException;
 import server.reqres.*;
 

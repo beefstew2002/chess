@@ -5,7 +5,6 @@ import dataaccess.exceptions.BadRequestException;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.UnauthorizedException;
 import model.GameData;
-import model.GameMetaData;
 import service.reqres.*;
 
 import java.util.ArrayList;

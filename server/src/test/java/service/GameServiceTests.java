@@ -3,7 +3,6 @@ package service;
 
 import dataaccess.*;
 import dataaccess.exceptions.DataAccessException;
-import model.GameMetaData;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

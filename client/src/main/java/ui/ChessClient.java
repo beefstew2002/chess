@@ -1,17 +1,13 @@
 package ui;
 
-import chess.ChessGame;
 import chess.ChessPiece;
 import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
-import model.UserData;
 import server.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
-import ui.EscapeSequences.*;
 
 public class ChessClient {
 
@@ -19,11 +15,11 @@ public class ChessClient {
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
     private AuthData user;
-    private Repl notificationHandler;
+    private final Repl notificationHandler;
 
     public ChessClient(String serverUrl, Repl notificationHandler) {
-        server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        server = new ServerFacade(this.serverUrl);
         user = new AuthData("", "");
         this.notificationHandler = notificationHandler;
     }
@@ -53,7 +49,7 @@ public class ChessClient {
         assertSignedOut();
         if (params.length >= 3) {
             try {
-                AuthData user = server.register(params[0], params[1], params[2]);
+                user = server.register(params[0], params[1], params[2]);
                 state = State.SIGNEDIN;
             } catch (Exception e) {
                 return "Try again, that username might be taken";
@@ -209,30 +205,29 @@ public class ChessClient {
             s += (pov == 0) ? bpc + blackUsername + "\n" : wpc + whiteUsername + "\n" ;
 
             //Board as an array of strings
-            ArrayList<ArrayList<String>> boardArray = new ArrayList<ArrayList<String>>();
+            ArrayList<ArrayList<String>> boardArray = new ArrayList<>();
             //Initialize it as empty
             for (int y=0; y<10; y++) {
-                boardArray.add(new ArrayList<String>());
+                boardArray.add(new ArrayList<>());
                 for (int x=0; x<10; x++) {
                     boardArray.get(y).add("   ");
                 }
             }
             //Add borders
-            String wideSpace = "\u2003";
             //Top border
-            boardArray.get(0).set(0,grayBack+"   ");
+            boardArray.getFirst().set(0,grayBack+"   ");
             boardArray.get(0).set(9,grayBack+"   ");
             for (int x=1; x<9; x++) {
                 char let = (char) (x + 96);
-                String row = grayBack+blackText+" "+Character.toString(let)+" ";
-                boardArray.get(0).set(x, row);
+                String row = grayBack+blackText+" "+let+" ";
+                boardArray.getFirst().set(x, row);
             }
             //Bottom border
             boardArray.get(9).set(0,grayBack+"   ");
             boardArray.get(9).set(9,grayBack+"   ");
             for (int x=1; x<9; x++) {
                 char let = (char) (x + 96);
-                String row = grayBack+blackText+" "+Character.toString(let)+" ";
+                String row = grayBack+blackText+" "+let+" ";
                 boardArray.get(9).set(x, row);
             }
             //Left border
@@ -282,7 +277,7 @@ public class ChessClient {
             if (pov == 1) {
                 ArrayList<ArrayList<String>> flippedBoard = new ArrayList<>();
                 for (int y=9; y>=0; y--) {
-                    flippedBoard.add(new ArrayList<String>());
+                    flippedBoard.add(new ArrayList<>());
                     for (int x=9; x>=0; x--) {
                         flippedBoard.get(9-y).add(boardArray.get(y).get(x));
                     }
@@ -309,7 +304,7 @@ public class ChessClient {
     }
 
     public String displayGame(int id, String color) {
-        if (color.toUpperCase().equals("BLACK")) {
+        if (color.equalsIgnoreCase("BLACK")) {
             return displayGame(id, 1);
         }
         return displayGame(id, 0);

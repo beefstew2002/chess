@@ -4,7 +4,6 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.exceptions.DataAccessException;
 import model.GameData;
-import model.GameMetaData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
