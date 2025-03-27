@@ -29,7 +29,7 @@ public class ChessClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 //case "quit" -> quit();
-                //case "login" -> login(params);
+                case "login" -> login(params);
                 case "register" -> register(params);
                 //case "logout" -> logout();
                 //case "create" -> create(params);
@@ -51,6 +51,17 @@ public class ChessClient {
             return String.format("You signed in as %s", user.username());
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
+    }
+
+
+    public String login(String... params) throws ResponseException {
+        assertSignedOut();
+        if (params.length >= 2) {
+            state = State.SIGNEDIN;
+            AuthData user = server.login(params[0], params[1]);
+            return String.format("You signed in as %s", user.username());
+        }
+        throw new ResponseException(400, "Expected: <username> <password>");
     }
 
     public String help() {

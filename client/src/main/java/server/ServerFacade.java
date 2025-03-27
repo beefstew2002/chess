@@ -20,7 +20,7 @@ public class ServerFacade {
         serverUrl = /*"http://localhost:"+*/ url;
     }
     public ServerFacade(int url) {
-        serverUrl = "http://localhost:"+ Integer.toString(url);
+        serverUrl = /*"http://localhost:"+*/ Integer.toString(url);
     }
 
     //Methods for API
