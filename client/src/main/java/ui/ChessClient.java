@@ -172,7 +172,29 @@ public class ChessClient {
         return "You cheated. Someone is coming";
     }
 
-    public String displayGame(int id, int pov) {
+    private String getPieceChar(ChessPiece.PieceType type) {
+        return switch(type) {
+            case KING -> "K";
+            case QUEEN -> "Q";
+            case ROOK -> "R";
+            case KNIGHT -> "N";
+            case BISHOP -> "B";
+            case PAWN -> "P";
+        };
+    }
+
+    private ArrayList<ArrayList<String>> flipBoard(ArrayList<ArrayList<String>> oldBoard) {
+        ArrayList<ArrayList<String>> flippedBoard = new ArrayList<>();
+        for (int y=9; y>=0; y--) {
+            flippedBoard.add(new ArrayList<>());
+            for (int x=9; x>=0; x--) {
+                flippedBoard.get(9-y).add(oldBoard.get(y).get(x));
+            }
+        }
+        return flippedBoard;
+    }
+
+    private String displayGame(int id, int pov) {
         //pov = 0 means white, pov = 1 means black
         try {
             var allGames = server.list(user.authToken()).games();
@@ -188,7 +210,6 @@ public class ChessClient {
             String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
             String wsc = EscapeSequences.SET_TEXT_COLOR_WHITE;//White square color
             String blackText = EscapeSequences.SET_TEXT_COLOR_BLACK;//Black text
-            String whiteText = EscapeSequences.SET_TEXT_COLOR_WHITE;
             String grayBack = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
             String resetBack = EscapeSequences.RESET_BG_COLOR;
             String resetText = EscapeSequences.RESET_TEXT_COLOR;
@@ -210,79 +231,43 @@ public class ChessClient {
             for (int y=0; y<10; y++) {
                 boardArray.add(new ArrayList<>());
                 for (int x=0; x<10; x++) {
+                    //Initialize it as empty
                     boardArray.get(y).add("   ");
-                }
-            }
-            //Add borders
-            //Top border
-            boardArray.getFirst().set(0,grayBack+"   ");
-            boardArray.get(0).set(9,grayBack+"   ");
-            for (int x=1; x<9; x++) {
-                char let = (char) (x + 96);
-                String row = grayBack+blackText+" "+let+" ";
-                boardArray.getFirst().set(x, row);
-            }
-            //Bottom border
-            boardArray.get(9).set(0,grayBack+"   ");
-            boardArray.get(9).set(9,grayBack+"   ");
-            for (int x=1; x<9; x++) {
-                char let = (char) (x + 96);
-                String row = grayBack+blackText+" "+let+" ";
-                boardArray.get(9).set(x, row);
-            }
-            //Left border
-            for (int y=1; y<9; y++) {
-                String row = grayBack+blackText+" "+(9-y)+" ";
-                boardArray.get(y).set(0, row);
-            }
-            //Right border
-            for (int y=1; y<9; y++) {
-                String row = grayBack+blackText+" "+(9-y)+" ";
-                boardArray.get(y).set(9, row);
-            }
-
-            //Add pieces
-            for (int y=1; y<=8; y++) {
-                for (int x=1; x<=8; x++) {
-                    ChessPiece piece = game.game().getBoard().getPiece(9-y, x);
-                    if (piece != null) {
-                        String color = switch (piece.getTeamColor()) {
-                            case WHITE -> wpc;
-                            case BLACK -> bpc;
-                        };
-                        String pieceChar = switch(piece.getPieceType()) {
-                            case KING -> "K";
-                            case QUEEN -> "Q";
-                            case ROOK -> "R";
-                            case KNIGHT -> "N";
-                            case BISHOP -> "B";
-                            case PAWN -> "P";
-                        };
-                        boardArray.get(y).set(x, resetText+color+" "+pieceChar+" ");
-                    }else{
-                        boardArray.get(y).set(x, "   ");
+                    //Corners
+                    if ((y == 0 || y == 9) && (x == 0 || x == 9)) {
+                        boardArray.get(y).set(x, grayBack+"   ");
                     }
-                }
-            }
-
-            //Add board colors
-            for (int y=1; y<=8; y++) {
-                for (int x=1; x<=8; x++) {
-                    String color = (x % 2 == y % 2) ? wsc : bsc;
-                    boardArray.get(y).set(x, resetBack+color+boardArray.get(y).get(x));
+                    //Top and bottom border
+                    if ((y == 0 || y == 9) && (x >= 1 && x <= 8)) {
+                        char let = (char) (x + 96);
+                        String row = grayBack+blackText+" "+let+" ";
+                        boardArray.get(y).set(x, row);
+                    }
+                    //Left and right borders
+                    if ((x == 0 || x == 9) && (y >= 1 && y <= 8)) {
+                        String row = grayBack+blackText+" "+(9-y)+" ";
+                        boardArray.get(y).set(x, row);
+                    }
+                    //Add pieces
+                    if (x >= 1 && x <= 8 && y >= 1 && y <= 8) {
+                        ChessPiece piece = game.game().getBoard().getPiece(9-y, x);
+                        if (piece != null) {
+                            String color = switch (piece.getTeamColor()) {case WHITE -> wpc; case BLACK -> bpc;};
+                            String pieceChar = getPieceChar(piece.getPieceType());
+                            boardArray.get(y).set(x, resetText+color+" "+pieceChar+" ");
+                        }else{
+                            boardArray.get(y).set(x, "   ");
+                        }
+                        //Add checker colors
+                        String color = (x % 2 == y % 2) ? wsc : bsc;
+                        boardArray.get(y).set(x, resetBack+color+boardArray.get(y).get(x));
+                    }
                 }
             }
 
             //Flip the board if it's black's POV
             if (pov == 1) {
-                ArrayList<ArrayList<String>> flippedBoard = new ArrayList<>();
-                for (int y=9; y>=0; y--) {
-                    flippedBoard.add(new ArrayList<>());
-                    for (int x=9; x>=0; x--) {
-                        flippedBoard.get(9-y).add(boardArray.get(y).get(x));
-                    }
-                }
-                boardArray = flippedBoard;
+                boardArray = flipBoard(boardArray);
             }
 
             //Add the board to the string
@@ -323,11 +308,6 @@ public class ChessClient {
     private void assertSignedOut() throws ResponseException {
         if (state != State.SIGNEDOUT) {
             throw new ResponseException(400, "You must sign out");
-        }
-    }
-    private void assertInGame() throws ResponseException {
-        if (state != State.INGAME) {
-            throw new ResponseException(400, "You must be in a game");
         }
     }
 }
