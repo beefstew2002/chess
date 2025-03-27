@@ -38,7 +38,7 @@ public class ChessClient {
                 case "create" -> create(params);
                 case "list" -> list();
                 case "join" -> join(params);
-                //case "observe" -> observe(params);
+                case "observe" -> observe(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -112,6 +112,11 @@ public class ChessClient {
             return "You joined the game\n"+displayGame(gameId, params[1]);
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
+    }
+    public String observe(String... params) throws ResponseException {
+        assertSignedIn();
+        int gameId = Integer.parseInt(params[0]);
+        return displayGame(gameId);
     }
 
     public String help() {
