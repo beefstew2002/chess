@@ -84,9 +84,12 @@ public class ChessClient {
     public String create(String... params) throws ResponseException {
         assertSignedIn();
         if (params.length >= 1) {
-            state = State.SIGNEDIN;
-            int gameId = server.create(params[0], user.authToken()).gameID();
-            return String.format("You created a new game %s with ID number %d", params[0], gameId);
+            try {
+                int gameId = server.create(params[0], user.authToken()).gameID();
+                return String.format("You created a new game %s with ID number %d", params[0], gameId);
+            } catch (Exception e) {
+                return "Another game with that name already exists";
+            }
         }
         throw new ResponseException(400, "Expected: <Name>");
     }
