@@ -62,6 +62,9 @@ public class GameService {
     public static JoinResult join(JoinRequest joinRequest) throws DataAccessException {
         String authToken = joinRequest.authToken();
         String username = AUTH_DAO.getAuth(authToken).username(); //This throws an error if unauthorized
+        if (joinRequest.playerColor() == null) {
+            throw new BadRequestException("That's not a color");
+        }
         String color = joinRequest.playerColor().toUpperCase();
         int gameID = joinRequest.gameID();
 
