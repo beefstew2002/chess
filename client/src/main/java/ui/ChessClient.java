@@ -28,7 +28,7 @@ public class ChessClient {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                //case "quit" -> quit();
+                case "quit" -> "quit";
                 case "login" -> login(params);
                 case "register" -> register(params);
                 //case "logout" -> logout();
@@ -44,7 +44,7 @@ public class ChessClient {
     }
 
     public String register(String... params) throws ResponseException {
-        //assertSignedIn();
+        assertSignedOut();
         if (params.length >= 3) {
             state = State.SIGNEDIN;
             AuthData user = server.register(params[0], params[1], params[2]);
@@ -52,8 +52,6 @@ public class ChessClient {
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
     }
-
-
     public String login(String... params) throws ResponseException {
         assertSignedOut();
         if (params.length >= 2) {
