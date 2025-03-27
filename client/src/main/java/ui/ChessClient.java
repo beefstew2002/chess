@@ -35,7 +35,7 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create" -> create(params);
                 case "list" -> list();
-                //case "join" -> join(params);
+                case "join" -> join(params);
                 //case "observe" -> observe(params);
                 default -> help();
             };
@@ -56,8 +56,8 @@ public class ChessClient {
     public String login(String... params) throws ResponseException {
         assertSignedOut();
         if (params.length >= 2) {
-            state = State.SIGNEDIN;
             user = server.login(params[0], params[1]);
+            state = State.SIGNEDIN;
             return String.format("You signed in as %s", user.username());
         }
         throw new ResponseException(400, "Expected: <username> <password>");
@@ -75,7 +75,7 @@ public class ChessClient {
             int gameId = server.create(params[0], user.authToken()).gameID();
             return String.format("You created a new game %s with ID number %d", params[0], gameId);
         }
-        throw new ResponseException(400, "Expected: <username> <password>");
+        throw new ResponseException(400, "Expected: <Name>");
     }
     public String list() throws ResponseException {
         assertSignedIn();
@@ -96,6 +96,19 @@ public class ChessClient {
             s += "\n";
         }
         return s;
+    }
+    public String join(String... params) throws ResponseException {
+        assertSignedIn();
+        if (params.length >= 2) {
+            try {
+                server.join(Integer.parseInt(params[0]), params[1], user.authToken());
+                state = State.INGAME;
+            } catch (NumberFormatException e) {
+                return "You have to use the game's ID number, not its name";
+            }
+            return "You joined the game";
+        }
+        throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
     }
 
     public String help() {
