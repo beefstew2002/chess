@@ -1,12 +1,14 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessPiece;
 import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
 import server.ServerFacade;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import ui.EscapeSequences.*;
@@ -117,6 +119,17 @@ public class ChessClient {
     public String observe(String... params) throws ResponseException {
         assertSignedIn();
         int gameId = Integer.parseInt(params[0]);
+
+        var allGames = server.list(user.authToken()).games();
+        GameData game = null;
+        for (GameData g : allGames) {
+            if (g.gameID() == gameId) {
+                game = g;
+            }
+        }
+        if (game.blackUsername().equals(user.username())) {
+            return displayGame(gameId, 1);
+        }
         return displayGame(gameId);
     }
 
@@ -161,9 +174,12 @@ public class ChessClient {
             String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
             String bsc = EscapeSequences.SET_BG_COLOR_BLACK;//Black square color
             String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
-            String wsc = EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY;//White square color
+            String wsc = EscapeSequences.SET_TEXT_COLOR_WHITE;//White square color
             String blackText = EscapeSequences.SET_TEXT_COLOR_BLACK;//Black text
             String whiteText = EscapeSequences.SET_TEXT_COLOR_WHITE;
+            String grayBack = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
+            String resetBack = EscapeSequences.RESET_BG_COLOR;
+            String resetText = EscapeSequences.RESET_TEXT_COLOR;
 
             String blackUsername = game.blackUsername() == null ? "[no one yet]" : game.blackUsername();
             String whiteUsername = game.whiteUsername() == null ? "[no one yet]" : game.whiteUsername();
@@ -172,12 +188,102 @@ public class ChessClient {
             String s = "\n";
             //Reset colors
             s += EscapeSequences.RESET_TEXT_COLOR;
-            //Black username
-            s += bpc + blackUsername + "\n"
-            //Display the board
-            s += whiteText + game.game().getBoard().toString();
-            //White username
-            s += wpc + whiteUsername + "\n";
+
+            //Add the top username: black's if it's white's POV, white's otherwise
+            s += (pov == 0) ? bpc + blackUsername + "\n" : wpc + whiteUsername + "\n" ;
+
+            //Board as an array of strings
+            ArrayList<ArrayList<String>> boardArray = new ArrayList<ArrayList<String>>();
+            //Initialize it as empty
+            for (int y=0; y<10; y++) {
+                boardArray.add(new ArrayList<String>());
+                for (int x=0; x<10; x++) {
+                    boardArray.get(y).add("   ");
+                }
+            }
+            //Add borders
+            String wideSpace = "\u2003";
+            //Top border
+            boardArray.get(0).set(0,grayBack+"   ");
+            boardArray.get(0).set(9,grayBack+"   ");
+            for (int x=1; x<9; x++) {
+                char let = (char) (x + 96);
+                String row = grayBack+blackText+" "+Character.toString(let)+" ";
+                boardArray.get(0).set(x, row);
+            }
+            //Bottom border
+            boardArray.get(9).set(0,grayBack+"   ");
+            boardArray.get(9).set(9,grayBack+"   ");
+            for (int x=1; x<9; x++) {
+                char let = (char) (x + 96);
+                String row = grayBack+blackText+" "+Character.toString(let)+" ";
+                boardArray.get(9).set(x, row);
+            }
+            //Left border
+            for (int y=1; y<9; y++) {
+                String row = grayBack+blackText+" "+(9-y)+" ";
+                boardArray.get(y).set(0, row);
+            }
+            //Right border
+            for (int y=1; y<9; y++) {
+                String row = grayBack+blackText+" "+(9-y)+" ";
+                boardArray.get(y).set(9, row);
+            }
+
+            //Add pieces
+            for (int y=1; y<=8; y++) {
+                for (int x=1; x<=8; x++) {
+                    ChessPiece piece = game.game().getBoard().getPiece(9-y, x);
+                    if (piece != null) {
+                        String color = switch (piece.getTeamColor()) {
+                            case WHITE -> wpc;
+                            case BLACK -> bpc;
+                        };
+                        String pieceChar = switch(piece.getPieceType()) {
+                            case KING -> "K";
+                            case QUEEN -> "Q";
+                            case ROOK -> "R";
+                            case KNIGHT -> "N";
+                            case BISHOP -> "B";
+                            case PAWN -> "P";
+                        };
+                        boardArray.get(y).set(x, resetText+color+" "+pieceChar+" ");
+                    }else{
+                        boardArray.get(y).set(x, "   ");
+                    }
+                }
+            }
+
+            //Add board colors
+            for (int y=1; y<=8; y++) {
+                for (int x=1; x<=8; x++) {
+                    String color = (x % 2 == y % 2) ? wsc : bsc;
+                    boardArray.get(y).set(x, resetBack+color+boardArray.get(y).get(x));
+                }
+            }
+
+            //Flip the board if it's black's POV
+            if (pov == 1) {
+                ArrayList<ArrayList<String>> flippedBoard = new ArrayList<>();
+                for (int y=9; y>=0; y--) {
+                    flippedBoard.add(new ArrayList<String>());
+                    for (int x=9; x>=0; x--) {
+                        flippedBoard.get(9-y).add(boardArray.get(y).get(x));
+                    }
+                }
+                boardArray = flippedBoard;
+            }
+
+            //Add the board to the string
+            for (int y=0; y<10; y++) {
+                for (int x=0; x<10; x++) {
+                    s += boardArray.get(y).get(x);
+                }
+                s += resetBack + "\n";
+            }
+
+            //Add the bottom username: white's if it's white's POV, black's otherwise
+            s += (pov == 1) ? bpc + blackUsername + "\n" : wpc + whiteUsername + "\n" ;
 
             return s;
 
