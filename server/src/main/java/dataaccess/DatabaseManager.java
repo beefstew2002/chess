@@ -4,6 +4,7 @@ import dataaccess.exceptions.DataAccessException;
 
 import java.sql.*;
 import java.util.Properties;
+import dataaccess.DatabaseShareables.*;
 
 public class DatabaseManager {
     private static final String DATABASE_NAME;
@@ -15,24 +16,11 @@ public class DatabaseManager {
      * Load the database information for the db.properties file.
      */
     static {
-        try {
-            try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
-                if (propStream == null) {
-                    throw new Exception("Unable to load db.properties");
-                }
-                Properties props = new Properties();
-                props.load(propStream);
-                DATABASE_NAME = props.getProperty("db.name");
-                USER = props.getProperty("db.user");
-                PASSWORD = props.getProperty("db.password");
-
-                var host = props.getProperty("db.host");
-                var port = Integer.parseInt(props.getProperty("db.port"));
-                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
-        }
+        DbProperties props = DatabaseShareables.getDbProperties();
+        DATABASE_NAME = props.databaseName();
+        USER = props.user();
+        PASSWORD = props.password();
+        CONNECTION_URL = props.connectionUrl();
     }
 
     /**

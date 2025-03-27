@@ -13,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
+import dataaccess.DatabaseManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -103,32 +104,6 @@ public class ServerFacadeTests {
     @AfterAll
     static void stopServer() {
         server.stop();
-    }
-
-
-    //get game data
-    private ArrayList<GameData> checkGames() throws DataAccessException{
-        ArrayList<GameData> gameData = new ArrayList<>();
-
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM game")) {
-                try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        ChessGame game = new Gson().fromJson(rs.getString("gameJson"), ChessGame.class);
-                        gameData.add(new GameData(
-                                rs.getInt("gameID"),
-                                rs.getString("whiteUsername"),
-                                rs.getString("blackUsername"),
-                                rs.getString("gameName"),
-                                game));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return gameData;
     }
 
 
