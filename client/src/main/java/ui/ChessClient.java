@@ -32,7 +32,7 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "register" -> register(params);
                 case "logout" -> logout();
-                //case "create" -> create(params);
+                case "create" -> create(params);
                 //case "list" -> list();
                 //case "join" -> join(params);
                 //case "observe" -> observe(params);
@@ -66,6 +66,15 @@ public class ChessClient {
         state = State.SIGNEDOUT;
         server.logout(user.authToken());
         return String.format("You signed out as %s", user.username());
+    }
+    public String create(String... params) throws ResponseException {
+        assertSignedIn();
+        if (params.length >= 1) {
+            state = State.SIGNEDIN;
+            int gameId = server.create(params[0], user.authToken()).gameID();
+            return String.format("You created a new game %s with ID number %d", params[0], gameId);
+        }
+        throw new ResponseException(400, "Expected: <username> <password>");
     }
 
     public String help() {
