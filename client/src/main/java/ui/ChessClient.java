@@ -1,13 +1,14 @@
 package ui;
 
+import chess.ChessGame;
 import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
-import model.GameMetaData;
 import model.UserData;
 import server.ServerFacade;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public class ChessClient {
 
@@ -100,14 +101,15 @@ public class ChessClient {
     }
     public String join(String... params) throws ResponseException {
         assertSignedIn();
+        int gameId = Integer.parseInt(params[0]);
         if (params.length >= 2) {
             try {
-                server.join(Integer.parseInt(params[0]), params[1], user.authToken());
+                server.join(gameId, params[1], user.authToken());
                 state = State.INGAME;
             } catch (NumberFormatException e) {
                 return "You have to use the game's ID number, not its name";
             }
-            return "You joined the game";
+            return "You joined the game\n"+displayGame(gameId, params[1]);
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
     }
@@ -138,6 +140,36 @@ public class ChessClient {
         }
         return "You cheated. Someone is coming";
     }
+
+    public String displayGame(int id, int pov) {
+        //pov = 0 means white, pov = 1 means black
+        try {
+            var allGames = server.list(user.authToken()).games();
+            ChessGame theGame = null;
+            for (GameData game : allGames) {
+                if (game.gameID() == id) {
+                    theGame = game.game();
+                }
+            }
+
+            //code to display the game will go here
+
+            return theGame.getBoard().toString();
+
+        } catch (ResponseException e) {
+            return "you must not be authorized to view this or smth";
+        }
+    }
+
+    public String displayGame(int id, String color) {
+        if (color.toUpperCase().equals("BLACK")) {
+            return displayGame(id, 1);
+        }
+        return displayGame(id, 0);
+    }
+    public String displayGame(int id) {
+        return displayGame(id, 0);
+    } // default pov is 0
 
     private void assertSignedIn() throws ResponseException {
         if (state == State.SIGNEDOUT) {

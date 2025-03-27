@@ -118,7 +118,7 @@ public class ServerFacade {
                     try {
                         throw ResponseException.fromJson(respErr);
                     } catch (Exception e) {
-                        throw new ResponseException(status, "other failure: " + status);
+                        throw new ResponseException(status, "other failure: " + status + " " + e.toString());
                     }
                 }
             }
