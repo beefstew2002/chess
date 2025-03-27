@@ -9,6 +9,7 @@ import server.ServerFacade;
 
 import java.util.Arrays;
 import java.util.Locale;
+import ui.EscapeSequences.*;
 
 public class ChessClient {
 
@@ -150,16 +151,35 @@ public class ChessClient {
         //pov = 0 means white, pov = 1 means black
         try {
             var allGames = server.list(user.authToken()).games();
-            ChessGame theGame = null;
-            for (GameData game : allGames) {
-                if (game.gameID() == id) {
-                    theGame = game.game();
+            GameData game = null;
+            for (GameData g : allGames) {
+                if (g.gameID() == id) {
+                    game = g;
                 }
             }
 
-            //code to display the game will go here
+            String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
+            String bsc = EscapeSequences.SET_BG_COLOR_BLACK;//Black square color
+            String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
+            String wsc = EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY;//White square color
+            String blackText = EscapeSequences.SET_TEXT_COLOR_BLACK;//Black text
+            String whiteText = EscapeSequences.SET_TEXT_COLOR_WHITE;
 
-            return theGame.getBoard().toString();
+            String blackUsername = game.blackUsername() == null ? "[no one yet]" : game.blackUsername();
+            String whiteUsername = game.whiteUsername() == null ? "[no one yet]" : game.whiteUsername();
+
+            //code to display the game will go here
+            String s = "\n";
+            //Reset colors
+            s += EscapeSequences.RESET_TEXT_COLOR;
+            //Black username
+            s += bpc + blackUsername + "\n"
+            //Display the board
+            s += whiteText + game.game().getBoard().toString();
+            //White username
+            s += wpc + whiteUsername + "\n";
+
+            return s;
 
         } catch (ResponseException e) {
             return "you must not be authorized to view this or smth";
