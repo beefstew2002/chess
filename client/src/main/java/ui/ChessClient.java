@@ -81,8 +81,9 @@ public class ChessClient {
         assertSignedIn();
         if (params.length >= 1) {
             try {
-                int gameId = server.create(params[0], user.authToken()).gameID();
-                return String.format("You created a new game %s with ID number %d", params[0], gameId);
+                server.create(params[0], user.authToken());
+                int index = server.list(user.authToken()).games().size()-1;
+                return String.format("You created a new game %s with index number %d", params[0], index);
             } catch (Exception e) {
                 return "Another game with that name already exists";
             }
@@ -93,6 +94,7 @@ public class ChessClient {
         assertSignedIn();
         var gameList = server.list(user.authToken()).games();
         String s = "";
+        int index = 0;
         for (GameData game : gameList) {
             s += game.gameName() + "\n";
 
@@ -104,16 +106,32 @@ public class ChessClient {
             s += (game.blackUsername() == null) ? " empty" : ": " + game.blackUsername();
             s += "\n";
 
-            s += "     " + "ID: " + game.gameID() + "\n";
+            s += "     " + "Index: " + index + "\n";
             s += "\n";
+
+            index++;
+        }
+        if (index == 0) {
+            s += "No games have been created yet";
         }
         return s;
+    }
+    public int getGameId(int index) throws ResponseException{
+        var gameList = server.list(user.authToken()).games();
+        int i = 0;
+        for (GameData game : gameList) {
+            if (i == index) {
+                return game.gameID();
+            }
+            i++;
+        }
+        return -1;
     }
     public String join(String... params) throws ResponseException {
         assertSignedIn();
         int gameId;
         try {
-            gameId = Integer.parseInt(params[0]);
+            gameId = getGameId(Integer.parseInt(params[0]));
         } catch (NumberFormatException e) {
             return "That's not a number";
         }
@@ -134,7 +152,7 @@ public class ChessClient {
         assertSignedIn();
         int gameId;
         try {
-            gameId = Integer.parseInt(params[0]);
+            gameId = getGameId(Integer.parseInt(params[0]));
         } catch (NumberFormatException e) {
             return "That's not a number";
         } catch (Exception e) {
