@@ -111,7 +111,12 @@ public class ChessClient {
     }
     public String join(String... params) throws ResponseException {
         assertSignedIn();
-        int gameId = Integer.parseInt(params[0]);
+        int gameId;
+        try {
+            gameId = Integer.parseInt(params[0]);
+        } catch (NumberFormatException e) {
+            return "That's not a number";
+        }
         if (params.length >= 2) {
             try {
                 server.join(gameId, params[1], user.authToken());
