@@ -119,9 +119,11 @@ public class ChessClient {
         if (params.length >= 2) {
             try {
                 server.join(gameId, params[1], user.authToken());
-                state = State.INGAME;
+                //state = State.INGAME;
             } catch (NumberFormatException e) {
                 return "You have to use the game's ID number, not its name";
+            } catch (Exception e) {
+                return "That spot is taken";
             }
             return "You joined the game\n"+displayGame(gameId, params[1]);
         }
@@ -138,7 +140,10 @@ public class ChessClient {
                 game = g;
             }
         }
-        if (game.blackUsername().equals(user.username())) {
+        if (game == null) {
+            return "That game doesn't exist";
+        }
+        if (user.username().equals(game.blackUsername())) {
             return displayGame(gameId, 1);
         }
         return displayGame(gameId);
