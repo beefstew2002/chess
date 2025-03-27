@@ -12,7 +12,7 @@ public class DatabaseShareables {
     public static DbProperties getDbProperties() {
         String databaseName;
         String user;
-        String PASSWORD;
+        String password;
         String connectionUrl;
         try {
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
@@ -23,13 +23,13 @@ public class DatabaseShareables {
                 props.load(propStream);
                 databaseName = props.getProperty("db.name");
                 user = props.getProperty("db.user");
-                PASSWORD = props.getProperty("db.password");
+                password = props.getProperty("db.password");
 
                 var host = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
                 connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
 
-                return new DbProperties(databaseName, user, PASSWORD, connectionUrl);
+                return new DbProperties(databaseName, user, password, connectionUrl);
             }
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
