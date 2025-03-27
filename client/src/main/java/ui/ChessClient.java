@@ -137,6 +137,8 @@ public class ChessClient {
             gameId = Integer.parseInt(params[0]);
         } catch (NumberFormatException e) {
             return "That's not a number";
+        } catch (Exception e) {
+            throw new ResponseException(400, "Expected: observe <ID>");
         }
 
         var allGames = server.list(user.authToken()).games();
