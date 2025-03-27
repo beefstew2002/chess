@@ -272,7 +272,7 @@ public class ChessClient {
             for (int y=0; y<10; y++) {
                 boardArray.add(new ArrayList<>());
                 for (int x=0; x<10; x++) {
-                    boardArray.get(y).set(x, displaySquare(game,x,y));
+                    boardArray.get(y).add(displaySquare(game,x,y));
                 }
             }
 
