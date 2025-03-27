@@ -124,7 +124,7 @@ public class SQLGameDAOTests {
         addGame("gooby");
         addGame("bingus");
         addGame("cromslor");
-        ArrayList<GameMetaData> gameData = gdao.listGames();
+        ArrayList<GameData> gameData = gdao.listGames();
 
         Assertions.assertEquals(3, gameData.size());
     }
@@ -133,7 +133,7 @@ public class SQLGameDAOTests {
     @DisplayName("listGames failure")
     public void listGamesFailure() {
         //No entries if no games
-        ArrayList<GameMetaData> gameData = gdao.listGames();
+        ArrayList<GameData> gameData = gdao.listGames();
 
         Assertions.assertEquals(0, gameData.size());
 

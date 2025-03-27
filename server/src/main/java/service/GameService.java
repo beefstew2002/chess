@@ -55,7 +55,7 @@ public class GameService {
         }
 
         //Create a new listResult with the list data
-        ArrayList<GameMetaData> games = GAME_DAO.listGames();
+        ArrayList<GameData> games = GAME_DAO.listGames();
 
         return new ListResult(games);
     }

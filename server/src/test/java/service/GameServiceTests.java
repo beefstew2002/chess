@@ -85,7 +85,7 @@ public class GameServiceTests {
         create(new CreateRequest("The Great Papyrus and sans.", authToken));
 
         //Get the list of games straight from GameDAO
-        ArrayList<GameMetaData> gamesList = gdao.listGames();
+        ArrayList<GameData> gamesList = gdao.listGames();
 
         //Get the list of games from the service
         ListRequest listRequest = new ListRequest(authToken);

@@ -90,27 +90,9 @@ public class SQLGameDAO extends SQLDAO{
         }
     }
 
-    public ArrayList<GameMetaData> listGames() {
+    public ArrayList<GameData> listGames() {
 
-        ArrayList<GameMetaData> gameData = new ArrayList<>();
-
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM game")) {
-                try (var rs = preparedStatement.executeQuery()) {
-                    while (rs.next()) {
-                        int gameID = rs.getInt("gameID");
-                        String whiteUsername = rs.getString("whiteUsername");
-                        String blackUsername = rs.getString("blackUsername");
-                        String gameName = rs.getString("gameName");
-                        gameData.add(new GameMetaData(gameID, whiteUsername, blackUsername, gameName));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return gameData;
+        return getGameData();
     }
 
     public void updateGame(GameData gd) {

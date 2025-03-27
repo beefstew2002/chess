@@ -2,6 +2,7 @@ package ui;
 
 import exception.ResponseException;
 import model.AuthData;
+import model.GameData;
 import model.GameMetaData;
 import model.UserData;
 import server.ServerFacade;
@@ -81,7 +82,7 @@ public class ChessClient {
         assertSignedIn();
         var gameList = server.list(user.authToken()).games();
         String s = "";
-        for (GameMetaData game : gameList) {
+        for (GameData game : gameList) {
             s += game.gameName() + "\n";
 
             s += "     White";

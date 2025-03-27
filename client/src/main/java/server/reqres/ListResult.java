@@ -1,8 +1,8 @@
 package server.reqres;
 
-import model.GameMetaData;
+import model.GameData;
 
 import java.util.ArrayList;
 
-public record ListResult(ArrayList<GameMetaData> games) {
+public record ListResult(ArrayList<GameData> games) {
 }

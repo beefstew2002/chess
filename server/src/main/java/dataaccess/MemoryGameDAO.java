@@ -38,13 +38,8 @@ public class MemoryGameDAO implements DAInterface{
         throw new DataAccessException("Game doesn't exist");
     }
 
-    public ArrayList<GameMetaData> listGames() {
-        ArrayList<GameData> gameData = getGameData();
-        ArrayList<GameMetaData> gameList = new ArrayList<>();
-        for (GameData game : gameData) {
-            gameList.add(new GameMetaData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName()));
-        }
-        return gameList;
+    public ArrayList<GameData> listGames() {
+        return getGameData();
     }
 
     public void updateGame(GameData gd) {
