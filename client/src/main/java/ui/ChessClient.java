@@ -127,7 +127,12 @@ public class ChessClient {
     }
     public String observe(String... params) throws ResponseException {
         assertSignedIn();
-        int gameId = Integer.parseInt(params[0]);
+        int gameId;
+        try {
+            gameId = Integer.parseInt(params[0]);
+        } catch (NumberFormatException e) {
+            return "That's not a number";
+        }
 
         var allGames = server.list(user.authToken()).games();
         GameData game = null;
