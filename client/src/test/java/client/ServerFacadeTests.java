@@ -48,19 +48,8 @@ public class ServerFacadeTests {
         PASSWORD = props.password();
         CONNECTION_URL = props.connectionUrl();
     }
-    protected static Connection getConnection() throws SQLException {
-        try {
-            try {
-                var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-                conn.setCatalog(DATABASE_NAME);
-                return conn;
-            } catch (SQLException e) {
-                throw new DataAccessException(e.getMessage());
-            }
-        }
-        catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
-        }
+    protected static Connection getConnection() throws DataAccessException {
+        return DatabaseShareables.getConnection(DATABASE_NAME, USER, PASSWORD, CONNECTION_URL);
     }
 
     @BeforeEach
@@ -71,21 +60,13 @@ public class ServerFacadeTests {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE game")) {
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE user")) {
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try (var conn = getConnection()) {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE auth")) {
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

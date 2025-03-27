@@ -1,5 +1,10 @@
 package dataaccess;
 
+import dataaccess.exceptions.DataAccessException;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseShareables {
@@ -28,6 +33,16 @@ public class DatabaseShareables {
             }
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
+        }
+    }
+
+    public static Connection getConnection(String databaseName, String user, String password, String connectionUrl) throws DataAccessException{
+        try {
+            var conn = DriverManager.getConnection(connectionUrl, user, password);
+            conn.setCatalog(databaseName);
+            return conn;
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 }
