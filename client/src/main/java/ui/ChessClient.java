@@ -194,6 +194,52 @@ public class ChessClient {
         return flippedBoard;
     }
 
+    private String displaySquare(GameData game, int x, int y) {
+
+        String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
+        String bsc = EscapeSequences.SET_BG_COLOR_BLACK;//Black square color
+        String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
+        String wsc = EscapeSequences.SET_TEXT_COLOR_WHITE;//White square color
+        String blackText = EscapeSequences.SET_TEXT_COLOR_BLACK;//Black text
+        String grayBack = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
+        String resetBack = EscapeSequences.RESET_BG_COLOR;
+        String resetText = EscapeSequences.RESET_TEXT_COLOR;
+
+        String s;
+        //Initialize it as empty
+        s = "   ";
+        //Corners
+        if ((y == 0 || y == 9) && (x == 0 || x == 9)) {
+            s = grayBack+"   ";
+        }
+        //Top and bottom border
+        if ((y == 0 || y == 9) && (x >= 1 && x <= 8)) {
+            char let = (char) (x + 96);
+            String row = grayBack+blackText+" "+let+" ";
+            s = row;
+        }
+        //Left and right borders
+        if ((x == 0 || x == 9) && (y >= 1 && y <= 8)) {
+            String row = grayBack+blackText+" "+(9-y)+" ";
+            s = row;
+        }
+        //Add pieces
+        if (x >= 1 && x <= 8 && y >= 1 && y <= 8) {
+            ChessPiece piece = game.game().getBoard().getPiece(9-y, x);
+            if (piece != null) {
+                String color = switch (piece.getTeamColor()) {case WHITE -> wpc; case BLACK -> bpc;};
+                String pieceChar = getPieceChar(piece.getPieceType());
+                s = resetText+color+" "+pieceChar+" ";
+            }else{
+                s = "   ";
+            }
+            //Add checker colors
+            String color = (x % 2 == y % 2) ? wsc : bsc;
+            s = resetBack + color + s;
+        }
+        return s;
+    }
+
     private String displayGame(int id, int pov) {
         //pov = 0 means white, pov = 1 means black
         try {
@@ -206,13 +252,8 @@ public class ChessClient {
             }
 
             String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
-            String bsc = EscapeSequences.SET_BG_COLOR_BLACK;//Black square color
             String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
-            String wsc = EscapeSequences.SET_TEXT_COLOR_WHITE;//White square color
-            String blackText = EscapeSequences.SET_TEXT_COLOR_BLACK;//Black text
-            String grayBack = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
             String resetBack = EscapeSequences.RESET_BG_COLOR;
-            String resetText = EscapeSequences.RESET_TEXT_COLOR;
 
             String blackUsername = game.blackUsername() == null ? "[no one yet]" : game.blackUsername();
             String whiteUsername = game.whiteUsername() == null ? "[no one yet]" : game.whiteUsername();
@@ -231,37 +272,7 @@ public class ChessClient {
             for (int y=0; y<10; y++) {
                 boardArray.add(new ArrayList<>());
                 for (int x=0; x<10; x++) {
-                    //Initialize it as empty
-                    boardArray.get(y).add("   ");
-                    //Corners
-                    if ((y == 0 || y == 9) && (x == 0 || x == 9)) {
-                        boardArray.get(y).set(x, grayBack+"   ");
-                    }
-                    //Top and bottom border
-                    if ((y == 0 || y == 9) && (x >= 1 && x <= 8)) {
-                        char let = (char) (x + 96);
-                        String row = grayBack+blackText+" "+let+" ";
-                        boardArray.get(y).set(x, row);
-                    }
-                    //Left and right borders
-                    if ((x == 0 || x == 9) && (y >= 1 && y <= 8)) {
-                        String row = grayBack+blackText+" "+(9-y)+" ";
-                        boardArray.get(y).set(x, row);
-                    }
-                    //Add pieces
-                    if (x >= 1 && x <= 8 && y >= 1 && y <= 8) {
-                        ChessPiece piece = game.game().getBoard().getPiece(9-y, x);
-                        if (piece != null) {
-                            String color = switch (piece.getTeamColor()) {case WHITE -> wpc; case BLACK -> bpc;};
-                            String pieceChar = getPieceChar(piece.getPieceType());
-                            boardArray.get(y).set(x, resetText+color+" "+pieceChar+" ");
-                        }else{
-                            boardArray.get(y).set(x, "   ");
-                        }
-                        //Add checker colors
-                        String color = (x % 2 == y % 2) ? wsc : bsc;
-                        boardArray.get(y).set(x, resetBack+color+boardArray.get(y).get(x));
-                    }
+                    boardArray.get(y).set(x, displaySquare(game,x,y));
                 }
             }
 
