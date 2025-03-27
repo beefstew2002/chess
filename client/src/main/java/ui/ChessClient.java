@@ -52,8 +52,12 @@ public class ChessClient {
     public String register(String... params) throws ResponseException {
         assertSignedOut();
         if (params.length >= 3) {
-            state = State.SIGNEDIN;
-            AuthData user = server.register(params[0], params[1], params[2]);
+            try {
+                AuthData user = server.register(params[0], params[1], params[2]);
+                state = State.SIGNEDIN;
+            } catch (Exception e) {
+                return "Try again, that username might be taken";
+            }
             return String.format("You signed in as %s", user.username());
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
@@ -61,9 +65,13 @@ public class ChessClient {
     public String login(String... params) throws ResponseException {
         assertSignedOut();
         if (params.length >= 2) {
-            user = server.login(params[0], params[1]);
-            state = State.SIGNEDIN;
-            return String.format("You signed in as %s", user.username());
+            try {
+                user = server.login(params[0], params[1]);
+                state = State.SIGNEDIN;
+                return String.format("You signed in as %s", user.username());
+            } catch (Exception e) {
+                return "Wrong password";
+            }
         }
         throw new ResponseException(400, "Expected: <username> <password>");
     }
