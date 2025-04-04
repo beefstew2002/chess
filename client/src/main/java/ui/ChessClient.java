@@ -125,7 +125,7 @@ public class ChessClient {
             }
             i++;
         }
-        return -1;
+        throw new ResponseException(400, "That game doesn't exist");
     }
     public String join(String... params) throws ResponseException {
         assertSignedIn();
@@ -137,6 +137,9 @@ public class ChessClient {
         }
         if (params.length >= 2) {
             try {
+                if (!(params[1].equalsIgnoreCase("white") || params[1].equalsIgnoreCase("black"))) {
+                    return "Expected: <ID> [WHITE|BLACK]";
+                }
                 server.join(gameId, params[1], user.authToken());
                 //state = State.INGAME;
             } catch (NumberFormatException e) {
