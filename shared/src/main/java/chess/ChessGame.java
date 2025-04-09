@@ -377,4 +377,5 @@ public class ChessGame {
         winner = player;
         gameOver = true;
     }
+    public boolean gameOver() {return gameOver;}
 }

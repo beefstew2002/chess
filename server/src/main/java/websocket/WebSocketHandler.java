@@ -136,6 +136,13 @@ public class WebSocketHandler {
     public void resign(Session session, String username, ResignCommand command) throws Exception {
         int gameId = command.getGameID();
         GameData game = gdao.getGame(gameId);
+
+        //If the game is over, you can't resign
+        if (game.game().gameOver()) {
+            sendMessage(error("You can't resign, the game is over"), session);
+            return;
+        }
+
         String whiteUsername = game.whiteUsername();
         String blackUsername = game.blackUsername();
         ChessGame.TeamColor winner;
