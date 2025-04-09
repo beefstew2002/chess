@@ -1,5 +1,6 @@
 package websocket;
 
+import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
@@ -127,7 +128,24 @@ public class WebSocketHandler {
         sendMessage(notification("you left the game"), session);
     }
     public void resign(Session session, String username, ResignCommand command) throws Exception {
-
+        int gameId = command.getGameID();
+        GameData game = gdao.getGame(gameId);
+        String whiteUsername = game.whiteUsername();
+        String blackUsername = game.blackUsername();
+        ChessGame.TeamColor winner;
+        if (username.equals(whiteUsername)) {
+            winner = ChessGame.TeamColor.BLACK;
+        } else if (username.equals(blackUsername)) {
+            winner = ChessGame.TeamColor.WHITE;
+        } else {
+            sendMessage(error("You can't resign, you're not playing"), session);
+            return;
+        }
+        game.game().declareWinner(winner);
+        gdao.updateGame(game);
+        sendMessage(notification("You resigned"), session);
+        broadcastMessage(gameId, notification(username + " resigned"), session);
+        //broadcastMessage(gameId, loadGameMessage(game), session);
     }
 
     public String notification(String message) {
@@ -163,5 +181,8 @@ public class WebSocketHandler {
             }
         }
         //Add another loop to loop through the sessions and remove the ones that need to be removed
+    }
+    public void broadcastMessage(int gameId, String message) throws Exception{
+        broadcastMessage(gameId, message, null);
     }
 }

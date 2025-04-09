@@ -15,11 +15,14 @@ public class ChessGame {
     private TeamColor whoseTurn;
     private ChessBoard theBoard;
     protected boolean experimental;
+    private boolean gameOver;
+    private TeamColor winner;
 
     public ChessGame() {
         whoseTurn = TeamColor.WHITE;
         theBoard = new ChessBoard();
         theBoard.resetBoard();
+        gameOver = false;
     }
 
     @Override
@@ -140,6 +143,11 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        //Check if the game is over
+        if (gameOver && !experimental) {
+            throw new InvalidMoveException("The game is over, no more moves can be made");
+        }
+
         //Check if there's no piece at the start position
         if (theBoard.getPiece(move.getStartPosition()) == null) {
             throw new InvalidMoveException("What? There's nothing there to move!");
@@ -365,4 +373,8 @@ public class ChessGame {
         return this.theBoard.equals(otherGame.getBoard());
     }
 
+    public void declareWinner(TeamColor player) {
+        winner = player;
+        gameOver = true;
+    }
 }
