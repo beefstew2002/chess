@@ -9,11 +9,11 @@ package chess;
 public class ChessPosition {
 
     private int row;
-    private int col;
+    private int column;
 
     public ChessPosition(int row, int col) {
         this.row = row;
-        this.col = col;
+        this.column = col;
     }
 
     /**
@@ -31,7 +31,7 @@ public class ChessPosition {
      */
     public int getColumn() {
         //throw new RuntimeException("Not implemented");
-        return col;
+        return column;
     }
 
     //Adding setters for Row and Column to make the move calculators easier
@@ -39,25 +39,25 @@ public class ChessPosition {
         row = r;
     }
     public void setCol(int c) {
-        col = c;
+        column = c;
     }
     public void set(int r, int c) {
         this.row = r;
-        this.col = c;
+        this.column = c;
     }
     //In fact, to really make things easy, I'm gonna add a method to add another position to the position
     public void add(ChessPosition dir) {
         this.row += dir.getRow();
-        this.col += dir.getColumn();
+        this.column += dir.getColumn();
 
     }
     //...adding a copy method...
     public ChessPosition copy() {
-        return new ChessPosition(row, col);
+        return new ChessPosition(row, column);
     }
     //Also adding an inBounds function to check whether the position exists on the 8x8 grid
     public boolean inBounds() {
-        return row > 0 && row <= 8 && col > 0 && col <= 8;
+        return row > 0 && row <= 8 && column > 0 && column <= 8;
     }
 
     public boolean equals(Object p) {
@@ -66,10 +66,10 @@ public class ChessPosition {
     }
 
     public int hashCode() {
-        return (row*10) + (col);
+        return (row*10) + (column);
     }
 
     public String toString() {
-        return "["+row+", "+col+"]";
+        return "["+row+", "+ column +"]";
     }
 }
