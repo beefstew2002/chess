@@ -14,6 +14,7 @@ public class WebSocketSessions {
     }
 
     public void addSessionToGame(int gameId, Session session) {
+
         sessionMap.get(gameId).add(session);
     }
 
