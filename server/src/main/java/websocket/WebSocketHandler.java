@@ -73,6 +73,12 @@ public class WebSocketHandler {
     }
 
     public void connect(Session session, String username, ConnectCommand command) throws Exception {
+        //Verify auth
+        if (!adao.verifyAuth(command.getAuthToken())) {
+            sendMessage(error("Server: you're not authorized"), session);
+            return;
+        }
+
         //Verify the game ID
         try {
             gdao.getGame(command.getGameID());
