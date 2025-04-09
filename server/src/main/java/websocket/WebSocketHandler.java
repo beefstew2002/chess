@@ -73,6 +73,14 @@ public class WebSocketHandler {
     }
 
     public void connect(Session session, String username, ConnectCommand command) throws Exception {
+        //Verify the game ID
+        try {
+            gdao.getGame(command.getGameID());
+        } catch (DataAccessException e) {
+            sendMessage(error("Server: That game doesn't exist!"), session);
+            return;
+        }
+
         //System.out.println("the connect websocket endpoint got called!");
         broadcastMessage(command.getGameID(), notification(username + " joined the game"), session);
         //For testing, for now it will also send a message back to itself
@@ -107,6 +115,9 @@ public class WebSocketHandler {
 
     public String notification(String message) {
         return serializer.toJson(new NotificationMessage(message));
+    }
+    public String error(String message) {
+        return serializer.toJson(new ErrorMessage(message));
     }
     public String loadGameMessage(int gameId) {
         try {
