@@ -34,8 +34,15 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
+
         try {
             UserGameCommand command = serializer.fromJson(message, UserGameCommand.class);
+
+            //Verify auth
+            if (!adao.verifyAuth(command.getAuthToken())) {
+                sendMessage(error("Server: you're not authorized"), session);
+                return;
+            }
 
             String username = adao.getAuth(command.getAuthToken()).username();
 
