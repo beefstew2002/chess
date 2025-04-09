@@ -9,6 +9,7 @@ import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import websocket.commands.*;
 import websocket.messages.ErrorMessage;
+import websocket.messages.NotificationMessage;
 
 @WebSocket
 public class WebSocketHandler {
@@ -71,13 +72,16 @@ public class WebSocketHandler {
         //System.out.println("the connect websocket endpoint got called!");
         broadcastMessage(command.getGameID(), username + " joined the game", session);
         //For testing, for now it will also send a message back to itself
-        //sendMessage("echo, echo, echo", session);
+        sendMessage(notification("echo, echo, echo"), session);
         //well, that worked! but the client was expecting json. That must be what the notification class is for.
     }
     public void makeMove(Session session, String username, MakeMoveCommand command) throws Exception {}
     public void leaveGame(Session session, String username, LeaveCommand command) throws Exception {}
     public void resign(Session session, String username, ResignCommand command) throws Exception {}
 
+    public String notification(String message) {
+        return serializer.toJson(new NotificationMessage(message));
+    }
     public void sendMessage(String message, Session session) throws Exception {
         //uhhh
         //This code is what the echo function looks like the sendMessage is supposed to be
