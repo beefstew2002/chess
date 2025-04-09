@@ -76,7 +76,7 @@ public class ChessGame {
     }
 
     //Method to check if a single move is valid without modifying the actual game
-    private boolean isMoveValid(ChessMove move) {
+    public boolean isMoveValid(ChessMove move) {
         ChessGame testGame = this.clone();
         testGame.experimental = true; //this is to make it so it can claim a move is valid even if it's not that team's turn
 

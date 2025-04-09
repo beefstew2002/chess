@@ -1,14 +1,17 @@
 package websocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import websocket.commands.*;
 import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
 @WebSocket
@@ -72,16 +75,29 @@ public class WebSocketHandler {
         //System.out.println("the connect websocket endpoint got called!");
         broadcastMessage(command.getGameID(), username + " joined the game", session);
         //For testing, for now it will also send a message back to itself
-        sendMessage(notification("echo, echo, echo"), session);
-        //well, that worked! but the client was expecting json. That must be what the notification class is for.
+        sendMessage(notification("connected to game"), session);
+        //that worked!
     }
-    public void makeMove(Session session, String username, MakeMoveCommand command) throws Exception {}
+    public void makeMove(Session session, String username, MakeMoveCommand command) throws Exception {
+        int gameId = command.getGameID();
+        ChessMove move = command.getMove();
+        GameData game = gdao.getGame(gameId);
+        if (game.game().isMoveValid(move)) {
+            game.game().makeMove(move);
+            gdao.updateGame(game);
+            broadcastMessage(gameId, notification(username + " made move " + move.toString()), session);
+            broadcastMessage(gameId, loadGameMessage(game), null);
+        } else {
+            sendMessage(notification("That move is illegal"), session);
+        }
+    }
     public void leaveGame(Session session, String username, LeaveCommand command) throws Exception {}
     public void resign(Session session, String username, ResignCommand command) throws Exception {}
 
     public String notification(String message) {
         return serializer.toJson(new NotificationMessage(message));
     }
+    public String loadGameMessage(GameData game) {return serializer.toJson(new LoadGameMessage(game));}
     public void sendMessage(String message, Session session) throws Exception {
         //uhhh
         //This code is what the echo function looks like the sendMessage is supposed to be
