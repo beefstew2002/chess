@@ -91,8 +91,15 @@ public class WebSocketHandler {
             sendMessage(notification("That move is illegal"), session);
         }
     }
-    public void leaveGame(Session session, String username, LeaveCommand command) throws Exception {}
-    public void resign(Session session, String username, ResignCommand command) throws Exception {}
+    public void leaveGame(Session session, String username, LeaveCommand command) throws Exception {
+        sessions.removeSessionFromGame(command.getGameID(), session);
+        broadcastMessage(command.getGameID(), username + " left the game", session);
+        //For testing, just to show that this method is running
+        sendMessage(notification("you left the game"), session);
+    }
+    public void resign(Session session, String username, ResignCommand command) throws Exception {
+
+    }
 
     public String notification(String message) {
         return serializer.toJson(new NotificationMessage(message));
