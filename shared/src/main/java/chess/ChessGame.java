@@ -92,6 +92,16 @@ public class ChessGame {
         return true;
     }
 
+    //Method to check if a turn would be valid: isMoveValid but can't move opposing pieces
+    public boolean isTurnValid(ChessMove move) {
+        TeamColor pieceColor = theBoard.getPiece(move.getStartPosition()).getTeamColor();
+        if (whoseTurn == pieceColor) {
+            return isMoveValid(move);
+        } else {
+            return false;
+        }
+    }
+
     //Helper function to check for check for castling moves
     private void avoidCheckInCastling(ChessPiece piece, ChessMove move) throws InvalidMoveException {
         //Checking for check with castle moves

@@ -37,7 +37,7 @@ public class WebSocketHandler {
         try {
             UserGameCommand command = serializer.fromJson(message, UserGameCommand.class);
 
-            String username = command.getAuthToken(); //get the username from this, not just the auth token
+            String username = adao.getAuth(command.getAuthToken()).username();
 
             //Save the session in the WebSocketSessions: saveSession(command.getGameID(), session)
             sessions.addSessionToGame(command.getGameID(), session);
@@ -100,7 +100,11 @@ public class WebSocketHandler {
         int gameId = command.getGameID();
         ChessMove move = command.getMove();
         GameData game = gdao.getGame(gameId);
-        if (game.game().isMoveValid(move)) {
+        String currentPlayerUsername = switch(game.game().getTeamTurn()) {
+            case WHITE -> game.whiteUsername();
+            case BLACK -> game.blackUsername();
+        };
+        if (game.game().isTurnValid(move) && username.equals(currentPlayerUsername)) {
             game.game().makeMove(move);
             gdao.updateGame(game);
             broadcastMessage(gameId, notification(username + " made move " + move.toString()), session);
