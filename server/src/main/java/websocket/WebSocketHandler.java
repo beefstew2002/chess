@@ -16,7 +16,7 @@ public class WebSocketHandler {
     private SQLUserDAO udao;
     private SQLAuthDAO adao;
     private SQLGameDAO gdao;
-
+    private Gson serializer;
     private WebSocketSessions sessions;
 
     public WebSocketHandler() {
@@ -24,12 +24,13 @@ public class WebSocketHandler {
         udao = new SQLUserDAO();
         adao = new SQLAuthDAO();
         gdao = new SQLGameDAO();
+        serializer = new Gson();
     }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
         try {
-            UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+            UserGameCommand command = serializer.fromJson(message, UserGameCommand.class);
 
             String username = command.getAuthToken(); //get the username from this, not just the auth token
 
@@ -37,10 +38,22 @@ public class WebSocketHandler {
             sessions.addSessionToGame(command.getGameID(), session);
 
             switch (command.getCommandType()) {
-                case CONNECT -> connect(session, username, (ConnectCommand) command);
-                case MAKE_MOVE -> makeMove(session, username, (MakeMoveCommand) command);
-                case LEAVE -> leaveGame(session, username, (LeaveCommand) command);
-                case RESIGN -> resign(session, username, (ResignCommand) command);
+                case CONNECT -> {
+                    command = serializer.fromJson(message, ConnectCommand.class);
+                    connect(session, username, (ConnectCommand) command);
+                }
+                case MAKE_MOVE -> {
+                    command = serializer.fromJson(message, MakeMoveCommand.class);
+                    makeMove(session, username, (MakeMoveCommand) command);
+                }
+                case LEAVE -> {
+                    command = serializer.fromJson(message, LeaveCommand.class);
+                    leaveGame(session, username, (LeaveCommand) command);
+                }
+                case RESIGN -> {
+                    command = serializer.fromJson(message, ResignCommand.class);
+                    resign(session, username, (ResignCommand) command);
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
