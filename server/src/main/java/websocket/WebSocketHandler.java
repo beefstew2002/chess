@@ -70,6 +70,9 @@ public class WebSocketHandler {
     public void connect(Session session, String username, ConnectCommand command) throws Exception {
         //System.out.println("the connect websocket endpoint got called!");
         broadcastMessage(command.getGameID(), username + " joined the game", session);
+        //For testing, for now it will also send a message back to itself
+        //sendMessage("echo, echo, echo", session);
+        //well, that worked! but the client was expecting json. That must be what the notification class is for.
     }
     public void makeMove(Session session, String username, MakeMoveCommand command) throws Exception {}
     public void leaveGame(Session session, String username, LeaveCommand command) throws Exception {}
