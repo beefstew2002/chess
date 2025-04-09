@@ -6,6 +6,7 @@ import dataaccess.AuthDAO;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
+import dataaccess.exceptions.DataAccessException;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
@@ -75,8 +76,11 @@ public class WebSocketHandler {
         //System.out.println("the connect websocket endpoint got called!");
         broadcastMessage(command.getGameID(), username + " joined the game", session);
         //For testing, for now it will also send a message back to itself
-        sendMessage(notification("connected to game"), session);
+        //sendMessage(notification("connected to game"), session);
         //that worked!
+
+        //Loading a game
+        sendMessage(loadGameMessage(command.getGameID()), session);
     }
     public void makeMove(Session session, String username, MakeMoveCommand command) throws Exception {
         int gameId = command.getGameID();
@@ -103,6 +107,14 @@ public class WebSocketHandler {
 
     public String notification(String message) {
         return serializer.toJson(new NotificationMessage(message));
+    }
+    public String loadGameMessage(int gameId) {
+        try {
+            GameData game = gdao.getGame(gameId);
+            return loadGameMessage(game);
+        } catch (DataAccessException e) {
+            return notification("Tried to load a game that doesn't exist");
+        }
     }
     public String loadGameMessage(GameData game) {return serializer.toJson(new LoadGameMessage(game));}
     public void sendMessage(String message, Session session) throws Exception {
