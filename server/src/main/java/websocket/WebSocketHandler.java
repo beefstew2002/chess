@@ -2,6 +2,7 @@ package websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.SQLAuthDAO;
@@ -113,7 +114,12 @@ public class WebSocketHandler {
             case BLACK -> game.blackUsername();
         };
         if (game.game().isTurnValid(move) && username.equals(currentPlayerUsername)) {
-            game.game().makeMove(move);
+            try {
+                game.game().makeMove(move);
+            } catch (InvalidMoveException e) {
+                sendMessage(error(e.toString()), session);
+                return;
+            }
             gdao.updateGame(game);
             broadcastMessage(gameId, notification(username + " made move " + move.toString()), session);
             broadcastMessage(gameId, loadGameMessage(game), null);
