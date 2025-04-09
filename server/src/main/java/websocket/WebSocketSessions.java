@@ -3,6 +3,7 @@ package websocket;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +15,9 @@ public class WebSocketSessions {
     }
 
     public void addSessionToGame(int gameId, Session session) {
-
+        if (sessionMap.get(gameId) == null) {
+            sessionMap.put(gameId, new HashSet<Session>());
+        }
         sessionMap.get(gameId).add(session);
     }
 
