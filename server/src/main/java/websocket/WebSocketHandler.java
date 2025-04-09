@@ -74,7 +74,7 @@ public class WebSocketHandler {
 
     public void connect(Session session, String username, ConnectCommand command) throws Exception {
         //System.out.println("the connect websocket endpoint got called!");
-        broadcastMessage(command.getGameID(), username + " joined the game", session);
+        broadcastMessage(command.getGameID(), notification(username + " joined the game"), session);
         //For testing, for now it will also send a message back to itself
         //sendMessage(notification("connected to game"), session);
         //that worked!
@@ -120,15 +120,20 @@ public class WebSocketHandler {
     public void sendMessage(String message, Session session) throws Exception {
         //uhhh
         //This code is what the echo function looks like the sendMessage is supposed to be
-        session.getRemote().sendString(message);
+        //Make sure the session is open, otherwise don't send a message
+        if (session.isOpen()) {
+            session.getRemote().sendString(message);
+        }
     }
     public void broadcastMessage(int gameId, String message, Session exceptThisSession) throws Exception{
         //Send a message to every session at that gameId
         //Exclude whichever session that is
         for (Session session : sessions.getSessionsFromGame(gameId)) {
+            //Keep track of which sessions are closed and should be removed
             if (!session.equals(exceptThisSession)) {
                 sendMessage(message, session);
             }
         }
+        //Add another loop to loop through the sessions and remove the ones that need to be removed
     }
 }
