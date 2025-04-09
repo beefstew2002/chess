@@ -61,11 +61,32 @@ public class WebSocketHandler {
             //sendMessage(session.getRemote(), new ErrorMessage("Error: " + ex.getMessage()));
         }
     }
-
-    public void connect(Session session, String username, ConnectCommand command) {
-        System.out.println("the connect websocket endpoint got called!");
+    @OnWebSocketError
+    public void onError(Throwable throwable) throws Throwable {
+        //idk what this function is supposed to do, is this all?
+        throw throwable;
     }
-    public void makeMove(Session session, String username, MakeMoveCommand command) {}
-    public void leaveGame(Session session, String username, LeaveCommand command) {}
-    public void resign(Session session, String username, ResignCommand command) {}
+
+    public void connect(Session session, String username, ConnectCommand command) throws Exception {
+        //System.out.println("the connect websocket endpoint got called!");
+        broadcastMessage(command.getGameID(), username + " joined the game", session);
+    }
+    public void makeMove(Session session, String username, MakeMoveCommand command) throws Exception {}
+    public void leaveGame(Session session, String username, LeaveCommand command) throws Exception {}
+    public void resign(Session session, String username, ResignCommand command) throws Exception {}
+
+    public void sendMessage(String message, Session session) throws Exception {
+        //uhhh
+        //This code is what the echo function looks like the sendMessage is supposed to be
+        session.getRemote().sendString(message);
+    }
+    public void broadcastMessage(int gameId, String message, Session exceptThisSession) throws Exception{
+        //Send a message to every session at that gameId
+        //Exclude whichever session that is
+        for (Session session : sessions.getSessionsFromGame(gameId)) {
+            if (!session.equals(exceptThisSession)) {
+                sendMessage(message, session);
+            }
+        }
+    }
 }
