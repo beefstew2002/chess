@@ -106,7 +106,7 @@ public class WebSocketHandler {
             broadcastMessage(gameId, notification(username + " made move " + move.toString()), session);
             broadcastMessage(gameId, loadGameMessage(game), null);
         } else {
-            sendMessage(notification("That move is illegal"), session);
+            sendMessage(error("That move is illegal"), session);
         }
     }
     public void leaveGame(Session session, String username, LeaveCommand command) throws Exception {
