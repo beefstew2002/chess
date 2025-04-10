@@ -1,12 +1,14 @@
 package ui;
 
 import chess.ChessPiece;
+import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import server.ServerFacade;
 import websocket.ServerMessageObserver;
 import websocket.WebSocketFacade;
+import websocket.commands.ConnectCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,12 +22,19 @@ public class ChessClient {
     private final Repl notificationHandler;
     private GameData myGame;
     private WebSocketFacade ws;
+    private Gson serializer = new Gson();
 
     public ChessClient(String serverUrl, Repl notificationHandler) {
         this.serverUrl = serverUrl;
         server = new ServerFacade(this.serverUrl);
         user = new AuthData("", "");
         this.notificationHandler = notificationHandler;
+        try {
+            ws = new WebSocketFacade(notificationHandler);
+        } catch (Exception e) {
+            System.out.println("Couldn't initialize websocket");
+            System.out.println(e);
+        }
     }
 
     public String eval(String input) {
@@ -145,6 +154,7 @@ public class ChessClient {
                     return "Expected: <ID> [WHITE|BLACK]";
                 }
                 server.join(gameId, params[1], user.authToken());
+                ws.send(connectCommand(gameId));
                 state = State.INGAME;
             } catch (NumberFormatException e) {
                 return "You have to use the game's ID number, not its name";
@@ -218,6 +228,11 @@ public class ChessClient {
                     """;
         }
         return "You cheated. Someone is coming";
+    }
+
+    public String connectCommand(int gameId) {
+        ConnectCommand cc = new ConnectCommand(user.authToken(), gameId);
+        return serializer.toJson(cc);
     }
 
     public void loadGame(GameData game) {

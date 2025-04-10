@@ -21,23 +21,27 @@ public class WebSocketFacade extends Endpoint {
 
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {
-                //THIS is where the magic happens
-                ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                switch (serverMessage.getServerMessageType()) {
-                    case NOTIFICATION -> {
-                        NotificationMessage nm = new Gson().fromJson(message, NotificationMessage.class);
-                        observer.notify(nm);
+                try {
+                    //THIS is where the magic happens
+                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                    switch (serverMessage.getServerMessageType()) {
+                        case NOTIFICATION -> {
+                            NotificationMessage nm = new Gson().fromJson(message, NotificationMessage.class);
+                            observer.notify(nm);
+                        }
+                        case ERROR -> {
+                            ErrorMessage em = new Gson().fromJson(message, ErrorMessage.class);
+                            observer.error(em);
+                        }
+                        case LOAD_GAME -> {
+                            LoadGameMessage lgm = new Gson().fromJson(message, LoadGameMessage.class);
+                            observer.loadGame(lgm);
+                        }
                     }
-                    case ERROR -> {
-                        ErrorMessage em = new Gson().fromJson(message, ErrorMessage.class);
-                        observer.error(em);
-                    }
-                    case LOAD_GAME -> {
-                        LoadGameMessage lgm = new Gson().fromJson(message, LoadGameMessage.class);
-                        observer.loadGame(lgm);
-                    }
+                } catch (Exception e) {
+                    ErrorMessage em = new Gson().fromJson(e.getMessage(), ErrorMessage.class);
+                    observer.error(em);
                 }
-
             }
         });
     }
