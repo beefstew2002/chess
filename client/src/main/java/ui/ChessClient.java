@@ -29,14 +29,17 @@ public class ChessClient {
     private AuthData user;
     private final Repl notificationHandler;
     private GameData myGame;
+    private int myPov;
     private WebSocketFacade ws;
     private Gson serializer = new Gson();
+    private boolean tryingToResign = false;
 
     public ChessClient(String serverUrl, Repl notificationHandler) {
         this.serverUrl = serverUrl;
         server = new ServerFacade(this.serverUrl);
         user = new AuthData("", "");
         this.notificationHandler = notificationHandler;
+        myPov = 0;
         try {
             ws = new WebSocketFacade(notificationHandler);
         } catch (Exception e) {
@@ -61,7 +64,8 @@ public class ChessClient {
                 case "observe" -> observe(params);
                 case "redraw" -> redraw();
                 case "leave" -> leave();
-                case "resign" -> resign();
+                case "resign" -> attemptResign();
+                case "no" -> cancelResign();
                 case "move" -> makeMove(params);
                 case "highlight" -> highlight(params);
                 default -> help();
@@ -169,6 +173,9 @@ public class ChessClient {
                 server.join(gameId, params[1], user.authToken());
                 ws.send(connectCommand(gameId));
                 state = State.INGAME;
+                if (params[1].equalsIgnoreCase("black")) {
+                    myPov = 1;
+                }
             } catch (NumberFormatException e) {
                 return "You have to use the game's ID number, not its name";
             } catch (Exception e) {
@@ -227,7 +234,24 @@ public class ChessClient {
             throw new ResponseException(999, "couldn't connect to websocket to leave");
         }
         state = State.SIGNEDIN;
+        myPov = 0;
         return "You left the game";
+    }
+    public String attemptResign() throws ResponseException{
+        if (!tryingToResign) {
+            tryingToResign = true;
+            return "Are you sure you want to forfeit the game? If so, type 'resign' again";
+        } else {
+            return resign();
+        }
+    }
+    public String cancelResign() {
+        if (tryingToResign) {
+            tryingToResign = false;
+            return "Got it, you're *not* trying to resign";
+        } else {
+            return "? What do you mean, 'no'?";
+        }
     }
     public String resign() throws ResponseException {
         assertInGame();
@@ -237,7 +261,7 @@ public class ChessClient {
             throw new ResponseException(999, "couldn't connect to websocket to resign");
         }
         state = State.SIGNEDIN;
-        return "You resigned";
+        return "";
     }
     public String makeMove(String...params) throws ResponseException {
         assertInGame();
@@ -249,7 +273,11 @@ public class ChessClient {
         } catch (Exception e) {
             throw new ResponseException(999, "couldn't connect to websocket to move");
         }
-        return "You made move " + move.toString();
+        if (myGame.game().isTurnValid(move)) {
+            return "You made move " + move.toString() + "\n" + displayGame(myGame, myPov);
+        } else {
+            return "";
+        }
     }
     public String highlight(String...params) throws ResponseException {
         ChessPosition target = posFromString(params[0]);
@@ -262,6 +290,9 @@ public class ChessClient {
     }
 
     public String help() {
+        if (tryingToResign) {
+            cancelResign();
+        }
         if (state == State.SIGNEDOUT) {
             return """
                     register <USERNAME> <PASSWORD> <EMAIL> - to create an account
@@ -422,6 +453,9 @@ public class ChessClient {
 
         String blackUsername = game.blackUsername() == null ? "[no one yet]" : game.blackUsername();
         String whiteUsername = game.whiteUsername() == null ? "[no one yet]" : game.whiteUsername();
+
+        //Overrides POV with myPov (if I wanted to make things nicer I could just remove the argument)
+        pov = myPov;
 
         //ChessPosition startPosition = null;
         Collection<ChessPosition> endPositions = null;
