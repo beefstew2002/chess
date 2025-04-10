@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessMove;
 import chess.ChessPiece;
 import com.google.gson.Gson;
 import exception.ResponseException;
@@ -10,6 +11,8 @@ import websocket.ServerMessageObserver;
 import websocket.WebSocketFacade;
 import websocket.commands.ConnectCommand;
 import websocket.commands.LeaveCommand;
+import websocket.commands.MakeMoveCommand;
+import websocket.commands.ResignCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +57,8 @@ public class ChessClient {
                 case "observe" -> observe(params);
                 case "redraw" -> redraw();
                 case "leave" -> leave();
+                case "resign" -> resign();
+                case "move" -> makeMove(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -218,6 +223,16 @@ public class ChessClient {
         }
         state = State.SIGNEDIN;
         return "You left the game";
+    }
+    public String resign() throws ResponseException {
+        assertInGame();
+        try {
+            ws.send(resignCommand());
+        } catch (Exception e) {
+            throw new ResponseException(999, "couldn't connect to websocket to resign");
+        }
+        state = State.SIGNEDIN;
+        return "You resigned";
     }/*
     public String makeMove(String...params) throws ResponseException {}
     public String highlight(String...params) throws ResponseException {}*/
@@ -259,6 +274,14 @@ public class ChessClient {
     public String leaveCommand() {
         LeaveCommand lc = new LeaveCommand(user.authToken(), myGame.gameID());
         return serializer.toJson(lc);
+    }
+    public String resignCommand() {
+        ResignCommand rc = new ResignCommand(user.authToken(), myGame.gameID());
+        return serializer.toJson(rc);
+    }
+    public String moveCommand(ChessMove move) {
+        MakeMoveCommand mc = new MakeMoveCommand(user.authToken(), myGame.gameID(), move);
+        return serializer.toJson(mc);
     }
 
     public void loadGame(GameData game) {
