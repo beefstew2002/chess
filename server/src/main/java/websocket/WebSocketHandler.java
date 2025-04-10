@@ -128,10 +128,25 @@ public class WebSocketHandler {
         }
     }
     public void leaveGame(Session session, String username, LeaveCommand command) throws Exception {
+        //Set the player name of that side to null
+        int gameId = command.getGameID();
+        GameData game = gdao.getGame(gameId);
+        if (username.equals(game.whiteUsername())) {
+            game = new GameData(gameId, null, game.blackUsername(), game.gameName(), game.game());
+        }
+        if (username.equals(game.blackUsername())) {
+            game = new GameData(gameId, game.whiteUsername(), null, game.gameName(), game.game());
+        }
+        gdao.updateGame(game);
+
+        //Remove the session from the map
         sessions.removeSessionFromGame(command.getGameID(), session);
-        broadcastMessage(command.getGameID(), username + " left the game", session);
+
+        //Notify the other players
+        broadcastMessage(command.getGameID(), notification(username + " left the game"), session);
+
         //For testing, just to show that this method is running
-        sendMessage(notification("you left the game"), session);
+        //sendMessage(notification("you left the game"), session);
     }
     public void resign(Session session, String username, ResignCommand command) throws Exception {
         int gameId = command.getGameID();
