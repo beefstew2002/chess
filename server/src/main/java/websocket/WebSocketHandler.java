@@ -96,11 +96,14 @@ public class WebSocketHandler {
             return;
         }
 
-        //System.out.println("the connect websocket endpoint got called!");
-        broadcastMessage(command.getGameID(), notification(username + " joined the game"), session);
-        //For testing, for now it will also send a message back to itself
-        //sendMessage(notification("connected to game"), session);
-        //that worked!
+        String whoAreThey = "observer";
+        if (username.equals(gdao.getGame(command.getGameID()).whiteUsername())) {
+            whoAreThey = "white";
+        }else if (username.equals(gdao.getGame(command.getGameID()).blackUsername())) {
+            whoAreThey = "black";
+        }
+
+        broadcastMessage(command.getGameID(), notification(username + " joined the game as " + whoAreThey), session);
 
         //Loading a game
         sendMessage(loadGameMessage(command.getGameID()), session);
