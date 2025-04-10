@@ -217,7 +217,7 @@ public class ChessClient {
     //Game commands
     public String redraw() throws ResponseException {
         assertInGame();
-        return displayGame(myGame, 0, null);
+        return displayGame(myGame, 0);
     }
     public String leave() throws ResponseException {
         assertInGame();
@@ -258,7 +258,7 @@ public class ChessClient {
         Collection<ChessMove> legalMoves = myGame.game().validMoves(target);
 
         //Print out the list with those highlighted squares
-        return displayGame(myGame, 0, legalMoves);
+        return displayGame(myGame, 0, target, legalMoves);
     }
 
     public String help() {
@@ -415,7 +415,7 @@ public class ChessClient {
         }
         return s;
     }
-    private String displayGame(GameData game, int pov, Collection<ChessMove> legalMoves) {
+    private String displayGame(GameData game, int pov, ChessPosition startPosition, Collection<ChessMove> legalMoves) {
         String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
         String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
         String resetBack = EscapeSequences.RESET_BG_COLOR;
@@ -423,11 +423,11 @@ public class ChessClient {
         String blackUsername = game.blackUsername() == null ? "[no one yet]" : game.blackUsername();
         String whiteUsername = game.whiteUsername() == null ? "[no one yet]" : game.whiteUsername();
 
-        ChessPosition startPosition = null;
+        //ChessPosition startPosition = null;
         Collection<ChessPosition> endPositions = null;
         if (legalMoves != null && legalMoves.isEmpty()) {legalMoves = null;}
         if (legalMoves != null) {
-            startPosition = legalMoves.iterator().next().getStartPosition();
+            //startPosition = legalMoves.iterator().next().getStartPosition();
             endPositions = new HashSet<>();
             for (ChessMove legalMove : legalMoves) {
                 endPositions.add(legalMove.getEndPosition());
@@ -451,11 +451,12 @@ public class ChessClient {
             for (int x=0; x<10; x++) {
                 //Highlight if necessary
                 highlighted = 0;
+                ChessPosition pos = new ChessPosition(9-y, x);
+                if (startPosition != null && pos.equals(startPosition)) {
+                    highlighted = 2;
+                }
                 if (legalMoves != null) {
-                    ChessPosition pos = new ChessPosition(9-y, x);
-                    if (pos.equals(startPosition)) {
-                        highlighted = 2;
-                    }else if (endPositions.contains(pos)) {
+                    if (endPositions.contains(pos)) {
                         highlighted = 1;
                     }
                 }
@@ -481,6 +482,9 @@ public class ChessClient {
 
         return s;
     }
+    private String displayGame(GameData game, int pov) {
+        return displayGame(game, pov, null, null);
+    }
     private String displayGame(int id, int pov) {
         //pov = 0 means white, pov = 1 means black
         try {
@@ -492,7 +496,7 @@ public class ChessClient {
                 }
             }
 
-            return displayGame(game, pov, null);
+            return displayGame(game, pov, null, null);
 
         } catch (ResponseException e) {
             return "you must not be authorized to view this or smth";
@@ -500,9 +504,9 @@ public class ChessClient {
     }
     public String displayGame(GameData game, String color) {
         if (color.equalsIgnoreCase("BLACK")) {
-            return displayGame(game, 1, null);
+            return displayGame(game, 1, null, null);
         }
-        return displayGame(game, 0, null);
+        return displayGame(game, 0, null, null);
     }
     public String displayGame(int id, String color) {
         if (color.equalsIgnoreCase("BLACK")) {
