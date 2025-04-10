@@ -274,7 +274,7 @@ public class ChessClient {
             throw new ResponseException(999, "couldn't connect to websocket to move");
         }
         if (myGame.game().isTurnValid(move)) {
-            return "You made move " + move.toString() + "\n" + displayGame(myGame, myPov);
+            return "You made move " + move.toString();
         } else {
             return "";
         }
@@ -516,7 +516,7 @@ public class ChessClient {
 
         return s;
     }
-    private String displayGame(GameData game, int pov) {
+    public String displayGame(GameData game, int pov) {
         return displayGame(game, pov, null, null);
     }
     private String displayGame(int id, int pov) {
