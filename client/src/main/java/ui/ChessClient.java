@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessMove;
 import chess.ChessPiece;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
@@ -16,6 +17,10 @@ import websocket.commands.ResignCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static java.lang.Character.isDigit;
+import static java.lang.Character.isLetter;
+import static java.lang.Integer.parseInt;
 
 public class ChessClient {
 
@@ -59,6 +64,7 @@ public class ChessClient {
                 case "leave" -> leave();
                 case "resign" -> resign();
                 case "move" -> makeMove(params);
+                case "highlight" -> highlight(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -152,7 +158,7 @@ public class ChessClient {
         assertSignedIn();
         int gameId;
         try {
-            gameId = getGameId(Integer.parseInt(params[0]));
+            gameId = getGameId(parseInt(params[0]));
         } catch (NumberFormatException e) {
             return "That's not a number";
         }
@@ -178,7 +184,7 @@ public class ChessClient {
 
         int gameId;
         try {
-            gameId = getGameId(Integer.parseInt(params[0]));
+            gameId = getGameId(parseInt(params[0]));
         } catch (NumberFormatException e) {
             return "That's not a number";
         } catch (Exception e) {
@@ -233,9 +239,24 @@ public class ChessClient {
         }
         state = State.SIGNEDIN;
         return "You resigned";
-    }/*
-    public String makeMove(String...params) throws ResponseException {}
-    public String highlight(String...params) throws ResponseException {}*/
+    }
+    public String makeMove(String...params) throws ResponseException {
+        assertInGame();
+        ChessPosition startPos = posFromString(params[0]);
+        ChessPosition endPos = posFromString(params[1]);
+        ChessMove move = new ChessMove(startPos, endPos);
+        try {
+            ws.send(moveCommand(move));
+        } catch (Exception e) {
+            throw new ResponseException(999, "couldn't connect to websocket to move");
+        }
+        return "You made move " + move.toString();
+    }
+    public String highlight(String...params) throws ResponseException {
+        ChessPosition target = posFromString(params[0]);
+
+        //Print out the board with valid squares highlighted
+    }
 
     public String help() {
         if (state == State.SIGNEDOUT) {
@@ -288,6 +309,28 @@ public class ChessClient {
         myGame = game;
     }
 
+    private ChessPosition posFromString(String pos) throws ResponseException{
+        if (pos.length() != 2 || !isLetter(pos.charAt(0)) || !isDigit(pos.charAt(1))) {
+            throw new ResponseException(999, "Invalid input");
+        }
+        int row = pos.charAt(1) - '0';
+        int col = switch(pos.toLowerCase().charAt(0)) {
+            case 'a' -> 1;
+            case 'b' -> 2;
+            case 'c' -> 3;
+            case 'd' -> 4;
+            case 'e' -> 5;
+            case 'f' -> 6;
+            case 'g' -> 7;
+            case 'h' -> 8;
+            default -> 0;
+        };
+        if (col == 0) {
+            throw new ResponseException(999, "Invalid input");
+        }
+        return new ChessPosition(row,col);
+    }
+
     private String getPieceChar(ChessPiece.PieceType type) {
         return switch(type) {
             case KING -> "K";
@@ -298,7 +341,6 @@ public class ChessClient {
             case PAWN -> "P";
         };
     }
-
     private ArrayList<ArrayList<String>> flipBoard(ArrayList<ArrayList<String>> oldBoard) {
         ArrayList<ArrayList<String>> flippedBoard = new ArrayList<>();
         for (int y=9; y>=0; y--) {
@@ -309,8 +351,10 @@ public class ChessClient {
         }
         return flippedBoard;
     }
-
     private String displaySquare(GameData game, int x, int y) {
+        return displaySquare(game, x, y, 0);
+    }
+    private String displaySquare(GameData game, int x, int y, int highlighted) {
 
         String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
         String bsc = EscapeSequences.SET_BG_COLOR_BLACK;//Black square color
@@ -355,7 +399,6 @@ public class ChessClient {
         }
         return s;
     }
-
     private String displayGame(GameData game, int pov) {
         String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
         String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
