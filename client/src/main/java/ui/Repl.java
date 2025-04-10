@@ -5,11 +5,18 @@ import client.websocket.NotificationHandler;
 import webSocketMessages.Notification;
  */
 
+import model.GameData;
+import websocket.ServerMessageObserver;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
+
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Repl {
+public class Repl implements ServerMessageObserver {
     private final ChessClient client;
 
     public Repl(String serverUrl) {
@@ -35,6 +42,19 @@ public class Repl {
             }
         }
         System.out.println();
+    }
+
+    public void notify(NotificationMessage message) {
+        System.out.println(SET_TEXT_COLOR_BLUE + message.getMessage());
+        printPrompt();
+    }
+    public void error(ErrorMessage message) {
+        System.out.println(SET_TEXT_COLOR_RED + message.getMessage());
+        printPrompt();
+    }
+    public void loadGame(LoadGameMessage message) {
+        GameData game = message.game();
+        client.loadGame(game);
     }
 
     private void printPrompt() {

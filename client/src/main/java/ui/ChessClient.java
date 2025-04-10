@@ -5,6 +5,8 @@ import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import server.ServerFacade;
+import websocket.ServerMessageObserver;
+import websocket.WebSocketFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,8 @@ public class ChessClient {
     private State state = State.SIGNEDOUT;
     private AuthData user;
     private final Repl notificationHandler;
+    private GameData myGame;
+    private WebSocketFacade ws;
 
     public ChessClient(String serverUrl, Repl notificationHandler) {
         this.serverUrl = serverUrl;
@@ -141,7 +145,7 @@ public class ChessClient {
                     return "Expected: <ID> [WHITE|BLACK]";
                 }
                 server.join(gameId, params[1], user.authToken());
-                //state = State.INGAME;
+                state = State.INGAME;
             } catch (NumberFormatException e) {
                 return "You have to use the game's ID number, not its name";
             } catch (Exception e) {
@@ -177,6 +181,14 @@ public class ChessClient {
         }
         return displayGame(gameId);
     }
+    //Game commands
+    /*public String redraw() throws ResponseException {
+        //return displayGame(gameId, 1);
+    }
+    public String leave() throws ResponseException {}
+    public String makeMove(String...params) throws ResponseException {}
+    public String resign() throws ResponseException {}
+    public String highlight(String...params) throws ResponseException {}*/
 
     public String help() {
         if (state == State.SIGNEDOUT) {
@@ -198,11 +210,18 @@ public class ChessClient {
                     """;
         }else if (state == State.INGAME) {
             return """
-                    You can't play yet, silly.
-                    We're not built for that
+                    redraw - redraw the chess board
+                    leave - leave the game
+                    move [ROW1] [COL1] [ROW2] [COL2] - make a move
+                    resign - resign the game
+                    highlight [ROW] [COL] - highlight the legal moves available to that piece
                     """;
         }
         return "You cheated. Someone is coming";
+    }
+
+    public void loadGame(GameData game) {
+        myGame = game;
     }
 
     private String getPieceChar(ChessPiece.PieceType type) {
