@@ -15,8 +15,7 @@ import websocket.commands.LeaveCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.ResignCommand;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
@@ -218,7 +217,7 @@ public class ChessClient {
     //Game commands
     public String redraw() throws ResponseException {
         assertInGame();
-        return displayGame(myGame, 0);
+        return displayGame(myGame, 0, null);
     }
     public String leave() throws ResponseException {
         assertInGame();
@@ -255,7 +254,11 @@ public class ChessClient {
     public String highlight(String...params) throws ResponseException {
         ChessPosition target = posFromString(params[0]);
 
-        //Print out the board with valid squares highlighted
+        //Get a list of all legal moves
+        Collection<ChessMove> legalMoves = myGame.game().validMoves(target);
+
+        //Print out the list with those highlighted squares
+        return displayGame(myGame, 0, legalMoves);
     }
 
     public String help() {
@@ -355,11 +358,18 @@ public class ChessClient {
         return displaySquare(game, x, y, 0);
     }
     private String displaySquare(GameData game, int x, int y, int highlighted) {
+        //highlighted 0: not highlighted
+        //highlighted 1: partially highlighted (legal move)
+        //highlighted 2: brightly highlighted (target piece)
+
 
         String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
         String bsc = EscapeSequences.SET_BG_COLOR_BLACK;//Black square color
         String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
         String wsc = EscapeSequences.SET_TEXT_COLOR_WHITE;//White square color
+        String highlightDark = EscapeSequences.SET_BG_COLOR_DARK_GREEN;
+        String highlightLight = EscapeSequences.SET_BG_COLOR_GREEN;
+        String highlightPiece = EscapeSequences.SET_BG_COLOR_YELLOW;
         String blackText = EscapeSequences.SET_TEXT_COLOR_BLACK;//Black text
         String grayBack = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
         String resetBack = EscapeSequences.RESET_BG_COLOR;
@@ -394,18 +404,35 @@ public class ChessClient {
                 s = "   ";
             }
             //Add checker colors
-            String color = (x % 2 == y % 2) ? wsc : bsc;
+            String color = switch (highlighted) {
+                //case 0 -> (x % 2 == y % 2) ? wsc : bsc;
+                case 1 -> (x % 2 == y % 2) ? highlightLight : highlightDark;
+                case 2 -> highlightPiece;
+                default -> (x % 2 == y % 2) ? wsc : bsc;
+            };
+
             s = resetBack + color + s;
         }
         return s;
     }
-    private String displayGame(GameData game, int pov) {
+    private String displayGame(GameData game, int pov, Collection<ChessMove> legalMoves) {
         String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
         String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
         String resetBack = EscapeSequences.RESET_BG_COLOR;
 
         String blackUsername = game.blackUsername() == null ? "[no one yet]" : game.blackUsername();
         String whiteUsername = game.whiteUsername() == null ? "[no one yet]" : game.whiteUsername();
+
+        ChessPosition startPosition = null;
+        Collection<ChessPosition> endPositions = null;
+        if (legalMoves != null && legalMoves.isEmpty()) {legalMoves = null;}
+        if (legalMoves != null) {
+            startPosition = legalMoves.iterator().next().getStartPosition();
+            endPositions = new HashSet<>();
+            for (ChessMove legalMove : legalMoves) {
+                endPositions.add(legalMove.getEndPosition());
+            }
+        }
 
         //code to display the game will go here
         String s = "\n";
@@ -418,10 +445,21 @@ public class ChessClient {
         //Board as an array of strings
         ArrayList<ArrayList<String>> boardArray = new ArrayList<>();
         //Initialize it as empty
+        int highlighted;
         for (int y=0; y<10; y++) {
             boardArray.add(new ArrayList<>());
             for (int x=0; x<10; x++) {
-                boardArray.get(y).add(displaySquare(game,x,y));
+                //Highlight if necessary
+                highlighted = 0;
+                if (legalMoves != null) {
+                    ChessPosition pos = new ChessPosition(9-y, x);
+                    if (pos.equals(startPosition)) {
+                        highlighted = 2;
+                    }else if (endPositions.contains(pos)) {
+                        highlighted = 1;
+                    }
+                }
+                boardArray.get(y).add(displaySquare(game,x,y,highlighted));
             }
         }
 
@@ -454,7 +492,7 @@ public class ChessClient {
                 }
             }
 
-            return displayGame(game, pov);
+            return displayGame(game, pov, null);
 
         } catch (ResponseException e) {
             return "you must not be authorized to view this or smth";
@@ -462,9 +500,9 @@ public class ChessClient {
     }
     public String displayGame(GameData game, String color) {
         if (color.equalsIgnoreCase("BLACK")) {
-            return displayGame(game, 1);
+            return displayGame(game, 1, null);
         }
-        return displayGame(game, 0);
+        return displayGame(game, 0, null);
     }
     public String displayGame(int id, String color) {
         if (color.equalsIgnoreCase("BLACK")) {
