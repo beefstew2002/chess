@@ -8,7 +8,6 @@ import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import server.ServerFacade;
-import websocket.ServerMessageObserver;
 import websocket.WebSocketFacade;
 import websocket.commands.ConnectCommand;
 import websocket.commands.LeaveCommand;
@@ -22,7 +21,6 @@ import static java.lang.Character.isLetter;
 import static java.lang.Integer.parseInt;
 
 public class ChessClient {
-
     private final ServerFacade server;
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
@@ -127,18 +125,14 @@ public class ChessClient {
         int index = 0;
         for (GameData game : gameList) {
             s += game.gameName() + "\n";
-
             s += "     White";
             s += (game.whiteUsername() == null) ? " empty" : ": " + game.whiteUsername();
             s += "\n";
-
             s += "     Black";
             s += (game.blackUsername() == null) ? " empty" : ": " + game.blackUsername();
             s += "\n";
-
             s += "     " + "Index: " + index + "\n";
             s += "\n";
-
             index++;
         }
         if (index == 0) {
@@ -173,21 +167,26 @@ public class ChessClient {
                 server.join(gameId, params[1], user.authToken());
                 ws.send(connectCommand(gameId));
                 state = State.INGAME;
-                if (params[1].equalsIgnoreCase("black")) {
-                    myPov = 1;
+                //Load in the game
+                var allGames = server.list(user.authToken()).games();
+                for (GameData g : allGames) {
+                    if (g.gameID() == gameId) {
+                        myGame = g;
+                    }
                 }
+                if (myGame == null) {return "That game doesn't exist";}
+                if (params[1].equalsIgnoreCase("black")) {myPov = 1;}
             } catch (NumberFormatException e) {
                 return "You have to use the game's ID number, not its name";
             } catch (Exception e) {
                 return "That spot is taken, or something else went wrong";
             }
-            return "You joined the game\n"+displayGame(gameId, params[1]);
+            return "You joined the game\n"/*+displayGame()*/;
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
     }
     public String observe(String... params) throws ResponseException {
         assertSignedIn();
-
         int gameId;
         try {
             gameId = getGameId(parseInt(params[0]));
@@ -196,35 +195,30 @@ public class ChessClient {
         } catch (Exception e) {
             throw new ResponseException(400, "Expected: observe <ID>");
         }
-
         var allGames = server.list(user.authToken()).games();
-        GameData game = null;
         for (GameData g : allGames) {
             if (g.gameID() == gameId) {
-                game = g;
+                myGame = g;
             }
         }
-        if (game == null) {
+        if (myGame == null) {
             return "That game doesn't exist";
         }
-
         try {
             ws.send(connectCommand(gameId));
         } catch (Exception e) {
             throw new ResponseException(999, "couldn't connect to websocket");
         }
-
         state = State.INGAME;
-        if (user.username().equals(game.blackUsername())) {
-            return displayGame(gameId, 1);
+        if (user.username().equals(myGame.blackUsername())) {
+            return displayGame();
         }
-        return displayGame(gameId);
-
+        return "Observe";
     }
     //Game commands
     public String redraw() throws ResponseException {
         assertInGame();
-        return displayGame(myGame, 0);
+        return displayGame();
     }
     public String leave() throws ResponseException {
         assertInGame();
@@ -235,6 +229,7 @@ public class ChessClient {
         }
         state = State.SIGNEDIN;
         myPov = 0;
+        myGame = null;
         return "You left the game";
     }
     public String attemptResign() throws ResponseException{
@@ -281,14 +276,11 @@ public class ChessClient {
     }
     public String highlight(String...params) throws ResponseException {
         ChessPosition target = posFromString(params[0]);
-
         //Get a list of all legal moves
         Collection<ChessMove> legalMoves = myGame.game().validMoves(target);
-
         //Print out the list with those highlighted squares
-        return displayGame(myGame, 0, target, legalMoves);
+        return displayGame(target, legalMoves);
     }
-
     public String help() {
         if (tryingToResign) {
             cancelResign();
@@ -323,30 +315,21 @@ public class ChessClient {
     }
 
     public String connectCommand(int gameId) {
-        ConnectCommand cc = new ConnectCommand(user.authToken(), gameId);
-        return serializer.toJson(cc);
+        return serializer.toJson(new ConnectCommand(user.authToken(), gameId));
     }
     public String leaveCommand() {
-        LeaveCommand lc = new LeaveCommand(user.authToken(), myGame.gameID());
-        return serializer.toJson(lc);
+        return serializer.toJson(new LeaveCommand(user.authToken(), myGame.gameID()));
     }
     public String resignCommand() {
-        ResignCommand rc = new ResignCommand(user.authToken(), myGame.gameID());
-        return serializer.toJson(rc);
+        return serializer.toJson(new ResignCommand(user.authToken(), myGame.gameID()));
     }
     public String moveCommand(ChessMove move) {
-        MakeMoveCommand mc = new MakeMoveCommand(user.authToken(), myGame.gameID(), move);
-        return serializer.toJson(mc);
+        return serializer.toJson(new MakeMoveCommand(user.authToken(), myGame.gameID(), move));
     }
 
-    public void loadGame(GameData game) {
-        myGame = game;
-    }
-
+    public void loadGame(GameData game) {myGame = game;}
     private ChessPosition posFromString(String pos) throws ResponseException{
-        if (pos.length() != 2 || !isLetter(pos.charAt(0)) || !isDigit(pos.charAt(1))) {
-            throw new ResponseException(999, "Invalid input");
-        }
+        if (pos.length() != 2 || !isLetter(pos.charAt(0)) || !isDigit(pos.charAt(1))) {throw new ResponseException(999, "Invalid input");}
         int row = pos.charAt(1) - '0';
         int col = switch(pos.toLowerCase().charAt(0)) {
             case 'a' -> 1;
@@ -359,12 +342,9 @@ public class ChessClient {
             case 'h' -> 8;
             default -> 0;
         };
-        if (col == 0) {
-            throw new ResponseException(999, "Invalid input");
-        }
+        if (col == 0) {throw new ResponseException(999, "Invalid input");}
         return new ChessPosition(row,col);
     }
-
     private String getPieceChar(ChessPiece.PieceType type) {
         return switch(type) {
             case KING -> "K";
@@ -385,15 +365,7 @@ public class ChessClient {
         }
         return flippedBoard;
     }
-    private String displaySquare(GameData game, int x, int y) {
-        return displaySquare(game, x, y, 0);
-    }
     private String displaySquare(GameData game, int x, int y, int highlighted) {
-        //highlighted 0: not highlighted
-        //highlighted 1: partially highlighted (legal move)
-        //highlighted 2: brightly highlighted (target piece)
-
-
         String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
         String bsc = EscapeSequences.SET_BG_COLOR_BLACK;//Black square color
         String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
@@ -441,21 +413,19 @@ public class ChessClient {
                 case 2 -> highlightPiece;
                 default -> (x % 2 == y % 2) ? wsc : bsc;
             };
-
             s = resetBack + color + s;
         }
         return s;
     }
-    private String displayGame(GameData game, int pov, ChessPosition startPosition, Collection<ChessMove> legalMoves) {
+    private String displayGame(ChessPosition startPosition, Collection<ChessMove> legalMoves) {
         String bpc = EscapeSequences.SET_TEXT_COLOR_BLUE;//Black piece color
         String wpc = EscapeSequences.SET_TEXT_COLOR_RED;//White piece color
         String resetBack = EscapeSequences.RESET_BG_COLOR;
 
+        GameData game = myGame;
+        int pov = myPov;
         String blackUsername = game.blackUsername() == null ? "[no one yet]" : game.blackUsername();
         String whiteUsername = game.whiteUsername() == null ? "[no one yet]" : game.whiteUsername();
-
-        //Overrides POV with myPov (if I wanted to make things nicer I could just remove the argument)
-        pov = myPov;
 
         //ChessPosition startPosition = null;
         Collection<ChessPosition> endPositions = null;
@@ -472,10 +442,8 @@ public class ChessClient {
         String s = "\n";
         //Reset colors
         s += EscapeSequences.RESET_TEXT_COLOR;
-
         //Add the top username: black's if it's white's POV, white's otherwise
         s += (pov == 0) ? bpc + blackUsername + "\n" : wpc + whiteUsername + "\n" ;
-
         //Board as an array of strings
         ArrayList<ArrayList<String>> boardArray = new ArrayList<>();
         //Initialize it as empty
@@ -497,12 +465,8 @@ public class ChessClient {
                 boardArray.get(y).add(displaySquare(game,x,y,highlighted));
             }
         }
-
         //Flip the board if it's black's POV
-        if (pov == 1) {
-            boardArray = flipBoard(boardArray);
-        }
-
+        if (pov == 1) {boardArray = flipBoard(boardArray);}
         //Add the board to the string
         for (int y=0; y<10; y++) {
             for (int x=0; x<10; x++) {
@@ -510,47 +474,14 @@ public class ChessClient {
             }
             s += resetBack + "\n";
         }
-
         //Add the bottom username: white's if it's white's POV, black's otherwise
         s += (pov == 1) ? bpc + blackUsername + "\n" : wpc + whiteUsername + "\n" ;
 
         return s;
     }
-    public String displayGame(GameData game, int pov) {
-        return displayGame(game, pov, null, null);
+    public String displayGame() {
+        return displayGame(null, null);
     }
-    private String displayGame(int id, int pov) {
-        //pov = 0 means white, pov = 1 means black
-        try {
-            var allGames = server.list(user.authToken()).games();
-            GameData game = null;
-            for (GameData g : allGames) {
-                if (g.gameID() == id) {
-                    game = g;
-                }
-            }
-
-            return displayGame(game, pov, null, null);
-
-        } catch (ResponseException e) {
-            return "you must not be authorized to view this or smth";
-        }
-    }
-    public String displayGame(GameData game, String color) {
-        if (color.equalsIgnoreCase("BLACK")) {
-            return displayGame(game, 1, null, null);
-        }
-        return displayGame(game, 0, null, null);
-    }
-    public String displayGame(int id, String color) {
-        if (color.equalsIgnoreCase("BLACK")) {
-            return displayGame(id, 1);
-        }
-        return displayGame(id, 0);
-    }
-    public String displayGame(int id) {
-        return displayGame(id, 0);
-    } // default pov is 0
 
     private void assertSignedIn() throws ResponseException {
         if (state == State.SIGNEDOUT) {
@@ -560,13 +491,9 @@ public class ChessClient {
         }
     }
     private void assertSignedOut() throws ResponseException {
-        if (state != State.SIGNEDOUT) {
-            throw new ResponseException(400, "You must sign out");
-        }
+        if (state != State.SIGNEDOUT) {throw new ResponseException(400, "You must sign out");}
     }
     private void assertInGame() throws ResponseException {
-        if (state != State.INGAME) {
-            throw new ResponseException(400, "You're not in a game");
-        }
+        if (state != State.INGAME) {throw new ResponseException(400, "You're not in a game");}
     }
 }

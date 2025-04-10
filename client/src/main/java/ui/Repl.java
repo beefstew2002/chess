@@ -55,7 +55,7 @@ public class Repl implements ServerMessageObserver {
     public void loadGame(LoadGameMessage message) {
         GameData game = message.game();
         client.loadGame(game);
-        System.out.println( client.displayGame(game,0) );
+        System.out.println( client.displayGame() );
         printPrompt();
     }
 
