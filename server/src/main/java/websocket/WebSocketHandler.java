@@ -125,6 +125,24 @@ public class WebSocketHandler {
             }
             gdao.updateGame(game);
             broadcastMessage(gameId, notification(username + " made move " + move.toString()), session);
+            //Check checking
+            String checkMessage = null;if (game.game().isInCheckmate(ChessGame.TeamColor.WHITE)) {
+                checkMessage = "White is in checkmate. Black wins!";
+                game.game().declareWinner(ChessGame.TeamColor.BLACK);
+                gdao.updateGame(game);
+            }else if (game.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                checkMessage = "Black is in checkmate. White wins!";
+                game.game().declareWinner(ChessGame.TeamColor.WHITE);
+                gdao.updateGame(game);
+            } else if (game.game().isInCheck(ChessGame.TeamColor.WHITE)) {
+                checkMessage = "White is in check";
+            }else if (game.game().isInCheck(ChessGame.TeamColor.BLACK)) {
+                checkMessage = "Black is in check";
+            }
+            if (checkMessage != null) {
+                broadcastMessage(gameId, notification(checkMessage), null);
+            }
+
             broadcastMessage(gameId, loadGameMessage(game), null);
         } else {
             sendMessage(error("That move is illegal"), session);
