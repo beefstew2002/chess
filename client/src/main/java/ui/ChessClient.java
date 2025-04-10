@@ -9,6 +9,7 @@ import server.ServerFacade;
 import websocket.ServerMessageObserver;
 import websocket.WebSocketFacade;
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +53,7 @@ public class ChessClient {
                 case "join" -> join(params);
                 case "observe" -> observe(params);
                 case "redraw" -> redraw();
+                case "leave" -> leave();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -195,6 +197,7 @@ public class ChessClient {
             throw new ResponseException(999, "couldn't connect to websocket");
         }
 
+        state = State.INGAME;
         if (user.username().equals(game.blackUsername())) {
             return displayGame(gameId, 1);
         }
@@ -205,10 +208,18 @@ public class ChessClient {
     public String redraw() throws ResponseException {
         assertInGame();
         return displayGame(myGame, 0);
+    }
+    public String leave() throws ResponseException {
+        assertInGame();
+        try {
+            ws.send(leaveCommand());
+        } catch (Exception e) {
+            throw new ResponseException(999, "couldn't connect to websocket to leave");
+        }
+        state = State.SIGNEDIN;
+        return "You left the game";
     }/*
-    public String leave() throws ResponseException {}
     public String makeMove(String...params) throws ResponseException {}
-    public String resign() throws ResponseException {}
     public String highlight(String...params) throws ResponseException {}*/
 
     public String help() {
@@ -244,6 +255,10 @@ public class ChessClient {
     public String connectCommand(int gameId) {
         ConnectCommand cc = new ConnectCommand(user.authToken(), gameId);
         return serializer.toJson(cc);
+    }
+    public String leaveCommand() {
+        LeaveCommand lc = new LeaveCommand(user.authToken(), myGame.gameID());
+        return serializer.toJson(lc);
     }
 
     public void loadGame(GameData game) {
